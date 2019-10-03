@@ -1,5 +1,7 @@
 const path = require('path');
 
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+
 module.exports = (env, argv) => {
   const isProd = argv.mode === 'production';
 
@@ -14,7 +16,13 @@ module.exports = (env, argv) => {
     resolve: {
       extensions: ['.ts', '.tsx', '.js', '.json'],
     },
-    plugins: [],
+    plugins: [
+      new HtmlWebpackPlugin({
+        minify: isProd,
+        base: '/',
+        template: './src/index.html',
+      })
+    ],
     module: {
       rules: [
         {
