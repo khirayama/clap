@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import * as Clap from './Clap';
+import * as Clap from './clap';
 
 interface DocProps {
 }
