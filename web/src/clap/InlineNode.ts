@@ -1,17 +1,22 @@
+import uuid from 'uuid/v4';
+
 import { TextProperties, TextNode } from './TextNode';
 
 export interface InlineProperties {
+  id: string;
   object: 'inline';
   nodes: (InlineProperties | TextProperties)[];
 }
 
 export class InlineNode {
-  public object: InlineProperties['object'];
+  public id: InlineProperties['id'];
+
+  public object: InlineProperties['object'] = 'inline';
 
   public nodes: (InlineNode | TextNode)[];
 
-  constructor(inline: InlineProperties) {
-    this.object = inline.object;
+  constructor(inline: Partial<InlineProperties>) {
+    this.id = inline.id || uuid();
     this.nodes = inline.nodes.map((node) => {
       switch (node.object) {
         case 'inline': {
@@ -26,6 +31,7 @@ export class InlineNode {
 
   public toJSON(): InlineProperties {
     return {
+      id: this.id,
       object: this.object,
       nodes: this.nodes.map((node) => node.toJSON()),
     };

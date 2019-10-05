@@ -1,24 +1,30 @@
+import uuid from 'uuid/v4';
+
 export interface LeafProperties {
+  id: string;
   object: 'leaf';
   text: string;
   marks: ('bold' | 'italic' | 'code')[];
 }
 
 export class Leaf {
-  public object: LeafProperties['object'];
+  public id: LeafProperties['id'];
 
-  public text: LeafProperties['text'];
+  public object: LeafProperties['object'] = 'leaf';
 
-  public marks: LeafProperties['marks'];
+  public text: LeafProperties['text'] = '';
 
-  constructor(leaf: LeafProperties) {
-    this.object = leaf.object;
-    this.text = leaf.text;
-    this.marks = leaf.marks;
+  public marks: LeafProperties['marks'] = [];
+
+  constructor(leaf: Partial<LeafProperties>) {
+    this.id = leaf.id || uuid();
+    this.text = leaf.text || this.text;
+    this.marks = leaf.marks || this.marks;
   }
 
   public toJSON(): LeafProperties {
     return {
+      id: this.id,
       object: this.object,
       text: this.text,
       marks: this.marks,
