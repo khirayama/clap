@@ -1,34 +1,11 @@
 import * as React from 'react';
 
+import * as Clap from './Clap';
+
 interface DocProps {
 }
 
-// https://docs.slatejs.org/guides/data-model
-type Node = Block | Text;
-
-interface Leaf {
-  object: 'leaf';
-  text: string;
-  marks: ('bold' | 'italic' | 'code')[];
-}
-
-interface Document {
-  object: 'document';
-  nodes: Block[];
-}
-
-interface Block {
-  object: 'block';
-  type: 'paragraph';
-  nodes: Node[];
-}
-
-interface Text {
-  object: 'text';
-  leaves: Leaf[];
-}
-
-const sampleDocument: Document = {
+const sampleDocument: Clap.DocumentProperties = {
   object: 'document',
   nodes: [
     {
@@ -54,8 +31,10 @@ export class Doc extends React.Component {
   constructor(props: DocProps) {
     super(props);
 
+    const doc = new Clap.DocumentNode(sampleDocument);
+
     this.state = {
-      document: sampleDocument,
+      document: doc.toJSON(),
     };
   }
 
