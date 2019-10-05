@@ -10,10 +10,15 @@ export interface TextProperties {
   leaves: LeafProperties[];
 }
 
+export interface InlineProperties {
+  object: 'inline';
+  nodes: (InlineProperties | TextProperties)[];
+}
+
 export interface BlockProperties {
   object: 'block';
   type: 'paragraph';
-  nodes: (BlockProperties | TextProperties)[];
+  nodes: (BlockProperties | InlineProperties | TextProperties)[];
 }
 
 export interface DocumentProperties {
@@ -64,12 +69,39 @@ export class TextNode {
   }
 }
 
+export class InlineNode {
+  public object: InlineProperties['object'];
+
+  public nodes: (InlineNode | TextNode)[];
+
+  constructor(inline: InlineProperties) {
+    this.object = inline.object;
+    this.nodes = inline.nodes.map((node) => {
+      switch (node.object) {
+        case 'inline': {
+          return new InlineNode(node);
+        }
+        case 'text': {
+          return  new TextNode(node);
+        }
+      }
+    });
+  }
+
+  public toJSON(): InlineProperties {
+    return {
+      object: this.object,
+      nodes: this.nodes.map((node) => node.toJSON()),
+    };
+  }
+}
+
 export class BlockNode {
   public object: BlockProperties['object'];
 
   public type: BlockProperties['type'];
 
-  public nodes: (BlockNode | TextNode)[];
+  public nodes: (BlockNode | InlineNode |  TextNode)[];
 
   constructor(block: BlockProperties) {
     this.object = block.object;
@@ -78,6 +110,9 @@ export class BlockNode {
       switch (node.object) {
         case 'block': {
           return new BlockNode(node);
+        }
+        case 'inline': {
+          return new InlineNode(node);
         }
         case 'text': {
           return new TextNode(node);
