@@ -7,7 +7,10 @@ interface EditorProps {
 }
 
 interface EditorState {
-  currentNodeId: string | null;
+  cursor: {
+    id: string | null;
+    mode: 'normal' | 'select' | 'insert';
+  };
   document: ClapNode.DocumentProperties;
 }
 
@@ -16,11 +19,12 @@ export class Editor extends React.Component<EditorProps, EditorState> {
     super(props);
 
     const doc = new ClapNode.DocumentNode(props.document);
-    console.log(doc);
-    console.log(doc.toJSON());
 
     this.state = {
-      currentNodeId: null,
+      cursor: {
+        id: null,
+        mode: 'normal',
+      },
       document: doc.toJSON(),
     };
   }
