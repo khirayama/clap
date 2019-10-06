@@ -18,7 +18,38 @@ const sampleDocument: Clap.DocumentProperties = {
             {
               id: 'cadsca',
               object: 'leaf',
-              text: '',
+              text: 'Hello',
+              marks: [],
+            },
+            {
+              id: 'cadsca',
+              object: 'leaf',
+              text: 'World',
+              marks: [],
+            },
+          ],
+        },
+      ],
+    },
+    {
+      id: 'casdcads',
+      object: 'block',
+      type: 'paragraph',
+      nodes: [
+        {
+          id: 'accasdcasd',
+          object: 'text',
+          leaves: [
+            {
+              id: 'casdcasdcasd',
+              object: 'leaf',
+              text: 'おはよう、',
+              marks: [],
+            },
+            {
+              id: 'caisascdklasndckads',
+              object: 'leaf',
+              text: '世界',
               marks: [],
             },
           ],
