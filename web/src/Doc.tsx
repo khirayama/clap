@@ -2,8 +2,7 @@ import * as React from 'react';
 
 import * as Clap from './clap';
 
-interface DocProps {
-}
+interface DocProps {}
 
 const sampleDocument: Clap.DocumentProperties = {
   object: 'document',
@@ -22,11 +21,11 @@ const sampleDocument: Clap.DocumentProperties = {
               object: 'leaf',
               text: '',
               marks: [],
-            }
+            },
           ],
-        }
+        },
       ],
-    }
+    },
   ],
 };
 

@@ -12,7 +12,7 @@ export class DocumentNode {
 
   constructor(doc: DocumentProperties) {
     this.object = doc.object;
-    this.nodes = doc.nodes.map((node) => {
+    this.nodes = doc.nodes.map(node => {
       return new BlockNode(node);
     });
   }
@@ -20,7 +20,7 @@ export class DocumentNode {
   public toJSON(): DocumentProperties {
     return {
       object: this.object,
-      nodes: this.nodes.map((node) => node.toJSON()),
+      nodes: this.nodes.map(node => node.toJSON()),
     };
   }
 }

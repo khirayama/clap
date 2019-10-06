@@ -17,12 +17,12 @@ export class BlockNode {
 
   public type: BlockProperties['type'];
 
-  public nodes: (BlockNode | InlineNode |  TextNode)[];
+  public nodes: (BlockNode | InlineNode | TextNode)[];
 
   constructor(block: Partial<BlockProperties>) {
     this.id = block.id || uuid();
     this.type = block.type;
-    this.nodes = block.nodes.map((node) => {
+    this.nodes = block.nodes.map(node => {
       switch (node.object) {
         case 'block': {
           return new BlockNode(node);
@@ -42,7 +42,7 @@ export class BlockNode {
       id: this.id,
       object: this.object,
       type: this.type,
-      nodes: this.nodes.map((node) => node.toJSON()),
-    }
+      nodes: this.nodes.map(node => node.toJSON()),
+    };
   }
 }

@@ -21,7 +21,7 @@ module.exports = (env, argv) => {
         minify: isProd,
         base: '/',
         template: './src/index.html',
-      })
+      }),
     ],
     module: {
       rules: [

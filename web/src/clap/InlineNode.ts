@@ -17,13 +17,13 @@ export class InlineNode {
 
   constructor(inline: Partial<InlineProperties>) {
     this.id = inline.id || uuid();
-    this.nodes = inline.nodes.map((node) => {
+    this.nodes = inline.nodes.map(node => {
       switch (node.object) {
         case 'inline': {
           return new InlineNode(node);
         }
         case 'text': {
-          return  new TextNode(node);
+          return new TextNode(node);
         }
       }
     });
@@ -33,7 +33,7 @@ export class InlineNode {
     return {
       id: this.id,
       object: this.object,
-      nodes: this.nodes.map((node) => node.toJSON()),
+      nodes: this.nodes.map(node => node.toJSON()),
     };
   }
 }
