@@ -2,7 +2,13 @@ import * as React from 'react';
 
 import * as Clap from './clap';
 
-interface DocProps {}
+interface EditorProps {
+}
+
+interface EditorState {
+  currentNodeId: string | null;
+  document: Clap.DocumentProperties;
+}
 
 const sampleDocument: Clap.DocumentProperties = {
   object: 'document',
@@ -29,8 +35,8 @@ const sampleDocument: Clap.DocumentProperties = {
   ],
 };
 
-export class Doc extends React.Component {
-  constructor(props: DocProps) {
+export class Editor extends React.Component<EditorProps, EditorState> {
+  constructor(props: EditorProps) {
     super(props);
 
     const doc = new Clap.DocumentNode(sampleDocument);
@@ -38,6 +44,7 @@ export class Doc extends React.Component {
     console.log(doc.toJSON());
 
     this.state = {
+      currentNodeId: null,
       document: doc.toJSON(),
     };
   }
