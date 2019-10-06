@@ -1,45 +1,21 @@
 import * as React from 'react';
 
-import * as Clap from './clap';
+import * as ClapNode from '../nodes';
 
 interface EditorProps {
+  document: ClapNode.DocumentProperties;
 }
 
 interface EditorState {
   currentNodeId: string | null;
-  document: Clap.DocumentProperties;
+  document: ClapNode.DocumentProperties;
 }
-
-const sampleDocument: Clap.DocumentProperties = {
-  object: 'document',
-  nodes: [
-    {
-      id: 'vkllllllll',
-      object: 'block',
-      type: 'paragraph',
-      nodes: [
-        {
-          id: 'acda',
-          object: 'text',
-          leaves: [
-            {
-              id: 'cadsca',
-              object: 'leaf',
-              text: '',
-              marks: [],
-            },
-          ],
-        },
-      ],
-    },
-  ],
-};
 
 export class Editor extends React.Component<EditorProps, EditorState> {
   constructor(props: EditorProps) {
     super(props);
 
-    const doc = new Clap.DocumentNode(sampleDocument);
+    const doc = new ClapNode.DocumentNode(props.document);
     console.log(doc);
     console.log(doc.toJSON());
 
