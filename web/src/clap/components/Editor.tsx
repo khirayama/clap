@@ -14,22 +14,55 @@ interface EditorState {
   document: ClapNode.DocumentProperties;
 }
 
+export class InlineText extends React.Component<any, any> {
+  public render(): JSX.Element {
+    return <span>{this.props.children}</span>;
+  }
+}
+
+export class Line extends React.Component<any, any> {
+  public render(): JSX.Element {
+    const props = this.props;
+
+    return <div style={{ paddingLeft: `${props.indent * 10}px` }}>{props.children}</div>;
+  }
+}
+
 export class Editor extends React.Component<EditorProps, EditorState> {
+  private document: ClapNode.DocumentNode;
+
   constructor(props: EditorProps) {
     super(props);
 
-    const doc = new ClapNode.DocumentNode(props.document);
+    this.document = new ClapNode.DocumentNode(props.document);
 
     this.state = {
       cursor: {
         id: null,
         mode: 'normal',
       },
-      document: doc.toJSON(),
+      document: this.document.toJSON(),
     };
   }
 
-  public render() {
-    return <div>Doc</div>;
+  private renderLines(node: any, indent: number = 0, lines: JSX.Element[] = []): JSX.Element[] {
+    for (const n of node.nodes) {
+      lines.push(
+        <Line key={n.id} indent={indent}>
+          {n.object}
+        </Line>,
+      );
+      console.log(n);
+      if (n.nodes) {
+        lines.concat(this.renderLines(n, indent + 1, lines));
+      }
+    }
+    return lines;
+  }
+
+  public render(): JSX.Element {
+    const doc = this.props.document;
+
+    return <div>{this.renderLines(doc)}</div>;
   }
 }
