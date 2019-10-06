@@ -1,5 +1,6 @@
 const path = require('path');
 
+/* eslint-disable node/no-unpublished-require */
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = (env, argv) => {
