@@ -8,7 +8,7 @@ module.exports = {
     serviceworker: true,
     'jest/globals': true,
   },
-  extends: ['eslint:recommended', 'plugin:node/recommended', 'plugin:prettier/recommended'],
+  extends: ['eslint:recommended', 'plugin:node/recommended', 'plugin:react/recommended', 'plugin:prettier/recommended'],
   plugins: ['@typescript-eslint', 'eslint-plugin-jest'],
   parser: '@typescript-eslint/parser',
   parserOptions: {
