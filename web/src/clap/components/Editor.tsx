@@ -1,9 +1,10 @@
 import * as React from 'react';
 
-import * as ClapNode from '../nodes';
+import * as ClapNode from '../nodes/index';
+import { ComponentPool } from './ComponentPool';
 
 interface EditorProps {
-  document: ClapNode.DocumentProperties;
+  document: ClapNode.DocumentNode;
 }
 
 interface EditorState {
@@ -11,20 +12,18 @@ interface EditorState {
     id: string | null;
     mode: 'normal' | 'select' | 'insert';
   };
-  document: ClapNode.DocumentProperties;
+  document: ClapNode.PureDocumentNode;
 }
 
-export class InlineText extends React.Component<any, any> {
-  public render(): JSX.Element {
-    return <span>{this.props.children}</span>;
-  }
+interface ItemProps {
+  indent: number;
 }
 
-export class Line extends React.Component<any, any> {
+class Item extends React.Component<ItemProps> {
   public render(): JSX.Element {
-    const props = this.props;
+    const indent = this.props.indent;
 
-    return <div style={{ paddingLeft: `${props.indent * 10}px` }}>{props.children}</div>;
+    return <div style={{ paddingLeft: `${indent * 10}px` }}>{this.props.children}</div>;
   }
 }
 
@@ -34,38 +33,36 @@ export class Editor extends React.Component<EditorProps, EditorState> {
   constructor(props: EditorProps) {
     super(props);
 
-    this.document = new ClapNode.DocumentNode(props.document);
-
     this.state = {
       cursor: {
         id: null,
         mode: 'normal',
       },
-      document: this.document.toJSON(),
+      document: this.props.document.toJSON(),
     };
   }
 
-  private renderLeaves(leaves: any): JSX.Element {
-    return leaves.map((leaf: any) => <span key={leaf.id}>{leaf.text}</span>);
-  }
+  private renderLines(nodes: ClapNode.PureItemNode[], indent: number = 0, lines: JSX.Element[] = []): JSX.Element[] {
+    for (const node of nodes) {
+      const Component = ComponentPool.take(node.type);
+      if (Component) {
+        lines.push(
+          <Item key={node.id} indent={indent}>
+            <Component node={node} />
+          </Item>,
+        );
+      }
 
-  private renderLines(node: any, indent: number = 0, lines: JSX.Element[] = []): JSX.Element[] {
-    for (const n of node.nodes) {
-      lines.push(
-        <Line key={n.id} indent={indent}>
-          {n.leaves ? this.renderLeaves(n.leaves) : ''}
-        </Line>,
-      );
-      if (n.nodes) {
-        lines.concat(this.renderLines(n, indent + 1, lines));
+      if (node.nodes) {
+        lines.concat(this.renderLines(node.nodes, indent + 1, lines));
       }
     }
     return lines;
   }
 
   public render(): JSX.Element {
-    const doc = this.props.document;
+    const doc = this.state.document;
 
-    return <div>{this.renderLines(doc)}</div>;
+    return <div>{this.renderLines(doc.nodes)}</div>;
   }
 }
