@@ -1,26 +1,5 @@
-import { BlockProperties, BlockNode } from './BlockNode';
+import { PureBaseNode, BaseNode } from './BaseNode';
 
-export interface DocumentProperties {
-  object: 'document';
-  nodes: BlockProperties[];
-}
+export interface PureDocumentNode extends PureBaseNode {}
 
-export class DocumentNode {
-  public object: DocumentProperties['object'];
-
-  public nodes: BlockNode[];
-
-  constructor(doc: DocumentProperties) {
-    this.object = doc.object;
-    this.nodes = doc.nodes.map(node => {
-      return new BlockNode(node);
-    });
-  }
-
-  public toJSON(): DocumentProperties {
-    return {
-      object: this.object,
-      nodes: this.nodes.map(node => node.toJSON()),
-    };
-  }
-}
+export class DocumentNode extends BaseNode {}
