@@ -10,9 +10,9 @@ export { PureParagraphNode, ParagraphNode } from './ParagraphNode';
 
 export type PureNode = PureDocumentNode | PureItemNode;
 
-export type PureItemNode = PureParagraphNode;
-
 export type Node = DocumentNode | ItemNode;
+
+export type PureItemNode = PureParagraphNode;
 
 export type ItemNode = ParagraphNode;
 
