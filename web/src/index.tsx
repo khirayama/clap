@@ -14,7 +14,26 @@ const sampleDocument: Clap.PureDocumentNode = {
       object: 'item',
       type: 'paragraph',
       attributes: {
-        text: 'Hello World.',
+        text: 'First Paragraph Item',
+      },
+      nodes: [
+        {
+          id: uuid(),
+          object: 'item',
+          type: 'paragraph',
+          attributes: {
+            text: 'First Paragraph Item - Frist Child',
+          },
+          nodes: [],
+        },
+      ],
+    },
+    {
+      id: uuid(),
+      object: 'item',
+      type: 'paragraph',
+      attributes: {
+        text: 'Second Paragraph Item',
       },
       nodes: [],
     },
