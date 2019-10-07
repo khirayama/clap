@@ -3,6 +3,7 @@ import uuid from 'uuid/v4';
 import { PureNode, PureItemNode, ItemNode } from './index';
 import { ItemPool } from './ItemPool';
 
+// TODO Add parentNode and document
 export interface PureBaseNode {
   id: string;
   object: 'document' | 'item';
