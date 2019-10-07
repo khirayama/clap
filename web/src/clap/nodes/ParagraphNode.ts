@@ -1,17 +1,17 @@
 import { PureBaseItemNode, BaseItemNode } from './BaseItemNode';
 
-export interface ParagraphItemNodeAttributes {
+export interface ParagraphNodeAttributes {
   text: string;
 }
 
-export interface PureParagraphItemNode extends PureBaseItemNode<ParagraphItemNodeAttributes> {}
+export interface PureParagraphNode extends PureBaseItemNode<ParagraphNodeAttributes> {}
 
-export class ParagraphItemNode extends BaseItemNode<ParagraphItemNodeAttributes> {
+export class ParagraphNode extends BaseItemNode<ParagraphNodeAttributes> {
   public static type: 'paragraph' = 'paragraph';
 
   public text: string = '';
 
-  constructor(node: PureBaseItemNode<ParagraphItemNodeAttributes>) {
+  constructor(node: PureBaseItemNode<ParagraphNodeAttributes>) {
     super(node);
 
     this.text = node.attributes.text;
