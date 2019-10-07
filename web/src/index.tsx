@@ -1,22 +1,58 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
+import uuid from 'uuid/v4';
 
 import * as Clap from './clap';
+
+/*
+- [This is *a link*.]
+*/
 
 const sampleDocument: Clap.DocumentProperties = {
   object: 'document',
   nodes: [
     {
-      id: 'vkllllllll',
+      id: uuid(),
       object: 'block',
       type: 'paragraph',
       nodes: [
+        {
+          id: uuid(),
+          object: 'inline',
+          type: 'link',
+          nodes: [
+            {
+              id: uuid(),
+              object: 'text',
+              leaves: [
+                {
+                  id: uuid(),
+                  object: 'leaf',
+                  text: 'This is ',
+                  marks: [],
+                },
+                {
+                  id: uuid(),
+                  object: 'leaf',
+                  text: 'a link',
+                  marks: ['bold'],
+                },
+                {
+                  id: uuid(),
+                  object: 'leaf',
+                  text: '.',
+                  marks: [],
+                },
+              ],
+            },
+          ],
+        },
         {
           id: 'acda',
           object: 'text',
           leaves: [
             {
-              id: 'cadsca',
+              id: 'cadscad',
               object: 'leaf',
               text: 'Hello',
               marks: [],
@@ -26,6 +62,31 @@ const sampleDocument: Clap.DocumentProperties = {
               object: 'leaf',
               text: 'World',
               marks: [],
+            },
+          ],
+        },
+        {
+          id: 'vkllllllll',
+          object: 'block',
+          type: 'paragraph',
+          nodes: [
+            {
+              id: 'acdacasdca',
+              object: 'text',
+              leaves: [
+                {
+                  id: 'cadsccasdad',
+                  object: 'leaf',
+                  text: 'Hello',
+                  marks: [],
+                },
+                {
+                  id: 'cadsc...a',
+                  object: 'leaf',
+                  text: 'World',
+                  marks: [],
+                },
+              ],
             },
           ],
         },

@@ -5,6 +5,7 @@ import { TextProperties, TextNode } from './TextNode';
 export interface InlineProperties {
   id: string;
   object: 'inline';
+  type: 'link';
   nodes: (InlineProperties | TextProperties)[];
 }
 
@@ -12,6 +13,8 @@ export class InlineNode {
   public id: InlineProperties['id'];
 
   public object: InlineProperties['object'] = 'inline';
+
+  public type: InlineProperties['type'];
 
   public nodes: (InlineNode | TextNode)[];
 
@@ -33,6 +36,7 @@ export class InlineNode {
     return {
       id: this.id,
       object: this.object,
+      type: this.type,
       nodes: this.nodes.map(node => node.toJSON()),
     };
   }

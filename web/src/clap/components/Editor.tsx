@@ -45,14 +45,17 @@ export class Editor extends React.Component<EditorProps, EditorState> {
     };
   }
 
+  private renderLeaves(leaves: any): JSX.Element {
+    return leaves.map((leaf: any) => <span key={leaf.id}>{leaf.text}</span>);
+  }
+
   private renderLines(node: any, indent: number = 0, lines: JSX.Element[] = []): JSX.Element[] {
     for (const n of node.nodes) {
       lines.push(
         <Line key={n.id} indent={indent}>
-          {n.object}
+          {n.leaves ? this.renderLeaves(n.leaves) : ''}
         </Line>,
       );
-      console.log(n);
       if (n.nodes) {
         lines.concat(this.renderLines(n, indent + 1, lines));
       }
