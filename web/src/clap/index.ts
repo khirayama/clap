@@ -1,13 +1,16 @@
 export { Editor } from './components';
 export {
-  DocumentProperties,
+  ItemPool,
+  PureNode,
+  Node,
+  PureItemNode,
+  ItemNode,
+  PureBaseNode,
+  BaseNode,
+  PureDocumentNode,
   DocumentNode,
-  BlockProperties,
-  BlockNode,
-  InlineProperties,
-  InlineNode,
-  TextProperties,
-  TextNode,
-  LeafProperties,
-  Leaf,
-} from './nodes';
+  PureBaseItemNode,
+  BaseItemNode,
+  PureParagraphNode,
+  ParagraphNode,
+} from './nodes/index';
