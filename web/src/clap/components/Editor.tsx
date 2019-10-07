@@ -3,27 +3,56 @@ import * as React from 'react';
 import * as ClapNode from '../nodes/index';
 import { ComponentPool } from './ComponentPool';
 
+interface Cursor {
+  id: string | null;
+  mode: 'normal' | 'select' | 'insert';
+}
+
 interface EditorProps {
   document: ClapNode.DocumentNode;
 }
 
 interface EditorState {
-  cursor: {
-    id: string | null;
-    mode: 'normal' | 'select' | 'insert';
-  };
+  cursor: Cursor;
   document: ClapNode.PureDocumentNode;
 }
 
 interface ItemProps {
   indent: number;
+  cursorMode: Cursor['mode'];
 }
 
 class Item extends React.Component<ItemProps> {
   public render(): JSX.Element {
     const indent = this.props.indent;
+    console.log(this.props);
+    const style = {
+      paddingLeft: `${indent * 10}px`,
+      background: this.props.cursorMode === 'select' ? 'rgba(45, 170, 219, 0.3)' : '#fff',
+    };
 
-    return <div style={{ paddingLeft: `${indent * 10}px` }}>{this.props.children}</div>;
+    const onFocus = (event: React.FormEvent<HTMLDivElement>) => {
+      console.log(event);
+      console.log('focus');
+    };
+
+    const onKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+      console.log(event);
+      // event.preventDefault();
+      console.log('key down');
+    };
+
+    const onKeyUp = (event: React.KeyboardEvent<HTMLDivElement>) => {
+      console.log(event);
+      // event.preventDefault();
+      console.log('key up');
+    };
+
+    return (
+      <div contentEditable style={style} onFocus={onFocus} onKeyDown={onKeyDown} onKeyUp={onKeyUp}>
+        {this.props.children}
+      </div>
+    );
   }
 }
 
@@ -33,9 +62,11 @@ export class Editor extends React.Component<EditorProps, EditorState> {
   constructor(props: EditorProps) {
     super(props);
 
+    const documentNode = props.document.toJSON();
+
     this.state = {
       cursor: {
-        id: null,
+        id: documentNode.nodes[0].id,
         mode: 'normal',
       },
       document: this.props.document.toJSON(),
@@ -46,8 +77,9 @@ export class Editor extends React.Component<EditorProps, EditorState> {
     for (const node of nodes) {
       const Component = ComponentPool.take(node.type);
       if (Component) {
+        const mode = node.id === this.state.cursor.id ? 'select' : 'normal';
         lines.push(
-          <Item key={node.id} indent={indent}>
+          <Item key={node.id} indent={indent} cursorMode={mode}>
             <Component node={node} />
           </Item>,
         );
@@ -63,6 +95,6 @@ export class Editor extends React.Component<EditorProps, EditorState> {
   public render(): JSX.Element {
     const doc = this.state.document;
 
-    return <div>{this.renderLines(doc.nodes)}</div>;
+    return <div onKeyUp={() => console.log('keyup')}>{this.renderLines(doc.nodes)}</div>;
   }
 }
