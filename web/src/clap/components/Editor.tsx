@@ -2,8 +2,9 @@ import * as React from 'react';
 
 import * as ClapNode from '../nodes/index';
 import { ComponentPool } from './ComponentPool';
+import { Item } from './Item';
 
-interface Cursor {
+export interface Cursor {
   id: string | null;
   mode: 'normal' | 'select' | 'insert';
 }
@@ -15,45 +16,6 @@ interface EditorProps {
 interface EditorState {
   cursor: Cursor;
   document: ClapNode.PureDocumentNode;
-}
-
-interface ItemProps {
-  indent: number;
-  cursorMode: Cursor['mode'];
-}
-
-class Item extends React.Component<ItemProps> {
-  public render(): JSX.Element {
-    const indent = this.props.indent;
-    console.log(this.props);
-    const style = {
-      paddingLeft: `${indent * 10}px`,
-      background: this.props.cursorMode === 'select' ? 'rgba(45, 170, 219, 0.3)' : '#fff',
-    };
-
-    const onFocus = (event: React.FormEvent<HTMLDivElement>) => {
-      console.log(event);
-      console.log('focus');
-    };
-
-    const onKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
-      console.log(event);
-      // event.preventDefault();
-      console.log('key down');
-    };
-
-    const onKeyUp = (event: React.KeyboardEvent<HTMLDivElement>) => {
-      console.log(event);
-      // event.preventDefault();
-      console.log('key up');
-    };
-
-    return (
-      <div contentEditable style={style} onFocus={onFocus} onKeyDown={onKeyDown} onKeyUp={onKeyUp}>
-        {this.props.children}
-      </div>
-    );
-  }
 }
 
 export class Editor extends React.Component<EditorProps, EditorState> {
