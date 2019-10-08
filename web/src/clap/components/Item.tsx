@@ -1,4 +1,5 @@
 import * as React from 'react';
+import styled from 'styled-components';
 
 import { Cursor } from './Editor';
 
@@ -14,14 +15,17 @@ const KEY_CODE = {
   DOWN: 40,
 };
 
+const Wrapper = styled.div`
+  padding: 0 0 0 ${(props: ItemProps) => `${props.indent * 10}px`};
+  background: ${(props: ItemProps) => (props.cursorMode === 'select' ? 'rgba(45, 170, 219, 0.3)' : '#fff')};
+
+  &:focus {
+    background: red;
+  }
+`;
+
 export class Item extends React.Component<ItemProps> {
   public render(): JSX.Element {
-    const indent = this.props.indent;
-    const style = {
-      paddingLeft: `${indent * 10}px`,
-      background: this.props.cursorMode === 'select' ? 'rgba(45, 170, 219, 0.3)' : '#fff',
-    };
-
     const onFocus = (event: React.FormEvent<HTMLDivElement>) => {
       console.log(event);
       console.log('focus');
@@ -46,16 +50,18 @@ export class Item extends React.Component<ItemProps> {
     };
 
     return (
-      <div
-        contentEditable
-        style={style}
+      <Wrapper
+        tabIndex={0}
+        indent={this.props.indent}
+        cursorMode={this.props.cursorMode}
+        contentEditable={this.props.cursorMode === 'insert'}
         onFocus={onFocus}
         onKeyDown={onKeyDown}
         onKeyPress={onKeyPress}
         onKeyUp={onKeyUp}
       >
         {this.props.children}
-      </div>
+      </Wrapper>
     );
   }
 }
