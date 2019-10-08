@@ -1,8 +1,21 @@
 import * as React from 'react';
+import styled from 'styled-components';
 
 import * as ClapNode from '../nodes/index';
 import { ComponentPool } from './ComponentPool';
 import { Item } from './Item';
+
+const Wrapper = styled.div`
+  font-family: sans-serif;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  outline: 0;
+  border: 0;
+  border-radius: 0;
+  vertical-align: baseline;
+  -webkit-appearance: none;
+`;
 
 export interface Cursor {
   id: string | null;
@@ -57,6 +70,6 @@ export class Editor extends React.Component<EditorProps, EditorState> {
   public render(): JSX.Element {
     const doc = this.state.document;
 
-    return <div onKeyUp={() => console.log('keyup')}>{this.renderLines(doc.nodes)}</div>;
+    return <Wrapper onKeyUp={() => console.log('keyup')}>{this.renderLines(doc.nodes)}</Wrapper>;
   }
 }
