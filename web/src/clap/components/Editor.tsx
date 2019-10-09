@@ -10,6 +10,8 @@ const KEY_CODE = {
   ESC: 27,
   UP: 38,
   DOWN: 40,
+  C: 67,
+  I: 73,
   J: 74,
   K: 75,
 };
@@ -105,8 +107,11 @@ export class Editor extends React.Component<EditorProps, EditorState> {
 
   private onKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
     const keyCode = event.keyCode;
-    // const meta = event.metaKey;
-    // const shift = event.shiftKey;
+    const meta = event.metaKey;
+    const shift = event.shiftKey;
+    const ctrl = event.ctrlKey;
+    console.log(event);
+    console.log(keyCode, meta, shift, ctrl);
 
     const cursor = this.state.cursor;
     const mode = cursor.mode;
@@ -138,7 +143,7 @@ export class Editor extends React.Component<EditorProps, EditorState> {
           }
           break;
         }
-        case keyCode === KEY_CODE.ENTER: {
+        case keyCode === KEY_CODE.ENTER || keyCode === KEY_CODE.I: {
           this.setState({
             cursor: {
               id: cursor.id,
@@ -151,25 +156,19 @@ export class Editor extends React.Component<EditorProps, EditorState> {
     }
 
     if (mode === 'insert') {
-      if (keyCode === KEY_CODE.DOWN) {
-        const targetNode = this.findDownnerNode(currentNode);
-        if (targetNode) {
+      switch (true) {
+        case keyCode === KEY_CODE.ESC || (keyCode === KEY_CODE.C && ctrl): {
           this.setState({
             cursor: {
-              id: targetNode.id,
-              mode,
+              id: cursor.id,
+              mode: 'select',
             },
           });
+          break;
         }
-      } else if (keyCode === KEY_CODE.UP) {
-        const targetNode = this.findUpperNode(currentNode);
-        if (targetNode) {
-          this.setState({
-            cursor: {
-              id: targetNode.id,
-              mode,
-            },
-          });
+        case keyCode === KEY_CODE.ENTER: {
+          console.log('ADD');
+          break;
         }
       }
     }
@@ -189,7 +188,14 @@ export class Editor extends React.Component<EditorProps, EditorState> {
       const Component = ComponentPool.take(node.type);
       if (Component) {
         lines.push(
-          <Item key={node.id} indent={indent} node={node} cursor={this.state.cursor} onClick={this.onClickItem}>
+          <Item
+            key={node.id}
+            indent={indent}
+            node={node}
+            cursor={this.state.cursor}
+            onClick={this.onClickItem}
+            onKeyDown={this.onKeyDown}
+          >
             <Component node={node} />
           </Item>,
         );
