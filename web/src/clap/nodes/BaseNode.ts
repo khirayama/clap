@@ -112,4 +112,20 @@ export class BaseNode {
   public children(): Node[] {
     return this.nodes;
   }
+
+  public after(node: ItemNode): ItemNode {
+    const parentNode = this.parent();
+    const len = parentNode.nodes.length;
+    for (let i = 0; i < len; i += 1) {
+      const n = parentNode.nodes[i];
+      if (n.id === this.id) {
+        parentNode.nodes.splice(i + 1, 0, node);
+        // TODO: update relations
+        break;
+      }
+    }
+    // TODO: Dispatch change
+    console.log(this.document().toJSON());
+    return node;
+  }
 }
