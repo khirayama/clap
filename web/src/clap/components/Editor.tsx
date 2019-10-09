@@ -167,7 +167,9 @@ export class Editor extends React.Component<EditorProps, EditorState> {
           break;
         }
         case keyCode === KEY_CODE.ENTER: {
-          console.log('ADD');
+          const node = new ClapNode.ParagraphNode();
+          currentNode.after(node);
+          console.log('ADD', node);
           break;
         }
       }
