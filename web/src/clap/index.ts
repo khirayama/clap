@@ -1,6 +1,6 @@
 export { Editor } from './components';
 export {
-  ItemPool,
+  ItemNodePool,
   PureNode,
   Node,
   PureItemNode,
