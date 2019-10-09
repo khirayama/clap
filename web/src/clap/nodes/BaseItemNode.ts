@@ -1,4 +1,3 @@
-import { PureNode } from './index';
 import { PureBaseNode, BaseNode } from './BaseNode';
 
 export interface PureBaseItemNode<T = {}> extends PureBaseNode {
@@ -11,15 +10,16 @@ export class BaseItemNode<T = {}> extends BaseNode {
 
   public type: PureBaseItemNode['type'];
 
-  public attributes: T;
+  public attributes: T | { [key: string]: any } = {};
 
-  constructor(node: PureNode, relations: BaseNode['relations']) {
+  constructor(node?: Partial<PureBaseItemNode>, relations?: BaseNode['relations']) {
     super(node, relations);
 
     this.type = (this.constructor as any).type;
+    this.attributes = node ? node.attributes || {} : {};
   }
 
-  public toJSON(): PureBaseItemNode<T> {
+  public toJSON(): PureBaseItemNode<T | { [key: string]: any }> {
     return {
       ...super.toJSON(),
       type: this.type,

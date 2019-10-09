@@ -25,9 +25,9 @@ export class BaseNode {
     prev: string | null;
   };
 
-  constructor(node: PureNode, relations?: BaseNode['relations']) {
-    this.id = node.id || uuid();
-    this.object = node.object;
+  constructor(node: Partial<PureNode>, relations?: BaseNode['relations']) {
+    this.id = node ? node.id || uuid() : uuid();
+    this.object = node ? node.object : 'item';
 
     if (this.object === 'document') {
       this.relations = {
@@ -45,21 +45,24 @@ export class BaseNode {
       };
     }
 
-    this.nodes = node.nodes.map(
-      (n: PureNode, i: number): ItemNode => {
-        const nextNode = node.nodes[i + 1];
-        const prevNode = node.nodes[i - 1];
-        const relations = {
-          document: this.relations.document,
-          parent: this.id,
-          next: nextNode ? nextNode.id : null,
-          prev: prevNode ? prevNode.id : null,
-        };
+    this.nodes =
+      node && node.nodes
+        ? node.nodes.map(
+            (n: PureNode, i: number): ItemNode => {
+              const nextNode = node.nodes[i + 1];
+              const prevNode = node.nodes[i - 1];
+              const relations = {
+                document: this.relations.document,
+                parent: this.id,
+                next: nextNode ? nextNode.id : null,
+                prev: prevNode ? prevNode.id : null,
+              };
 
-        const nodeClass = ItemNodePool.take((n as PureItemNode).type);
-        return new (nodeClass as any)(n, relations);
-      },
-    );
+              const nodeClass = ItemNodePool.take((n as PureItemNode).type);
+              return new (nodeClass as any)(n, relations);
+            },
+          )
+        : [];
 
     cache[this.id] = this;
   }
