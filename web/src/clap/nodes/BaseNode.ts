@@ -37,7 +37,12 @@ export class BaseNode {
         prev: null,
       };
     } else {
-      this.relations = relations;
+      this.relations = relations || {
+        document: null,
+        parent: null,
+        next: null,
+        prev: null,
+      };
     }
 
     this.nodes = node.nodes.map(
