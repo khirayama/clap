@@ -8,11 +8,11 @@ export interface ItemProps {
   indent: number;
   cursor: Cursor;
   node: ClapNode.PureItemNode;
-  onClick: (event: React.MouseEvent<HTMLDivElement>, props: ItemProps) => void;
-  onFocus: (event: React.FormEvent<HTMLDivElement>, props: ItemProps) => void;
-  onKeyDown: (event: React.KeyboardEvent<HTMLDivElement>, props: ItemProps) => void;
-  onKeyPress: (event: React.KeyboardEvent<HTMLDivElement>, props: ItemProps) => void;
-  onKeyUp: (event: React.KeyboardEvent<HTMLDivElement>, props: ItemProps) => void;
+  onClick?: (event: React.MouseEvent<HTMLDivElement>, props: ItemProps) => void;
+  onFocus?: (event: React.FormEvent<HTMLDivElement>, props: ItemProps) => void;
+  onKeyDown?: (event: React.KeyboardEvent<HTMLDivElement>, props: ItemProps) => void;
+  onKeyPress?: (event: React.KeyboardEvent<HTMLDivElement>, props: ItemProps) => void;
+  onKeyUp?: (event: React.KeyboardEvent<HTMLDivElement>, props: ItemProps) => void;
 }
 
 const Wrapper = styled.div`
@@ -39,27 +39,37 @@ export class Item extends React.Component<ItemProps> {
   public render(): JSX.Element {
     const onClick = (event: React.MouseEvent<HTMLDivElement>) => {
       event.stopPropagation();
-      this.props.onClick(event, this.props);
+      if (this.props.onClick) {
+        this.props.onClick(event, this.props);
+      }
     };
 
     const onFocus = (event: React.FormEvent<HTMLDivElement>) => {
       event.stopPropagation();
-      this.props.onFocus(event, this.props);
+      if (this.props.onFocus) {
+        this.props.onFocus(event, this.props);
+      }
     };
 
     const onKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
       event.stopPropagation();
-      this.props.onKeyDown(event, this.props);
+      if (this.props.onKeyDown) {
+        this.props.onKeyDown(event, this.props);
+      }
     };
 
     const onKeyPress = (event: React.KeyboardEvent<HTMLDivElement>) => {
       event.stopPropagation();
-      this.props.onKeyPress(event, this.props);
+      if (this.props.onKeyPress) {
+        this.props.onKeyPress(event, this.props);
+      }
     };
 
     const onKeyUp = (event: React.KeyboardEvent<HTMLDivElement>) => {
       event.stopPropagation();
-      this.props.onKeyUp(event, this.props);
+      if (this.props.onKeyUp) {
+        this.props.onKeyUp(event, this.props);
+      }
     };
 
     return (
