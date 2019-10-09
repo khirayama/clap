@@ -14,7 +14,7 @@ const sampleDocument: Clap.PureDocumentNode = {
       object: 'item',
       type: 'paragraph',
       attributes: {
-        text: 'First Paragraph Item',
+        text: '1',
       },
       nodes: [
         {
@@ -22,7 +22,7 @@ const sampleDocument: Clap.PureDocumentNode = {
           object: 'item',
           type: 'paragraph',
           attributes: {
-            text: 'First Paragraph Item - Frist Child',
+            text: '1 - 1',
           },
           nodes: [
             {
@@ -30,7 +30,7 @@ const sampleDocument: Clap.PureDocumentNode = {
               object: 'item',
               type: 'paragraph',
               attributes: {
-                text: 'First Paragraph Item - Frist Child - First Child',
+                text: '1 - 1 - 1',
               },
               nodes: [],
             },
@@ -41,7 +41,7 @@ const sampleDocument: Clap.PureDocumentNode = {
           object: 'item',
           type: 'paragraph',
           attributes: {
-            text: 'First Paragraph Item - Second Child',
+            text: '1 - 2',
           },
           nodes: [],
         },
@@ -52,9 +52,57 @@ const sampleDocument: Clap.PureDocumentNode = {
       object: 'item',
       type: 'paragraph',
       attributes: {
-        text: 'Second Paragraph Item',
+        text: '2',
       },
-      nodes: [],
+      nodes: [
+        {
+          id: uuid(),
+          object: 'item',
+          type: 'paragraph',
+          attributes: {
+            text: '2 - 1',
+          },
+          nodes: [
+            {
+              id: uuid(),
+              object: 'item',
+              type: 'paragraph',
+              attributes: {
+                text: '2 - 1 - 1',
+              },
+              nodes: [
+                {
+                  id: uuid(),
+                  object: 'item',
+                  type: 'paragraph',
+                  attributes: {
+                    text: '2 - 1 - 1 - 1',
+                  },
+                  nodes: [],
+                },
+                {
+                  id: uuid(),
+                  object: 'item',
+                  type: 'paragraph',
+                  attributes: {
+                    text: '2 - 1 - 1 - 2',
+                  },
+                  nodes: [],
+                },
+              ],
+            },
+          ],
+        },
+        {
+          id: uuid(),
+          object: 'item',
+          type: 'paragraph',
+          attributes: {
+            text: '2 - 2',
+          },
+          nodes: [],
+        },
+      ],
     },
   ],
 };
