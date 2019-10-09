@@ -1,13 +1,13 @@
 import { ItemNode } from './index';
 
-export class ItemPool {
+export class ItemNodePool {
   private static pool: { [key: string]: ItemNode } = {};
 
   public static register(classObject: any) {
-    ItemPool.pool[classObject.type] = classObject;
+    ItemNodePool.pool[classObject.type] = classObject;
   }
 
   public static take(itemType: string) {
-    return ItemPool.pool[itemType];
+    return ItemNodePool.pool[itemType];
   }
 }
