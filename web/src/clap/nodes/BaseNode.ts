@@ -1,14 +1,15 @@
 import uuid from 'uuid/v4';
 
-import { PureNode, PureItemNode, ItemNode } from './index';
-import { ItemPool } from './ItemPool';
+import { PureNode, Node, PureItemNode, ItemNode, DocumentNode } from './index';
+import { ItemNodePool } from './ItemNodePool';
 
-// TODO Add parentNode and document
 export interface PureBaseNode {
   id: string;
   object: 'document' | 'item';
   nodes: PureItemNode[];
 }
+
+const cache: { [key: string]: Node } = {};
 
 export class BaseNode {
   public id: PureBaseNode['id'];
@@ -17,15 +18,45 @@ export class BaseNode {
 
   public nodes: ItemNode[];
 
-  constructor(node: PureNode) {
+  private relations: {
+    document: string;
+    parent: string | null;
+    next: string | null;
+    prev: string | null;
+  };
+
+  constructor(node: PureNode, relations?: BaseNode['relations']) {
     this.id = node.id || uuid();
     this.object = node.object;
+
+    if (this.object === 'document') {
+      this.relations = {
+        document: this.id,
+        parent: null,
+        next: null,
+        prev: null,
+      };
+    } else {
+      this.relations = relations;
+    }
+
     this.nodes = node.nodes.map(
-      (n: PureNode): ItemNode => {
-        const classObject = ItemPool.take((n as PureItemNode).type);
-        return new (classObject as any)(n);
+      (n: PureNode, i: number): ItemNode => {
+        const nextNode = node.nodes[i + 1];
+        const prevNode = node.nodes[i - 1];
+        const relations = {
+          document: this.relations.document,
+          parent: this.id,
+          next: nextNode ? nextNode.id : null,
+          prev: prevNode ? prevNode.id : null,
+        };
+
+        const nodeClass = ItemNodePool.take((n as PureItemNode).type);
+        return new (nodeClass as any)(n, relations);
       },
     );
+
+    cache[this.id] = this;
   }
 
   public toJSON(): PureNode {
@@ -34,5 +65,43 @@ export class BaseNode {
       object: this.object,
       nodes: this.nodes.map(node => node.toJSON()),
     };
+  }
+
+  public find(id: string): Node | null {
+    if (cache[id]) {
+      return cache[id];
+    }
+
+    if (this.id === id) {
+      return this;
+    } else if (this.nodes.length) {
+      for (const node of this.nodes) {
+        const result = node.find(id);
+        if (result) {
+          return result;
+        }
+      }
+    }
+    return null;
+  }
+
+  public document(): DocumentNode {
+    return cache[this.relations.document];
+  }
+
+  public parent(): Node | null {
+    return cache[this.relations.parent] || null;
+  }
+
+  public next(): Node | null {
+    return cache[this.relations.next] || null;
+  }
+
+  public prev(): Node | null {
+    return cache[this.relations.prev] || null;
+  }
+
+  public children(): Node[] {
+    return this.nodes;
   }
 }

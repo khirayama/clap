@@ -1,8 +1,8 @@
-import { ItemPool } from './ItemPool';
+import { ItemNodePool } from './ItemNodePool';
 import { PureDocumentNode, DocumentNode } from './DocumentNode';
 import { PureParagraphNode, ParagraphNode } from './ParagraphNode';
 
-export { ItemPool } from './ItemPool';
+export { ItemNodePool } from './ItemNodePool';
 export { PureBaseNode, BaseNode } from './BaseNode';
 export { PureDocumentNode, DocumentNode } from './DocumentNode';
 export { PureBaseItemNode, BaseItemNode } from './BaseItemNode';
@@ -16,4 +16,4 @@ export type PureItemNode = PureParagraphNode;
 
 export type ItemNode = ParagraphNode;
 
-ItemPool.register(ParagraphNode);
+ItemNodePool.register(ParagraphNode);

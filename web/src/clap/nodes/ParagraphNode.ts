@@ -11,8 +11,8 @@ export class ParagraphNode extends BaseItemNode<ParagraphNodeAttributes> {
 
   public text: string = '';
 
-  constructor(node: PureBaseItemNode<ParagraphNodeAttributes>) {
-    super(node);
+  constructor(node: PureBaseItemNode<ParagraphNodeAttributes>, relations: BaseItemNode['relations']) {
+    super(node, relations);
 
     this.text = node.attributes.text;
   }

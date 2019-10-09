@@ -13,8 +13,8 @@ export class BaseItemNode<T = {}> extends BaseNode {
 
   public attributes: T;
 
-  constructor(node: PureNode) {
-    super(node);
+  constructor(node: PureNode, relations: BaseNode['relations']) {
+    super(node, relations);
 
     this.type = (this.constructor as any).type;
   }
