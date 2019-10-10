@@ -24,13 +24,10 @@ const Wrapper = styled.div`
   vertical-align: baseline;
   -webkit-appearance: none;
 
-  min-height: 1em;
   padding: 0 0 0 ${(props: ItemProps) => `${props.indent * 10}px`};
   background: ${(props: ItemProps) => {
     if (props.cursor.id === props.node.id && props.cursor.mode === 'select') {
       return 'rgba(45, 170, 219, 0.3)';
-    } else if (props.cursor.id === props.node.id && props.cursor.mode === 'insert') {
-      return 'red';
     }
     return 'transparent';
   }};
