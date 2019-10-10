@@ -4,17 +4,7 @@ import styled from 'styled-components';
 import * as ClapNode from '../nodes/index';
 import { ComponentPool } from './ComponentPool';
 import { Item, ItemProps } from './Item';
-
-const KEY_CODE = {
-  ENTER: 13,
-  ESC: 27,
-  UP: 38,
-  DOWN: 40,
-  C: 67,
-  I: 73,
-  J: 74,
-  K: 75,
-};
+import { shortcutCommander, Command } from './shortcuts';
 
 const Wrapper = styled.div`
   font-family: sans-serif;
@@ -59,6 +49,12 @@ export class Editor extends React.Component<EditorProps, EditorState> {
     this.onKeyDown = this.onKeyDown.bind(this);
     this.onFocus = this.onFocus.bind(this);
     this.onClickItem = this.onClickItem.bind(this);
+  }
+
+  public componentDidMount() {
+    this.props.document.on(() => {
+      this.setState({ document: this.props.document.toJSON() });
+    });
   }
 
   // Find
@@ -117,61 +113,62 @@ export class Editor extends React.Component<EditorProps, EditorState> {
     const mode = cursor.mode;
     const currentNode = this.props.document.find(cursor.id);
 
-    if (mode === 'select') {
-      switch (true) {
-        case keyCode === KEY_CODE.DOWN || keyCode === KEY_CODE.J: {
-          const targetNode = this.findDownnerNode(currentNode);
-          if (targetNode) {
-            this.setState({
-              cursor: {
-                id: targetNode.id,
-                mode,
-              },
-            });
-          }
-          break;
-        }
-        case keyCode === KEY_CODE.UP || keyCode === KEY_CODE.K: {
-          const targetNode = this.findUpperNode(currentNode);
-          if (targetNode) {
-            this.setState({
-              cursor: {
-                id: targetNode.id,
-                mode,
-              },
-            });
-          }
-          break;
-        }
-        case keyCode === KEY_CODE.ENTER || keyCode === KEY_CODE.I: {
-          this.setState({
-            cursor: {
-              id: cursor.id,
-              mode: 'insert',
-            },
-          });
-          break;
-        }
-      }
-    }
+    const command = shortcutCommander.getCommand({ mode, keyCode, meta, ctrl, shift });
 
-    if (mode === 'insert') {
-      switch (true) {
-        case keyCode === KEY_CODE.ESC || (keyCode === KEY_CODE.C && ctrl): {
+    switch (true) {
+      case command === Command.DOWN: {
+        const targetNode = this.findDownnerNode(currentNode);
+        if (targetNode) {
           this.setState({
             cursor: {
-              id: cursor.id,
-              mode: 'select',
+              id: targetNode.id,
+              mode,
             },
           });
-          break;
         }
-        case keyCode === KEY_CODE.ENTER: {
-          const node = new ClapNode.ParagraphNode();
-          currentNode.after(node);
-          console.log('ADD', node);
-          break;
+        break;
+      }
+      case command === Command.UP: {
+        const targetNode = this.findUpperNode(currentNode);
+        if (targetNode) {
+          this.setState({
+            cursor: {
+              id: targetNode.id,
+              mode,
+            },
+          });
         }
+        break;
+      }
+      case command === Command.INSERT: {
+        this.setState({
+          cursor: {
+            id: cursor.id,
+            mode: 'insert',
+          },
+        });
+        break;
+      }
+      case command === Command.SELECT: {
+        this.setState({
+          cursor: {
+            id: cursor.id,
+            mode: 'select',
+          },
+        });
+        break;
+      }
+      case command === Command.ADD_AFTER: {
+        const node = new ClapNode.ParagraphNode();
+        node.text = 'RANDAM TEXT';
+        currentNode.after(node);
+        this.setState({
+          cursor: {
+            id: node.id,
+            mode: 'insert',
+          },
+        });
+        break;
       }
     }
   }
