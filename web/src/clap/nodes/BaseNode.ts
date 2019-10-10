@@ -18,12 +18,14 @@ export class BaseNode {
 
   public nodes: ItemNode[];
 
-  private relations: {
+  public relations: {
     document: string;
     parent: string | null;
     next: string | null;
     prev: string | null;
   };
+
+  private listeners: ((node: Node) => void)[] = [];
 
   constructor(node: Partial<PureNode>, relations?: BaseNode['relations']) {
     this.id = node ? node.id || uuid() : uuid();
@@ -65,6 +67,30 @@ export class BaseNode {
         : [];
 
     cache[this.id] = this;
+  }
+
+  public dispatch() {
+    for (const listener of this.listeners) {
+      listener(this);
+    }
+    // Propagation
+    const parentNode = this.parent();
+    if (parentNode) {
+      parentNode.dispatch();
+    }
+  }
+
+  public on(listener: (node: Node) => void) {
+    this.listeners.push(listener);
+  }
+
+  public off(listener: (node: Node) => void) {
+    for (let i = 0; i < this.listeners.length; i += 1) {
+      if (this.listeners[i] === listener) {
+        this.listeners.splice(0, 1);
+        break;
+      }
+    }
   }
 
   public toJSON(): PureNode {
