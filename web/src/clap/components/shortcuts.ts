@@ -43,6 +43,13 @@ shortcutCommander.register(Command.DOWN, {
   ctrl: null,
   shift: null,
 });
+shortcutCommander.register(Command.DOWN, {
+  mode: 'insert',
+  keyCode: KEY_CODE.DOWN,
+  meta: null,
+  ctrl: null,
+  shift: null,
+});
 shortcutCommander.register(Command.UP, {
   mode: 'select',
   keyCode: KEY_CODE.UP,
@@ -53,6 +60,13 @@ shortcutCommander.register(Command.UP, {
 shortcutCommander.register(Command.UP, {
   mode: 'select',
   keyCode: KEY_CODE.K,
+  meta: null,
+  ctrl: null,
+  shift: null,
+});
+shortcutCommander.register(Command.UP, {
+  mode: 'insert',
+  keyCode: KEY_CODE.UP,
   meta: null,
   ctrl: null,
   shift: null,
