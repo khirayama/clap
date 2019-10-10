@@ -9,7 +9,7 @@ export enum Command {
   ADD_AFTER,
 }
 
-const KEY_CODE = {
+export const KEY_CODE = {
   ENTER: 13,
   ESC: 27,
   UP: 38,

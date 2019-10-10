@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import * as ClapNode from '../nodes/index';
 import { ComponentPool } from './ComponentPool';
 import { Item, ItemProps } from './Item';
-import { shortcutCommander, Command } from './shortcuts';
+import { shortcutCommander, Command, KEY_CODE } from './shortcuts';
 
 const Wrapper = styled.div`
   font-family: sans-serif;
@@ -33,6 +33,8 @@ interface EditorState {
 }
 
 export class Editor extends React.Component<EditorProps, EditorState> {
+  private ref: React.RefObject<HTMLDivElement> = React.createRef();
+
   constructor(props: EditorProps) {
     super(props);
 
@@ -55,6 +57,13 @@ export class Editor extends React.Component<EditorProps, EditorState> {
     this.props.document.on(() => {
       this.setState({ document: this.props.document.toJSON() });
     });
+  }
+
+  public componentDidUpdate(prevProps: EditorProps, prevState: EditorState) {
+    if (this.state.cursor.mode === 'select' && prevState.cursor.mode !== 'select' && this.ref.current) {
+      this.ref.current.focus();
+      console.log(this.ref.current);
+    }
   }
 
   // Find
@@ -106,14 +115,16 @@ export class Editor extends React.Component<EditorProps, EditorState> {
     const meta = event.metaKey;
     const shift = event.shiftKey;
     const ctrl = event.ctrlKey;
-    console.log(event);
-    console.log(keyCode, meta, shift, ctrl);
 
     const cursor = this.state.cursor;
     const mode = cursor.mode;
     const currentNode = this.props.document.find(cursor.id);
 
     const command = shortcutCommander.getCommand({ mode, keyCode, meta, ctrl, shift });
+
+    if (keyCode === KEY_CODE.ENTER) {
+      event.preventDefault();
+    }
 
     switch (true) {
       case command === Command.DOWN: {
@@ -195,7 +206,7 @@ export class Editor extends React.Component<EditorProps, EditorState> {
             onClick={this.onClickItem}
             onKeyDown={this.onKeyDown}
           >
-            <Component node={node} />
+            <Component node={node} cursor={this.state.cursor} />
           </Item>,
         );
       }
@@ -211,7 +222,7 @@ export class Editor extends React.Component<EditorProps, EditorState> {
     const doc = this.state.document;
 
     return (
-      <Wrapper tabIndex={0} onKeyDown={this.onKeyDown} onFocus={this.onFocus}>
+      <Wrapper ref={this.ref} tabIndex={0} onKeyDown={this.onKeyDown} onFocus={this.onFocus}>
         {this.renderLines(doc.nodes)}
       </Wrapper>
     );

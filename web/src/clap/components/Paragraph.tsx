@@ -1,11 +1,55 @@
 import * as React from 'react';
 
 import * as ClapNode from '../nodes/index';
+import { Cursor } from './Editor';
 
-export class Paragraph extends React.Component<{ node: ClapNode.PureParagraphNode }> {
+interface ParagraphProps {
+  node: ClapNode.PureParagraphNode;
+  cursor: Cursor;
+}
+
+export class Paragraph extends React.Component<ParagraphProps> {
+  private ref: React.RefObject<HTMLParagraphElement> = React.createRef();
+
+  private focus() {
+    // FYI: https://stackoverflow.com/questions/4233265/contenteditable-set-caret-at-the-end-of-the-text-cross-browser
+    const el: HTMLParagraphElement = this.ref.current;
+    const range: Range = document.createRange();
+    /*
+    FYI: If you use following lines, it doesn't work. It returns selection start and end are 1.
+    Maybe it is react's problem. Raw content editable doesn't have.
+    ```
+    range.selectNodeContents(el);
+    range.collapse(false);
+    ```
+    */
+    range.setStart(el.childNodes[0] || el, el.innerText.length);
+    range.setEnd(el.childNodes[0] || el, el.innerText.length);
+    const selection: Selection = window.getSelection();
+    selection.removeAllRanges();
+    selection.addRange(range);
+  }
+
+  public componentDidMount() {
+    if (this.props.node.id === this.props.cursor.id && this.props.cursor.mode === 'insert' && this.ref.current) {
+      this.focus();
+    }
+  }
+
+  public componentDidUpdate() {
+    if (this.props.node.id === this.props.cursor.id && this.props.cursor.mode === 'insert' && this.ref.current) {
+      this.focus();
+    }
+  }
+
   public render(): JSX.Element {
     const node = this.props.node;
+    // const cursor = this.props.cursor;
 
-    return <p>{node.attributes.text}</p>;
+    return (
+      <p ref={this.ref} contentEditable>
+        {node.attributes.text}
+      </p>
+    );
   }
 }
