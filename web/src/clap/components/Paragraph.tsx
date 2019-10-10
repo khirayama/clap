@@ -1,7 +1,20 @@
 import * as React from 'react';
+import styled from 'styled-components';
 
 import * as ClapNode from '../nodes/index';
 import { Cursor } from './Editor';
+
+const Wrapper = styled.p`
+  box-sizing: border-box;
+  margin: 0;
+  outline: 0;
+  border: 0;
+  border-radius: 0;
+  vertical-align: baseline;
+  -webkit-appearance: none;
+
+  min-height: 1em;
+`;
 
 interface ParagraphProps {
   node: ClapNode.PureParagraphNode;
@@ -47,9 +60,9 @@ export class Paragraph extends React.Component<ParagraphProps> {
     // const cursor = this.props.cursor;
 
     return (
-      <p ref={this.ref} contentEditable>
+      <Wrapper ref={this.ref} contentEditable suppressContentEditableWarning={true}>
         {node.attributes.text}
-      </p>
+      </Wrapper>
     );
   }
 }
