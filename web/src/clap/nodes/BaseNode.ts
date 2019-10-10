@@ -145,13 +145,31 @@ export class BaseNode {
     for (let i = 0; i < len; i += 1) {
       const n = parentNode.nodes[i];
       if (n.id === this.id) {
+        const nextNode = n.parent().find(n.relations.next);
+
+        node.relations = {
+          document: n.relations.document,
+          parent: n.relations.parent,
+          next: n.relations.next,
+          prev: n.id,
+        };
+        node.nodes = n.nodes.map(childNode => {
+          childNode.relations.parent = node.id;
+          return childNode;
+        });
+
+        n.relations.next = node.id;
+        n.nodes = [];
+
+        if (nextNode) {
+          nextNode.relations.prev = node.id;
+        }
+
         parentNode.nodes.splice(i + 1, 0, node);
-        // TODO: update relations
         break;
       }
     }
-    // TODO: Dispatch change
-    console.log(this.document().toJSON());
+    this.dispatch();
     return node;
   }
 }
