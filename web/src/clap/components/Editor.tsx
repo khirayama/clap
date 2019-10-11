@@ -136,7 +136,6 @@ export class Editor extends React.Component<EditorProps, EditorState> {
 
     switch (true) {
       case command === Command.DOWN: {
-        event.preventDefault();
         const targetNode = this.findDownnerNode(currentNode);
         if (targetNode) {
           this.setState({
@@ -149,7 +148,6 @@ export class Editor extends React.Component<EditorProps, EditorState> {
         break;
       }
       case command === Command.UP: {
-        event.preventDefault();
         const targetNode = this.findUpperNode(currentNode);
         if (targetNode) {
           this.setState({
@@ -162,7 +160,6 @@ export class Editor extends React.Component<EditorProps, EditorState> {
         break;
       }
       case command === Command.INSERT: {
-        event.preventDefault();
         this.setState({
           cursor: {
             id: cursor.id,
