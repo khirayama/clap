@@ -127,10 +127,10 @@ export class Editor extends React.Component<EditorProps, EditorState> {
       ctrl,
       shift,
     };
-    console.log(keyMap);
     const command = shortcutCommander.getCommand(keyMap);
+    console.log(keyMap, command);
 
-    if (keyCode === KEY_CODE.ENTER) {
+    if (command) {
       event.preventDefault();
     }
 
