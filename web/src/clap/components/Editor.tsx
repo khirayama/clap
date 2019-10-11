@@ -120,7 +120,15 @@ export class Editor extends React.Component<EditorProps, EditorState> {
     const mode = cursor.mode;
     const currentNode = this.props.document.find(cursor.id);
 
-    const command = shortcutCommander.getCommand({ mode, keyCode, meta, ctrl, shift });
+    const keyMap = {
+      mode,
+      keyCode,
+      meta,
+      ctrl,
+      shift,
+    };
+    console.log(keyMap);
+    const command = shortcutCommander.getCommand(keyMap);
 
     if (keyCode === KEY_CODE.ENTER) {
       event.preventDefault();

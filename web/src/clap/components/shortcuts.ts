@@ -12,7 +12,9 @@ export enum Command {
 export const KEY_CODE = {
   ENTER: 13,
   ESC: 27,
+  LEFT: 37,
   UP: 38,
+  RIGHT: 39,
   DOWN: 40,
   C: 67,
   I: 73,
