@@ -36,8 +36,8 @@ export class Paragraph extends React.Component<ParagraphProps> {
     range.collapse(false);
     ```
     */
-    range.setStart(el.childNodes[0] || el, el.innerText.length);
-    range.setEnd(el.childNodes[0] || el, el.innerText.length);
+    range.setStart(el.childNodes[0] || el, el.innerHTML.length);
+    range.setEnd(el.childNodes[0] || el, el.innerHTML.length);
     const selection: Selection = window.getSelection();
     selection.removeAllRanges();
     selection.addRange(range);
