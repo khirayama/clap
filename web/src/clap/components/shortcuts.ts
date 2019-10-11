@@ -4,8 +4,6 @@ import { ShortcutCommander } from './shortcutCommander';
 export enum Command {
   UP,
   DOWN,
-  NEXT,
-  PREV,
   INSERT,
   SELECT,
   ADD_AFTER,
@@ -108,19 +106,5 @@ shortcutCommander.register(Command.ADD_AFTER, {
   keyCode: KEY_CODE.ENTER,
   meta: null,
   ctrl: false,
-  shift: null,
-});
-shortcutCommander.register(Command.NEXT, {
-  mode: 'insert',
-  keyCode: KEY_CODE.RIGHT,
-  meta: null,
-  ctrl: null,
-  shift: null,
-});
-shortcutCommander.register(Command.PREV, {
-  mode: 'insert',
-  keyCode: KEY_CODE.LEFT,
-  meta: null,
-  ctrl: null,
   shift: null,
 });
