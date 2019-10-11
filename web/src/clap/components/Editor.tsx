@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import * as ClapNode from '../nodes/index';
 import { ComponentPool } from './ComponentPool';
 import { Item, ItemProps } from './Item';
-import { shortcutCommander, Command, KEY_CODE } from './shortcuts';
+import { keyBinder, Command } from './keyBinds';
 
 const Wrapper = styled.div`
   font-family: sans-serif;
@@ -127,7 +127,7 @@ export class Editor extends React.Component<EditorProps, EditorState> {
       ctrl,
       shift,
     };
-    const command = shortcutCommander.getCommand(keyMap);
+    const command = keyBinder.getCommand(keyMap);
     console.log(keyMap, command);
 
     if (command) {
