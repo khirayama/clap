@@ -5,6 +5,7 @@ import * as ClapNode from '../nodes/index';
 import { ComponentPool } from './ComponentPool';
 import { Item, ItemProps } from './Item';
 import { keyBinder, Command } from './keyBinds';
+import { Commander } from './Commander';
 
 const Wrapper = styled.div`
   font-family: sans-serif;
@@ -111,23 +112,19 @@ export class Editor extends React.Component<EditorProps, EditorState> {
   }
 
   private onKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
-    const keyCode = event.keyCode;
-    const meta = event.metaKey;
-    const shift = event.shiftKey;
-    const ctrl = event.ctrlKey;
-
     const cursor = this.state.cursor;
     const mode = cursor.mode;
     const currentNode = this.props.document.find(cursor.id);
 
     const keyMap = {
       mode,
-      keyCode,
-      meta,
-      ctrl,
-      shift,
+      keyCode: event.keyCode,
+      meta: event.metaKey,
+      ctrl: event.ctrlKey,
+      shift: event.shiftKey,
+      alt: event.altKey,
     };
-    const command = keyBinder.getCommand(keyMap);
+    const command = keyBinder.getCommand<React.KeyboardEvent<HTMLDivElement>>(keyMap, event);
     console.log(keyMap, command);
 
     if (command) {
