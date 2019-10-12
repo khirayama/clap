@@ -28,6 +28,7 @@ interface KeyMap {
   meta: boolean | null;
   ctrl: boolean | null;
   shift: boolean | null;
+  alt: boolean | null;
 }
 
 export const keyBinder = new KeyBinder<Command, KeyMap>();
@@ -37,6 +38,7 @@ keyBinder.register(Command.DOWN, {
   meta: null,
   ctrl: null,
   shift: null,
+  alt: null,
 });
 keyBinder.register(Command.DOWN, {
   mode: 'select',
@@ -44,6 +46,7 @@ keyBinder.register(Command.DOWN, {
   meta: null,
   ctrl: null,
   shift: null,
+  alt: null,
 });
 keyBinder.register(Command.DOWN, {
   mode: 'insert',
@@ -51,6 +54,7 @@ keyBinder.register(Command.DOWN, {
   meta: null,
   ctrl: null,
   shift: null,
+  alt: null,
 });
 keyBinder.register(Command.UP, {
   mode: 'select',
@@ -58,6 +62,7 @@ keyBinder.register(Command.UP, {
   meta: null,
   ctrl: null,
   shift: null,
+  alt: null,
 });
 keyBinder.register(Command.UP, {
   mode: 'select',
@@ -65,6 +70,7 @@ keyBinder.register(Command.UP, {
   meta: null,
   ctrl: null,
   shift: null,
+  alt: null,
 });
 keyBinder.register(Command.UP, {
   mode: 'insert',
@@ -72,6 +78,7 @@ keyBinder.register(Command.UP, {
   meta: null,
   ctrl: null,
   shift: null,
+  alt: null,
 });
 keyBinder.register(Command.INSERT, {
   mode: 'select',
@@ -79,6 +86,7 @@ keyBinder.register(Command.INSERT, {
   meta: null,
   ctrl: null,
   shift: null,
+  alt: null,
 });
 keyBinder.register(Command.INSERT, {
   mode: 'select',
@@ -86,6 +94,7 @@ keyBinder.register(Command.INSERT, {
   meta: null,
   ctrl: null,
   shift: null,
+  alt: null,
 });
 keyBinder.register(Command.SELECT, {
   mode: 'insert',
@@ -93,6 +102,7 @@ keyBinder.register(Command.SELECT, {
   meta: null,
   ctrl: null,
   shift: null,
+  alt: null,
 });
 keyBinder.register(Command.SELECT, {
   mode: 'insert',
@@ -100,6 +110,7 @@ keyBinder.register(Command.SELECT, {
   meta: null,
   ctrl: true,
   shift: null,
+  alt: null,
 });
 keyBinder.register(Command.ADD_AFTER, {
   mode: 'insert',
@@ -107,4 +118,5 @@ keyBinder.register(Command.ADD_AFTER, {
   meta: null,
   ctrl: false,
   shift: null,
+  alt: null,
 });
