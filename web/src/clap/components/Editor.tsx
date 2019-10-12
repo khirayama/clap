@@ -34,6 +34,12 @@ interface EditorState {
 
 export class Editor extends React.Component<EditorProps, EditorState> {
   private editorRef: React.RefObject<HTMLDivElement> = React.createRef();
+  private itemRefs: {
+    [key: string]: {
+      item: React.RefObject<Item>;
+      component: React.RefObject<any>;
+    };
+  } = {};
 
   constructor(props: EditorProps) {
     super(props);
@@ -198,9 +204,14 @@ export class Editor extends React.Component<EditorProps, EditorState> {
   private renderLines(nodes: ClapNode.PureItemNode[], indent: number = 0, lines: JSX.Element[] = []): JSX.Element[] {
     for (const node of nodes) {
       const Component = ComponentPool.take(node.type);
+      this.itemRefs[node.id] = {
+        item: React.createRef(),
+        component: React.createRef(),
+      };
       if (Component) {
         lines.push(
           <Item
+            ref={this.itemRefs[node.id].item}
             key={node.id}
             indent={indent}
             node={node}
@@ -208,7 +219,7 @@ export class Editor extends React.Component<EditorProps, EditorState> {
             onClick={this.onClickItem}
             onKeyDown={this.onKeyDown}
           >
-            <Component node={node} cursor={this.state.cursor} />
+            <Component ref={this.itemRefs[node.id].component} node={node} cursor={this.state.cursor} />
           </Item>,
         );
       }
