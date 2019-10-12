@@ -70,74 +70,19 @@ export class Editor extends React.Component<EditorProps, EditorState> {
     if (this.state.cursor.mode === 'select' && prevState.cursor.mode !== 'select' && this.editorRef.current) {
       this.editorRef.current.focus();
     }
-    if (this.state.cursor.mode === 'insert') {
-      const target = this.itemRefs[this.state.cursor.id];
-      if (
-        target &&
-        target.component &&
-        target.component.current &&
-        target.component.current.ref &&
-        target.component.current.ref.current
-      ) {
-        this.focus(target.component.current.ref.current);
-      }
-    }
   }
 
-  private focus(el: HTMLElement, position: 'beginning' | 'end' = 'end') {
-    // FYI: https://stackoverflow.com/questions/4233265/contenteditable-set-caret-at-the-end-of-the-text-cross-browser
-    const range: Range = document.createRange();
-    /*
-    FYI: If you use following lines, it doesn't work. It returns selection start and end are 1.
-    Maybe it is react's problem. Raw content editable doesn't have.
-    ```
-    range.selectNodeContents(el);
-    range.collapse(false);
-    ```
-    */
-    let pos = el.innerHTML.length;
-    if (position === 'beginning') {
-      pos = 0;
+  private focusComponent(pos: 'beginning' | 'end') {
+    const target = this.itemRefs[this.state.cursor.id];
+    if (
+      target &&
+      target.component &&
+      target.component.current &&
+      target.component.current.ref &&
+      target.component.current.ref.current
+    ) {
+      focus(target.component.current.ref.current, pos);
     }
-    range.setStart(el.childNodes[0] || el, pos);
-    range.setEnd(el.childNodes[0] || el, pos);
-    const selection: Selection = window.getSelection();
-    selection.removeAllRanges();
-    selection.addRange(range);
-  }
-
-  // Find
-  private findDownnerNode(currentNode: ClapNode.Node): ClapNode.Node | null {
-    let targetNode = null;
-    if (currentNode.nodes[0]) {
-      targetNode = currentNode.nodes[0];
-    } else if (currentNode.next()) {
-      targetNode = currentNode.next();
-    } else {
-      targetNode = currentNode;
-      while (targetNode && !targetNode.next()) {
-        targetNode = targetNode.parent();
-      }
-      if (targetNode) {
-        targetNode = targetNode.next();
-      }
-    }
-    return targetNode;
-  }
-
-  private findUpperNode(currentNode: ClapNode.Node): ClapNode.Node | null {
-    let targetNode = null;
-    if (currentNode.prev()) {
-      targetNode = currentNode.prev();
-      while (targetNode && targetNode.nodes.length) {
-        targetNode = targetNode.nodes[targetNode.nodes.length - 1];
-      }
-    } else {
-      if (currentNode.parent().object !== 'document') {
-        targetNode = currentNode.parent();
-      }
-    }
-    return targetNode;
   }
 
   // EventHandler
@@ -171,7 +116,7 @@ export class Editor extends React.Component<EditorProps, EditorState> {
 
     switch (true) {
       case command === Command.DOWN: {
-        const targetNode = this.findDownnerNode(currentNode);
+        const targetNode = findDownnerNode(currentNode);
         if (targetNode) {
           this.setState({
             cursor: {
@@ -183,7 +128,7 @@ export class Editor extends React.Component<EditorProps, EditorState> {
         break;
       }
       case command === Command.UP: {
-        const targetNode = this.findUpperNode(currentNode);
+        const targetNode = findUpperNode(currentNode);
         if (targetNode) {
           this.setState({
             cursor: {
