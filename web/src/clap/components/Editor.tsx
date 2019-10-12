@@ -146,6 +146,17 @@ export class Editor extends React.Component<EditorProps, EditorState> {
             mode: 'insert',
           },
         });
+        this.focusComponent('end');
+        break;
+      }
+      case command === Command.INSERT_BEGINNING: {
+        this.setState({
+          cursor: {
+            id: cursor.id,
+            mode: 'insert',
+          },
+        });
+        this.focusComponent('beginning');
         break;
       }
       case command === Command.SELECT: {

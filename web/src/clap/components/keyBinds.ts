@@ -5,6 +5,7 @@ export enum Command {
   UP,
   DOWN,
   INSERT,
+  INSERT_BEGINNING,
   SELECT,
   ADD_AFTER,
 }
@@ -88,12 +89,20 @@ keyBinder.register(Command.INSERT, {
   shift: null,
   alt: null,
 });
+keyBinder.register(Command.INSERT_BEGINNING, {
+  mode: 'select',
+  keyCode: KEY_CODE.I,
+  meta: null,
+  ctrl: null,
+  shift: true,
+  alt: null,
+});
 keyBinder.register(Command.INSERT, {
   mode: 'select',
   keyCode: KEY_CODE.I,
   meta: null,
   ctrl: null,
-  shift: null,
+  shift: false,
   alt: null,
 });
 keyBinder.register(Command.SELECT, {
