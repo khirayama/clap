@@ -5,6 +5,7 @@ import * as ClapNode from '../nodes/index';
 import { ComponentPool } from './ComponentPool';
 import { Item, ItemProps } from './Item';
 import { keyBinder, Command } from './keyBinds';
+import { focus, findUpperNode, findDownnerNode } from './EditorUtils';
 
 const Wrapper = styled.div`
   font-family: sans-serif;
