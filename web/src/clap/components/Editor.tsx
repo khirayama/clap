@@ -73,16 +73,19 @@ export class Editor extends React.Component<EditorProps, EditorState> {
   }
 
   private focusComponent(pos: 'beginning' | 'end') {
-    const target = this.itemRefs[this.state.cursor.id];
-    if (
-      target &&
-      target.component &&
-      target.component.current &&
-      target.component.current.ref &&
-      target.component.current.ref.current
-    ) {
-      focus(target.component.current.ref.current, pos);
-    }
+    // FYI: focusComponent have to wait next tick of `setState` to make sure target focus.
+    setTimeout(() => {
+      const target = this.itemRefs[this.state.cursor.id];
+      if (
+        target &&
+        target.component &&
+        target.component.current &&
+        target.component.current.ref &&
+        target.component.current.ref.current
+      ) {
+        focus(target.component.current.ref.current, pos);
+      }
+    }, 0);
   }
 
   // EventHandler
@@ -177,6 +180,7 @@ export class Editor extends React.Component<EditorProps, EditorState> {
             mode: 'insert',
           },
         });
+        this.focusComponent('end');
         break;
       }
     }
