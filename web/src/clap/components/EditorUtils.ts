@@ -11,10 +11,7 @@ export function focus(el: HTMLElement, position: 'beginning' | 'end' = 'end'): v
     range.collapse(false);
     ```
    */
-  let pos = el.innerHTML.length;
-  if (position === 'beginning') {
-    pos = 0;
-  }
+  const pos = position === 'beginning' ? 0 : el.innerHTML.length;
   range.setStart(el.childNodes[0] || el, pos);
   range.setEnd(el.childNodes[0] || el, pos);
   const selection: Selection = window.getSelection();

@@ -22,7 +22,9 @@ interface ParagraphProps {
 }
 
 export class Paragraph extends React.Component<ParagraphProps> {
-  private ref: React.RefObject<HTMLParagraphElement> = React.createRef();
+  public focusable: boolean = true;
+
+  public ref: React.RefObject<HTMLParagraphElement> = React.createRef();
 
   public render(): JSX.Element {
     const node = this.props.node;

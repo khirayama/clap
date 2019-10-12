@@ -80,10 +80,18 @@ export class Editor extends React.Component<EditorProps, EditorState> {
         target &&
         target.component &&
         target.component.current &&
+        target.component.current.focusable &&
         target.component.current.ref &&
         target.component.current.ref.current
       ) {
         focus(target.component.current.ref.current, pos);
+      } else {
+        this.setState({
+          cursor: {
+            id: this.state.cursor.id,
+            mode: 'select',
+          },
+        });
       }
     }, 0);
   }
@@ -128,6 +136,9 @@ export class Editor extends React.Component<EditorProps, EditorState> {
             },
           });
         }
+        if (mode === 'insert') {
+          this.focusComponent('end');
+        }
         break;
       }
       case command === Command.UP: {
@@ -139,6 +150,9 @@ export class Editor extends React.Component<EditorProps, EditorState> {
               mode,
             },
           });
+        }
+        if (mode === 'insert') {
+          this.focusComponent('end');
         }
         break;
       }

@@ -34,6 +34,8 @@ const Wrapper = styled.div`
 `;
 
 export class Item extends React.Component<ItemProps> {
+  public ref: React.RefObject<HTMLParagraphElement> = React.createRef();
+
   public render(): JSX.Element {
     const onClick = (event: React.MouseEvent<HTMLDivElement>) => {
       event.stopPropagation();
@@ -72,6 +74,7 @@ export class Item extends React.Component<ItemProps> {
 
     return (
       <Wrapper
+        ref={this.ref}
         tabIndex={0}
         indent={this.props.indent}
         cursor={this.props.cursor}
