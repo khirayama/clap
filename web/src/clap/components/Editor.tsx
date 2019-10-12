@@ -69,6 +69,40 @@ export class Editor extends React.Component<EditorProps, EditorState> {
     if (this.state.cursor.mode === 'select' && prevState.cursor.mode !== 'select' && this.editorRef.current) {
       this.editorRef.current.focus();
     }
+    if (this.state.cursor.mode === 'insert') {
+      const target = this.itemRefs[this.state.cursor.id];
+      if (
+        target &&
+        target.component &&
+        target.component.current &&
+        target.component.current.ref &&
+        target.component.current.ref.current
+      ) {
+        this.focus(target.component.current.ref.current);
+      }
+    }
+  }
+
+  private focus(el: HTMLElement, position: 'beginning' | 'end' = 'end') {
+    // FYI: https://stackoverflow.com/questions/4233265/contenteditable-set-caret-at-the-end-of-the-text-cross-browser
+    const range: Range = document.createRange();
+    /*
+    FYI: If you use following lines, it doesn't work. It returns selection start and end are 1.
+    Maybe it is react's problem. Raw content editable doesn't have.
+    ```
+    range.selectNodeContents(el);
+    range.collapse(false);
+    ```
+    */
+    let pos = el.innerHTML.length;
+    if (position === 'beginning') {
+      pos = 0;
+    }
+    range.setStart(el.childNodes[0] || el, pos);
+    range.setEnd(el.childNodes[0] || el, pos);
+    const selection: Selection = window.getSelection();
+    selection.removeAllRanges();
+    selection.addRange(range);
   }
 
   // Find
@@ -129,9 +163,8 @@ export class Editor extends React.Component<EditorProps, EditorState> {
       alt: event.altKey,
     };
     const command = keyBinder.getCommand(keyMap, event);
-    console.log(keyMap, command);
 
-    if (command) {
+    if (command !== null) {
       event.preventDefault();
     }
 
