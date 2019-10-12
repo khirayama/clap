@@ -33,7 +33,7 @@ interface EditorState {
 }
 
 export class Editor extends React.Component<EditorProps, EditorState> {
-  private ref: React.RefObject<HTMLDivElement> = React.createRef();
+  private editorRef: React.RefObject<HTMLDivElement> = React.createRef();
 
   constructor(props: EditorProps) {
     super(props);
@@ -60,9 +60,8 @@ export class Editor extends React.Component<EditorProps, EditorState> {
   }
 
   public componentDidUpdate(prevProps: EditorProps, prevState: EditorState) {
-    if (this.state.cursor.mode === 'select' && prevState.cursor.mode !== 'select' && this.ref.current) {
-      this.ref.current.focus();
-      console.log(this.ref.current);
+    if (this.state.cursor.mode === 'select' && prevState.cursor.mode !== 'select' && this.editorRef.current) {
+      this.editorRef.current.focus();
     }
   }
 
@@ -225,7 +224,7 @@ export class Editor extends React.Component<EditorProps, EditorState> {
     const doc = this.state.document;
 
     return (
-      <Wrapper ref={this.ref} tabIndex={0} onKeyDown={this.onKeyDown} onFocus={this.onFocus}>
+      <Wrapper ref={this.editorRef} tabIndex={0} onKeyDown={this.onKeyDown} onFocus={this.onFocus}>
         {this.renderLines(doc.nodes)}
       </Wrapper>
     );
