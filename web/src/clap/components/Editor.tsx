@@ -5,7 +5,6 @@ import * as ClapNode from '../nodes/index';
 import { ComponentPool } from './ComponentPool';
 import { Item, ItemProps } from './Item';
 import { keyBinder, Command } from './keyBinds';
-import { Commander } from './Commander';
 
 const Wrapper = styled.div`
   font-family: sans-serif;
@@ -124,7 +123,7 @@ export class Editor extends React.Component<EditorProps, EditorState> {
       shift: event.shiftKey,
       alt: event.altKey,
     };
-    const command = keyBinder.getCommand<React.KeyboardEvent<HTMLDivElement>>(keyMap, event);
+    const command = keyBinder.getCommand(keyMap, event);
     console.log(keyMap, command);
 
     if (command) {

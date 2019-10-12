@@ -1,14 +1,15 @@
 export class KeyBinder<T, P> {
-  public pool: { keyMap: P; command: T }[] = [];
+  public pool: { keyMap: P; command: T; precheck?: (event: any) => boolean }[] = [];
 
-  public register(command: T, keyMap: P): void {
+  public register(command: T, keyMap: P, precheck?: (event: any) => boolean): void {
     this.pool.push({
       keyMap,
       command,
+      precheck,
     });
   }
 
-  public getCommand(keyMap: P): T | null {
+  public getCommand(keyMap: P, event: any): T | null {
     for (const keyBind of this.pool) {
       let isMatch = true;
 
@@ -23,6 +24,9 @@ export class KeyBinder<T, P> {
       }
 
       if (isMatch) {
+        if (keyBind.precheck && !keyBind.precheck(event)) {
+          return null;
+        }
         return keyBind.command;
       }
     }
