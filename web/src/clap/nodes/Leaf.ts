@@ -24,7 +24,7 @@ export class Leaf {
 
   public marks: PureLeaf['marks'] = [];
 
-  constructor(leaf: Partial<PureLeaf>) {
+  constructor(leaf?: Partial<PureLeaf>) {
     this.id = leaf ? leaf.id || uuid() : uuid();
     this.text = leaf ? leaf.text || '' : '';
   }
