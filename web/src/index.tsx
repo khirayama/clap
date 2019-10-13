@@ -13,65 +13,59 @@ const sampleDocument: Clap.PureDocumentNode = {
       id: uuid(),
       object: 'item',
       type: 'paragraph',
-      attributes: {
-        leaves: [
-          {
-            id: uuid(),
-            text: '1',
-            marks: [],
-          },
-        ],
-      },
+      leaves: [
+        {
+          id: uuid(),
+          text: '1',
+          marks: [],
+        },
+      ],
       nodes: [
         {
           id: uuid(),
           object: 'item',
           type: 'paragraph',
-          attributes: {
-            leaves: [
-              {
-                id: uuid(),
-                text: '1 - 1',
-                marks: [
-                  {
-                    type: 'bold',
-                  },
-                ],
-              },
-            ],
-          },
+          leaves: [
+            {
+              id: uuid(),
+              text: '1 - 1',
+              marks: [
+                {
+                  type: 'bold',
+                },
+              ],
+            },
+          ],
           nodes: [
             {
               id: uuid(),
               object: 'item',
               type: 'paragraph',
-              attributes: {
-                leaves: [
-                  {
-                    id: uuid(),
-                    text: '1 - ',
-                    marks: [
-                      {
-                        type: 'italic',
-                      },
-                    ],
-                  },
-                  {
-                    id: uuid(),
-                    text: '1 -',
-                    marks: [
-                      {
-                        type: 'bold',
-                      },
-                    ],
-                  },
-                  {
-                    id: uuid(),
-                    text: '1',
-                    marks: [],
-                  },
-                ],
-              },
+              leaves: [
+                {
+                  id: uuid(),
+                  text: '1 - ',
+                  marks: [
+                    {
+                      type: 'italic',
+                    },
+                  ],
+                },
+                {
+                  id: uuid(),
+                  text: '1 -',
+                  marks: [
+                    {
+                      type: 'bold',
+                    },
+                  ],
+                },
+                {
+                  id: uuid(),
+                  text: '1',
+                  marks: [],
+                },
+              ],
               nodes: [],
             },
           ],
@@ -80,19 +74,17 @@ const sampleDocument: Clap.PureDocumentNode = {
           id: uuid(),
           object: 'item',
           type: 'paragraph',
-          attributes: {
-            leaves: [
-              {
-                id: uuid(),
-                text: '1 - 2',
-                marks: [
-                  {
-                    type: 'code',
-                  },
-                ],
-              },
-            ],
-          },
+          leaves: [
+            {
+              id: uuid(),
+              text: '1 - 2',
+              marks: [
+                {
+                  type: 'code',
+                },
+              ],
+            },
+          ],
           nodes: [],
         },
       ],
@@ -101,84 +93,74 @@ const sampleDocument: Clap.PureDocumentNode = {
       id: uuid(),
       object: 'item',
       type: 'paragraph',
-      attributes: {
-        leaves: [
-          {
-            id: uuid(),
-            text: '2',
-            marks: [
-              {
-                type: 'bold',
-              },
-              {
-                type: 'italic',
-              },
-            ],
-          },
-        ],
-      },
+      leaves: [
+        {
+          id: uuid(),
+          text: '2',
+          marks: [
+            {
+              type: 'bold',
+            },
+            {
+              type: 'italic',
+            },
+          ],
+        },
+      ],
       nodes: [
         {
           id: uuid(),
           object: 'item',
           type: 'paragraph',
-          attributes: {
-            leaves: [
-              {
-                id: uuid(),
-                text: '2 - 1',
-                marks: [
-                  {
-                    type: 'link',
-                    href: 'https://www.google.com',
-                  },
-                ],
-              },
-            ],
-          },
+          leaves: [
+            {
+              id: uuid(),
+              text: '2 - 1',
+              marks: [
+                {
+                  type: 'link',
+                  href: 'https://www.google.com',
+                },
+              ],
+            },
+          ],
           nodes: [
             {
               id: uuid(),
               object: 'item',
               type: 'paragraph',
-              attributes: {
-                leaves: [
-                  {
-                    id: uuid(),
-                    text: '2 - 1 - 1',
-                    marks: [],
-                  },
-                ],
-              },
+              leaves: [
+                {
+                  id: uuid(),
+                  text: '2 - 1 - 1',
+                  marks: [],
+                },
+              ],
               nodes: [
                 {
                   id: uuid(),
                   object: 'item',
                   type: 'paragraph',
-                  attributes: {
-                    leaves: [
-                      {
-                        id: uuid(),
-                        text: '2 - 1 - 1 - 1',
-                        marks: [],
-                      },
-                    ],
-                  },
+                  leaves: [
+                    {
+                      id: uuid(),
+                      text: '2 - 1 - 1 - 1',
+                      marks: [],
+                    },
+                  ],
                   nodes: [],
                 },
                 {
                   id: uuid(),
                   object: 'item',
                   type: 'paragraph',
-                  attributes: {
-                    leaves: [
-                      {
-                        id: uuid(),
-                        text: '2 - 1 - 1 - 2',
-                        marks: [],
-                      },
-                    ],
-                  },
+                  leaves: [
+                    {
+                      id: uuid(),
+                      text: '2 - 1 - 1 - 2',
+                      marks: [],
+                    },
+                  ],
                   nodes: [],
                 },
               ],
@@ -189,15 +171,13 @@ const sampleDocument: Clap.PureDocumentNode = {
           id: uuid(),
           object: 'item',
           type: 'paragraph',
-          attributes: {
-            leaves: [
-              {
-                id: uuid(),
-                text: '2 - 2',
-                marks: [],
-              },
-            ],
-          },
+          leaves: [
+            {
+              id: uuid(),
+              text: '2 - 2',
+              marks: [],
+            },
+          ],
           nodes: [],
         },
       ],
