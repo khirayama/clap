@@ -27,6 +27,7 @@ export class Leaf {
   constructor(leaf?: Partial<PureLeaf>) {
     this.id = leaf ? leaf.id || uuid() : uuid();
     this.text = leaf ? leaf.text || '' : '';
+    this.marks = leaf ? leaf.marks || [] : [];
   }
 
   public toJSON(): PureLeaf {
