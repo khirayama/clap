@@ -21,49 +21,36 @@ interface ParagraphProps {
   cursor: Cursor;
 }
 
+type LeafElement = HTMLSpanElement | HTMLAnchorElement;
+
 export class Paragraph extends React.Component<ParagraphProps> {
   public focusable: boolean = true;
 
   public ref: React.RefObject<HTMLParagraphElement> = React.createRef();
 
-  public html(): string {
-    return this.props.node.attributes.leaves
-      .map(leaf => {
-        let style = '';
-        let tag = 'span';
-        let attributes = [];
-        for (const mark of leaf.marks) {
-          switch (mark.type) {
-            case 'bold': {
-              style += 'font-weight: bold;';
-              break;
-            }
-            case 'italic': {
-              style += 'font-style: italic;';
-              break;
-            }
-            case 'code': {
-              tag = 'code';
-              break;
-            }
-            case 'strike': {
-              style += 'text-decoration: line-through;';
-              break;
-            }
-            case 'link': {
-              tag = 'a';
-              attributes.push(`href="${mark.href}" onclick="window.alert('hey')"`);
-              break;
-            }
-          }
-        }
-        return `<${tag} style="${style}" ${attributes.join(' ')}>${leaf.text}</${tag}>`;
-      })
-      .join('');
+  private leafRefs: { [key: string]: React.RefObject<LeafElement> } = {};
+
+  constructor(props: ParagraphProps) {
+    super(props);
+
+    this.onKeyUp = this.onKeyUp.bind(this);
+  }
+
+  private onKeyUp() {
+    const selection = window.getSelection();
+    const startElement = selection.anchorNode.parentElement;
+    const endElement = selection.focusNode.parentElement;
+    const startId = startElement.dataset.id;
+    const endId = endElement.dataset.id;
+    const isSelecting = !(startId === endId && selection.anchorOffset === selection.focusOffset);
+    if (!isSelecting) {
+      const el = this.leafRefs[startId].current;
+      console.log(el.innerText);
+    }
   }
 
   public renderLeaves(): JSX.Element[] {
-    return this.props.node.attributes.leaves.map(leaf => {
+    return this.props.node.leaves.map(leaf => {
       let tag = 'span';
       let style: any = {};
       let attributes: any = {};
@@ -92,22 +79,25 @@ export class Paragraph extends React.Component<ParagraphProps> {
           }
         }
       }
+      const ref = React.createRef<LeafElement>();
+      this.leafRefs[leaf.id] = ref;
       return React.createElement(
         tag,
         {
           key: leaf.id,
           ...attributes,
           style,
+          ref,
+          'data-id': leaf.id,
         },
         leaf.text,
       );
     });
   }
 
-  // dangerouslySetInnerHTML={{ __html: this.html() }}
   public render(): JSX.Element {
     return (
-      <Wrapper ref={this.ref} contentEditable suppressContentEditableWarning={true}>
+      <Wrapper ref={this.ref} contentEditable suppressContentEditableWarning={true} onKeyUp={this.onKeyUp}>
         {this.renderLeaves()}
       </Wrapper>
     );
