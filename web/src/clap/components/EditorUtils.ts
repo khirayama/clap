@@ -14,11 +14,11 @@ export function focus(el: HTMLElement, position: 'beginning' | 'end' = 'end'): v
   let targetElement = el.children[el.children.length - 1] || el;
   let pos = targetElement.innerHTML.length;
   if (position === 'beginning') {
-    targetElement = el.children[0];
+    targetElement = el.children[0] || el;
     pos = 0;
   }
-  range.setStart(targetElement.childNodes[0], pos);
-  range.setEnd(targetElement.childNodes[0], pos);
+  range.setStart(targetElement.childNodes[0] || targetElement, pos);
+  range.setEnd(targetElement.childNodes[0] || targetElement, pos);
 
   const selection: Selection = window.getSelection();
   selection.removeAllRanges();
