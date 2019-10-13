@@ -7,6 +7,7 @@ export { PureBaseNode, BaseNode } from './BaseNode';
 export { PureDocumentNode, DocumentNode } from './DocumentNode';
 export { PureBaseItemNode, BaseItemNode } from './BaseItemNode';
 export { PureParagraphNode, ParagraphNode } from './ParagraphNode';
+export { PureLeaf, Leaf } from './Leaf';
 
 export type PureNode = PureDocumentNode | PureItemNode;
 

@@ -17,7 +17,7 @@ export class ParagraphNode extends BaseItemNode {
       ? node.leaves.map((leaf: PureLeaf) => {
           return new Leaf(leaf);
         })
-      : [new Leaf()];
+      : [];
   }
 
   public toJSON(): PureParagraphNode {
