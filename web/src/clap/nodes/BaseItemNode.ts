@@ -1,29 +1,24 @@
 import { PureBaseNode, BaseNode } from './BaseNode';
 
-export interface PureBaseItemNode<T = {}> extends PureBaseNode {
+export interface PureBaseItemNode extends PureBaseNode {
   type: 'paragraph';
-  attributes: T;
 }
 
-export class BaseItemNode<T = {}> extends BaseNode {
+export class BaseItemNode extends BaseNode {
   public static type: PureBaseItemNode['type'];
 
   public type: PureBaseItemNode['type'];
-
-  public attributes: T | { [key: string]: any } = {};
 
   constructor(node?: Partial<PureBaseItemNode>, relations?: BaseNode['relations']) {
     super(node, relations);
 
     this.type = (this.constructor as any).type;
-    this.attributes = node ? node.attributes || {} : {};
   }
 
-  public toJSON(): PureBaseItemNode<T | { [key: string]: any }> {
+  public toJSON(): PureBaseItemNode {
     return {
       ...super.toJSON(),
       type: this.type,
-      attributes: this.attributes,
     };
   }
 }

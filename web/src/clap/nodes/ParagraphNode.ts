@@ -1,45 +1,29 @@
 import { PureBaseItemNode, BaseItemNode } from './BaseItemNode';
+import { PureLeaf, Leaf } from './Leaf';
 
-type Mark = Decoration | Link;
-
-interface Decoration {
-  type: 'bold' | 'italic' | 'code' | 'strike';
+export interface PureParagraphNode extends PureBaseItemNode {
+  leaves: PureLeaf[];
 }
 
-interface Link {
-  type: 'link';
-  href: string;
-}
-
-interface Leaf {
-  id: string;
-  text: string;
-  marks: Mark[];
-}
-
-export interface ParagraphNodeAttributes {
-  leaves: Leaf[];
-}
-
-export interface PureParagraphNode extends PureBaseItemNode<ParagraphNodeAttributes> {}
-
-export class ParagraphNode extends BaseItemNode<ParagraphNodeAttributes> {
+export class ParagraphNode extends BaseItemNode {
   public static type: 'paragraph' = 'paragraph';
 
   public leaves: Leaf[] = [];
 
-  constructor(node?: Partial<PureBaseItemNode<ParagraphNodeAttributes>>, relations?: BaseItemNode['relations']) {
+  constructor(node?: Partial<PureParagraphNode>, relations?: BaseItemNode['relations']) {
     super(node, relations);
 
-    this.leaves = node ? node.attributes.leaves || this.leaves : this.leaves;
+    this.leaves = node
+      ? node.leaves.map((leaf: PureLeaf) => {
+          return new Leaf(leaf);
+        })
+      : [];
   }
 
-  public toJSON() {
+  public toJSON(): PureParagraphNode {
     return {
       ...super.toJSON(),
-      attributes: {
-        leaves: this.leaves,
-      },
+      leaves: this.leaves.map((leaf: Leaf) => leaf.toJSON()),
     };
   }
 }
