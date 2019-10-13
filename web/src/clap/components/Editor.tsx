@@ -194,7 +194,7 @@ export class Editor extends React.Component<EditorProps, EditorState> {
             mode: 'insert',
           },
         });
-        this.focusComponent('end');
+        this.focusComponent('beginning');
         break;
       }
     }

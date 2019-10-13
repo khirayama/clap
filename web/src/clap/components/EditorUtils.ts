@@ -11,9 +11,15 @@ export function focus(el: HTMLElement, position: 'beginning' | 'end' = 'end'): v
     range.collapse(false);
     ```
    */
-  const pos = position === 'beginning' ? 0 : el.innerHTML.length;
-  range.setStart(el.childNodes[0] || el, pos);
-  range.setEnd(el.childNodes[0] || el, pos);
+  let targetElement = el.children[el.children.length - 1] || el;
+  let pos = targetElement.innerHTML.length;
+  if (position === 'beginning') {
+    targetElement = el.children[0];
+    pos = 0;
+  }
+  range.setStart(targetElement.childNodes[0], pos);
+  range.setEnd(targetElement.childNodes[0], pos);
+
   const selection: Selection = window.getSelection();
   selection.removeAllRanges();
   selection.addRange(range);
