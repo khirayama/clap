@@ -54,6 +54,10 @@ export class Paragraph extends React.Component<ParagraphProps> {
       let tag = 'span';
       let style: any = {};
       let attributes: any = {};
+
+      if (!leaf.marks.length) {
+        return <React.Fragment key={leaf.id}>{leaf.text}</React.Fragment>;
+      }
       for (const mark of leaf.marks) {
         switch (mark.type) {
           case 'bold': {
