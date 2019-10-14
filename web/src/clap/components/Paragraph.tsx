@@ -38,15 +38,26 @@ export class Paragraph extends React.Component<ParagraphProps> {
 
   private onKeyUp() {
     const selection = window.getSelection();
-    const startElement = selection.anchorNode.parentElement;
-    const endElement = selection.focusNode.parentElement;
-    const startId = startElement.dataset.id;
-    const endId = endElement.dataset.id;
-    const isSelecting = !(startId === endId && selection.anchorOffset === selection.focusOffset);
-    if (!isSelecting) {
-      const el = this.leafRefs[startId].current;
-      console.log(el.innerText);
+    let startElementIndex = 0;
+    let endElementIndex = 0;
+    for (let i = 0; i < this.ref.current.childNodes.length; i += 1) {
+      const childNode = this.ref.current.childNodes[i];
+      let targetStartNode = selection.anchorNode;
+      while (targetStartNode.parentNode && targetStartNode.parentNode !== this.ref.current) {
+        targetStartNode = targetStartNode.parentNode;
+      }
+      let targetEndNode = selection.focusNode;
+      while (targetEndNode.parentNode && targetEndNode.parentNode !== this.ref.current) {
+        targetEndNode = targetEndNode.parentNode;
+      }
+      if (targetStartNode === childNode) {
+        startElementIndex = i;
+      }
+      if (targetEndNode === childNode) {
+        endElementIndex = i;
+      }
     }
+    console.log(startElementIndex, endElementIndex);
   }
 
   public renderLeaves(): JSX.Element[] {
