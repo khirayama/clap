@@ -16,7 +16,7 @@ export class BaseNode {
 
   public object: PureBaseNode['object'];
 
-  public nodes: ItemNode[];
+  public nodes: ItemNode[] = [];
 
   public relations: {
     document: string;

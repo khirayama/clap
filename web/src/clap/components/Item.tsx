@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 
-import { Cursor } from './Editor';
+import { Cursor } from '../components/index';
 import * as ClapNode from '../nodes/index';
 
 export interface ItemProps {
@@ -34,7 +34,7 @@ const Wrapper = styled.div`
 `;
 
 export class Item extends React.Component<ItemProps> {
-  public ref: React.RefObject<HTMLParagraphElement> = React.createRef();
+  public ref: { self: React.RefObject<HTMLParagraphElement> } = { self: React.createRef() };
 
   public render(): JSX.Element {
     const onClick = (event: React.MouseEvent<HTMLDivElement>) => {
@@ -74,7 +74,7 @@ export class Item extends React.Component<ItemProps> {
 
     return (
       <Wrapper
-        ref={this.ref}
+        ref={this.ref.self}
         tabIndex={0}
         indent={this.props.indent}
         cursor={this.props.cursor}

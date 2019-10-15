@@ -92,6 +92,13 @@ const sampleDocument: Clap.PureDocumentNode = {
     {
       id: uuid(),
       object: 'item',
+      type: 'horizontal-rule',
+      leaves: [],
+      nodes: [],
+    },
+    {
+      id: uuid(),
+      object: 'item',
       type: 'paragraph',
       leaves: [
         {

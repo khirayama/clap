@@ -5,7 +5,7 @@ import * as ClapNode from '../nodes/index';
 import { ComponentPool } from './ComponentPool';
 import { Item, ItemProps } from './Item';
 import { keyBinder, Command } from './keyBinds';
-import { focus, findUpperNode, findDownnerNode } from './EditorUtils';
+import { focus, findUpperNode, findDownnerNode } from './utils';
 
 const Wrapper = styled.div`
   font-family: sans-serif;
@@ -34,13 +34,18 @@ interface EditorState {
 }
 
 export class Editor extends React.Component<EditorProps, EditorState> {
-  private editorRef: React.RefObject<HTMLDivElement> = React.createRef();
-  private itemRefs: {
-    [key: string]: {
-      item: React.RefObject<Item>;
-      component: React.RefObject<any>;
+  public ref: {
+    self: React.RefObject<HTMLDivElement>;
+    items: {
+      [key: string]: {
+        item: React.RefObject<Item>;
+        component: React.RefObject<any>;
+      };
     };
-  } = {};
+  } = {
+    self: React.createRef(),
+    items: {},
+  };
 
   constructor(props: EditorProps) {
     super(props);
@@ -67,24 +72,29 @@ export class Editor extends React.Component<EditorProps, EditorState> {
   }
 
   public componentDidUpdate(prevProps: EditorProps, prevState: EditorState) {
-    if (this.state.cursor.mode === 'select' && prevState.cursor.mode !== 'select' && this.editorRef.current) {
-      this.editorRef.current.focus();
+    if (this.state.cursor.mode === 'select' && prevState.cursor.mode !== 'select' && this.ref.self.current) {
+      this.ref.self.current.focus();
     }
+  }
+
+  private hasText(target: React.RefObject<any>): boolean {
+    return !!(
+      target &&
+      target.current.ref &&
+      target.current.ref.text &&
+      target.current.ref.text.current &&
+      target.current.ref.text.current.ref &&
+      target.current.ref.text.current.ref.self &&
+      target.current.ref.text.current.ref.self.current
+    );
   }
 
   private focusComponent(pos: 'beginning' | 'end') {
     // FYI: focusComponent have to wait next tick of `setState` to make sure target focus.
     setTimeout(() => {
-      const target = this.itemRefs[this.state.cursor.id];
-      if (
-        target &&
-        target.component &&
-        target.component.current &&
-        target.component.current.focusable &&
-        target.component.current.ref &&
-        target.component.current.ref.current
-      ) {
-        focus(target.component.current.ref.current, pos);
+      const target = this.ref.items[this.state.cursor.id];
+      if (target && this.hasText(target.component)) {
+        focus(target.component.current.ref.text.current.ref.self.current, pos);
       } else {
         this.setState({
           cursor: {
@@ -127,7 +137,12 @@ export class Editor extends React.Component<EditorProps, EditorState> {
 
     switch (true) {
       case command === Command.DOWN: {
-        const targetNode = findDownnerNode(currentNode);
+        let targetNode = findDownnerNode(currentNode);
+        if (mode === 'insert') {
+          while (targetNode && !this.hasText(this.ref.items[targetNode.id].component)) {
+            targetNode = findDownnerNode(targetNode);
+          }
+        }
         if (targetNode) {
           this.setState({
             cursor: {
@@ -142,7 +157,12 @@ export class Editor extends React.Component<EditorProps, EditorState> {
         break;
       }
       case command === Command.UP: {
-        const targetNode = findUpperNode(currentNode);
+        let targetNode = findUpperNode(currentNode);
+        if (mode === 'insert') {
+          while (targetNode && !this.hasText(this.ref.items[targetNode.id].component)) {
+            targetNode = findUpperNode(targetNode);
+          }
+        }
         if (targetNode) {
           this.setState({
             cursor: {
@@ -209,17 +229,17 @@ export class Editor extends React.Component<EditorProps, EditorState> {
     });
   }
 
-  private renderLines(nodes: ClapNode.PureItemNode[], indent: number = 0, lines: JSX.Element[] = []): JSX.Element[] {
+  private renderItems(nodes: ClapNode.PureItemNode[], indent: number = 0, items: JSX.Element[] = []): JSX.Element[] {
     for (const node of nodes) {
       const Component = ComponentPool.take(node.type);
-      this.itemRefs[node.id] = {
+      this.ref.items[node.id] = {
         item: React.createRef(),
         component: React.createRef(),
       };
       if (Component) {
-        lines.push(
+        items.push(
           <Item
-            ref={this.itemRefs[node.id].item}
+            ref={this.ref.items[node.id].item}
             key={node.id}
             indent={indent}
             node={node}
@@ -227,24 +247,25 @@ export class Editor extends React.Component<EditorProps, EditorState> {
             onClick={this.onClickItem}
             onKeyDown={this.onKeyDown}
           >
-            <Component ref={this.itemRefs[node.id].component} node={node} cursor={this.state.cursor} />
+            <Component ref={this.ref.items[node.id].component} node={node} cursor={this.state.cursor} />
           </Item>,
         );
       }
 
       if (node.nodes) {
-        lines.concat(this.renderLines(node.nodes, indent + 1, lines));
+        items.concat(this.renderItems(node.nodes, indent + 1, items));
       }
     }
-    return lines;
+
+    return items;
   }
 
   public render(): JSX.Element {
     const doc = this.state.document;
 
     return (
-      <Wrapper ref={this.editorRef} tabIndex={0} onKeyDown={this.onKeyDown} onFocus={this.onFocus}>
-        {this.renderLines(doc.nodes)}
+      <Wrapper ref={this.ref.self} tabIndex={0} onKeyDown={this.onKeyDown} onFocus={this.onFocus}>
+        {this.renderItems(doc.nodes)}
       </Wrapper>
     );
   }
