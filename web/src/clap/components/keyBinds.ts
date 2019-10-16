@@ -1,4 +1,5 @@
-import { Cursor } from './Editor';
+import * as Clap from '../index';
+
 import { KeyBinder } from './KeyBinder';
 
 export enum Command {
@@ -24,7 +25,7 @@ export const KEY_CODE = {
 };
 
 interface KeyMap {
-  mode: Cursor['mode'];
+  mode: Clap.Selection['mode'];
   keyCode: number;
   meta: boolean | null;
   ctrl: boolean | null;

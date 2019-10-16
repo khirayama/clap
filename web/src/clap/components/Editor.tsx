@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 
-import * as ClapNode from '../nodes/index';
+import * as Clap from '../index';
 import { ComponentPool } from './ComponentPool';
 import { Item, ItemProps } from './Item';
 import { keyBinder, Command } from './keyBinds';
@@ -19,18 +19,14 @@ const Wrapper = styled.div`
   -webkit-appearance: none;
 `;
 
-export interface Cursor {
-  id: string | null;
-  mode: 'normal' | 'select' | 'insert';
-}
-
 interface EditorProps {
-  document: ClapNode.DocumentNode;
+  selection: Clap.Selection;
+  document: Clap.DocumentNode;
 }
 
 interface EditorState {
-  cursor: Cursor;
-  document: ClapNode.PureDocumentNode;
+  selection: Clap.PureSelection;
+  document: Clap.PureDocumentNode;
 }
 
 export class Editor extends React.Component<EditorProps, EditorState> {
@@ -50,13 +46,8 @@ export class Editor extends React.Component<EditorProps, EditorState> {
   constructor(props: EditorProps) {
     super(props);
 
-    const documentNode = props.document.toJSON();
-
     this.state = {
-      cursor: {
-        id: documentNode.nodes[0].id,
-        mode: 'normal',
-      },
+      selection: this.props.selection.toJSON(),
       document: this.props.document.toJSON(),
     };
 
@@ -66,13 +57,18 @@ export class Editor extends React.Component<EditorProps, EditorState> {
   }
 
   public componentDidMount() {
+    this.props.selection.on(() => {
+      console.log(this.props.selection.toJSON());
+      this.setState({ selection: this.props.selection.toJSON() });
+    });
     this.props.document.on(() => {
+      console.log(this.props.document.toJSON());
       this.setState({ document: this.props.document.toJSON() });
     });
   }
 
   public componentDidUpdate(prevProps: EditorProps, prevState: EditorState) {
-    if (this.state.cursor.mode === 'select' && prevState.cursor.mode !== 'select' && this.ref.self.current) {
+    if (this.state.selection.mode === 'select' && prevState.selection.mode !== 'select' && this.ref.self.current) {
       this.ref.self.current.focus();
     }
   }
@@ -92,34 +88,26 @@ export class Editor extends React.Component<EditorProps, EditorState> {
   private focusComponent(pos: 'beginning' | 'end') {
     // FYI: focusComponent have to wait next tick of `setState` to make sure target focus.
     setTimeout(() => {
-      const target = this.ref.items[this.state.cursor.id];
+      const target = this.ref.items[this.state.selection.id];
       if (target && this.hasText(target.component)) {
         focus(target.component.current.ref.text.current.ref.self.current, pos);
       } else {
-        this.setState({
-          cursor: {
-            id: this.state.cursor.id,
-            mode: 'select',
-          },
-        });
+        this.props.selection.mode = 'select';
+        this.props.selection.dispatch();
       }
     }, 0);
   }
 
   // EventHandler
   private onFocus() {
-    this.setState({
-      cursor: {
-        id: this.state.cursor.id,
-        mode: 'select',
-      },
-    });
+    this.props.selection.mode = 'select';
+    this.props.selection.dispatch();
   }
 
   private onKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
-    const cursor = this.state.cursor;
-    const mode = cursor.mode;
-    const currentNode = this.props.document.find(cursor.id);
+    const selection = this.state.selection;
+    const mode = selection.mode;
+    const currentNode = this.props.document.find(selection.id);
 
     const keyMap = {
       mode,
@@ -144,12 +132,8 @@ export class Editor extends React.Component<EditorProps, EditorState> {
           }
         }
         if (targetNode) {
-          this.setState({
-            cursor: {
-              id: targetNode.id,
-              mode,
-            },
-          });
+          this.props.selection.id = targetNode.id;
+          this.props.selection.dispatch();
         }
         if (mode === 'insert') {
           this.focusComponent('end');
@@ -164,12 +148,8 @@ export class Editor extends React.Component<EditorProps, EditorState> {
           }
         }
         if (targetNode) {
-          this.setState({
-            cursor: {
-              id: targetNode.id,
-              mode,
-            },
-          });
+          this.props.selection.id = targetNode.id;
+          this.props.selection.dispatch();
         }
         if (mode === 'insert') {
           this.focusComponent('end');
@@ -177,43 +157,28 @@ export class Editor extends React.Component<EditorProps, EditorState> {
         break;
       }
       case command === Command.INSERT: {
-        this.setState({
-          cursor: {
-            id: cursor.id,
-            mode: 'insert',
-          },
-        });
+        this.props.selection.mode = 'insert';
+        this.props.selection.dispatch();
         this.focusComponent('end');
         break;
       }
       case command === Command.INSERT_BEGINNING: {
-        this.setState({
-          cursor: {
-            id: cursor.id,
-            mode: 'insert',
-          },
-        });
+        this.props.selection.mode = 'insert';
+        this.props.selection.dispatch();
         this.focusComponent('beginning');
         break;
       }
       case command === Command.SELECT: {
-        this.setState({
-          cursor: {
-            id: cursor.id,
-            mode: 'select',
-          },
-        });
+        this.props.selection.mode = 'select';
+        this.props.selection.dispatch();
         break;
       }
       case command === Command.ADD_AFTER: {
-        const node = new ClapNode.ParagraphNode();
+        const node = new Clap.ParagraphNode();
         currentNode.after(node);
-        this.setState({
-          cursor: {
-            id: node.id,
-            mode: 'insert',
-          },
-        });
+        this.props.selection.id = node.id;
+        this.props.selection.mode = 'insert';
+        this.props.selection.dispatch();
         this.focusComponent('beginning');
         break;
       }
@@ -221,15 +186,11 @@ export class Editor extends React.Component<EditorProps, EditorState> {
   }
 
   private onClickItem(event: React.MouseEvent<HTMLDivElement>, itemProps: ItemProps) {
-    this.setState({
-      cursor: {
-        id: itemProps.node.id,
-        mode: 'insert',
-      },
-    });
+    this.props.selection.id = itemProps.node.id;
+    this.props.selection.mode = 'insert';
   }
 
-  private renderItems(nodes: ClapNode.PureItemNode[], indent: number = 0, items: JSX.Element[] = []): JSX.Element[] {
+  private renderItems(nodes: Clap.PureItemNode[], indent: number = 0, items: JSX.Element[] = []): JSX.Element[] {
     for (const node of nodes) {
       const Component = ComponentPool.take(node.type);
       this.ref.items[node.id] = {
@@ -243,11 +204,11 @@ export class Editor extends React.Component<EditorProps, EditorState> {
             key={node.id}
             indent={indent}
             node={node}
-            cursor={this.state.cursor}
+            selection={this.state.selection}
             onClick={this.onClickItem}
             onKeyDown={this.onKeyDown}
           >
-            <Component ref={this.ref.items[node.id].component} node={node} cursor={this.state.cursor} />
+            <Component ref={this.ref.items[node.id].component} node={node} selection={this.state.selection} />
           </Item>,
         );
       }

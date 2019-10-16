@@ -2,7 +2,7 @@ import { ComponentPool } from './ComponentPool';
 import { Paragraph } from './items/Paragraph';
 import { HorizontalRule } from './items/HorizontalRule';
 
-export { Editor, Cursor } from './Editor';
+export { Editor } from './Editor';
 export { ComponentPool } from './ComponentPool';
 export { Item } from './Item';
 export { KeyBinder } from './KeyBinder';

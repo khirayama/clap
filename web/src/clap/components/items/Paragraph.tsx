@@ -1,8 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 
-import * as ClapNode from '../../nodes/index';
-import { ItemText } from '../../components/index';
+import * as Clap from '../../index';
 
 const Wrapper = styled.p`
   box-sizing: border-box;
@@ -17,16 +16,16 @@ const Wrapper = styled.p`
 `;
 
 interface ParagraphProps {
-  node: ClapNode.PureParagraphNode;
+  node: Clap.PureParagraphNode;
 }
 
 export class Paragraph extends React.Component<ParagraphProps> {
-  public ref: { text: React.RefObject<ItemText> } = { text: React.createRef() };
+  public ref: { text: React.RefObject<Clap.ItemText> } = { text: React.createRef() };
 
   public render(): JSX.Element {
     return (
       <Wrapper>
-        <ItemText ref={this.ref.text} leaves={this.props.node.leaves} />
+        <Clap.ItemText ref={this.ref.text} leaves={this.props.node.leaves} />
       </Wrapper>
     );
   }

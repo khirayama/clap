@@ -1,4 +1,5 @@
-export { Editor } from './components';
+export { Editor, ItemText } from './components';
+export { PureSelection, Selection } from './Selection';
 export {
   ItemNodePool,
   PureNode,
