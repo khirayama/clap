@@ -1,4 +1,8 @@
-import * as ClapNode from '../nodes/index';
+import * as Clap from '../index';
+
+export function isItemNode(node: any): node is Clap.ItemNode {
+  return node.object === 'item';
+}
 
 export function focus(el: HTMLElement, position: 'beginning' | 'end' = 'end'): void {
   // FYI: https://stackoverflow.com/questions/4233265/contenteditable-set-caret-at-the-end-of-the-text-cross-browser
@@ -25,11 +29,11 @@ export function focus(el: HTMLElement, position: 'beginning' | 'end' = 'end'): v
   selection.addRange(range);
 }
 
-export function findUpperNode(currentNode: ClapNode.Node): ClapNode.Node | null {
+export function findUpperNode(currentNode: Clap.Node): Clap.Node | null {
   let targetNode = null;
   if (currentNode.prev()) {
     targetNode = currentNode.prev();
-    while (targetNode && targetNode.nodes.length) {
+    while (targetNode && targetNode.nodes && targetNode.nodes.length) {
       targetNode = targetNode.nodes[targetNode.nodes.length - 1];
     }
   } else {
@@ -40,9 +44,9 @@ export function findUpperNode(currentNode: ClapNode.Node): ClapNode.Node | null 
   return targetNode;
 }
 
-export function findDownnerNode(currentNode: ClapNode.Node): ClapNode.Node | null {
+export function findDownnerNode(currentNode: Clap.Node): Clap.Node | null {
   let targetNode = null;
-  if (currentNode.nodes[0]) {
+  if (currentNode.nodes && currentNode.nodes[0]) {
     targetNode = currentNode.nodes[0];
   } else if (currentNode.next()) {
     targetNode = currentNode.next();
