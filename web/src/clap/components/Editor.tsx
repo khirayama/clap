@@ -5,7 +5,7 @@ import * as Clap from '../index';
 import { ComponentPool } from './ComponentPool';
 import { Item, ItemProps } from './Item';
 import { keyBinder, Command } from './keyBinds';
-import { focus, findUpperNode, findDownnerNode } from './utils';
+import { isItemNode, focus, findUpperNode, findDownnerNode } from './utils';
 
 const Wrapper = styled.div`
   font-family: sans-serif;
@@ -73,23 +73,12 @@ export class Editor extends React.Component<EditorProps, EditorState> {
     }
   }
 
-  private hasText(target: React.RefObject<any>): boolean {
-    return !!(
-      target &&
-      target.current.ref &&
-      target.current.ref.text &&
-      target.current.ref.text.current &&
-      target.current.ref.text.current.ref &&
-      target.current.ref.text.current.ref.self &&
-      target.current.ref.text.current.ref.self.current
-    );
-  }
-
   private focusComponent(pos: 'beginning' | 'end') {
     // FYI: focusComponent have to wait next tick of `setState` to make sure target focus.
     setTimeout(() => {
       const target = this.ref.items[this.state.selection.id];
-      if (target && this.hasText(target.component)) {
+      const targetNode = this.props.document.find(this.state.selection.id);
+      if (target && isItemNode(targetNode) && targetNode.leaves) {
         focus(target.component.current.ref.text.current.ref.self.current, pos);
       } else {
         this.props.selection.mode = 'select';
@@ -100,7 +89,11 @@ export class Editor extends React.Component<EditorProps, EditorState> {
 
   // EventHandler
   private onFocus() {
+    // TODO: Usecase
     this.props.selection.mode = 'select';
+    if (this.props.selection.id === null) {
+      this.props.selection.id = this.props.document.nodes[0].id;
+    }
     this.props.selection.dispatch();
   }
 
@@ -124,10 +117,11 @@ export class Editor extends React.Component<EditorProps, EditorState> {
     }
 
     switch (true) {
+      // TODO: Usecase
       case command === Command.DOWN: {
         let targetNode = findDownnerNode(currentNode);
         if (mode === 'insert') {
-          while (targetNode && !this.hasText(this.ref.items[targetNode.id].component)) {
+          while (targetNode && isItemNode(targetNode) && targetNode.leaves === null) {
             targetNode = findDownnerNode(targetNode);
           }
         }
@@ -140,10 +134,11 @@ export class Editor extends React.Component<EditorProps, EditorState> {
         }
         break;
       }
+      // TODO: Usecase
       case command === Command.UP: {
         let targetNode = findUpperNode(currentNode);
         if (mode === 'insert') {
-          while (targetNode && !this.hasText(this.ref.items[targetNode.id].component)) {
+          while (targetNode && isItemNode(targetNode) && targetNode.leaves === null) {
             targetNode = findUpperNode(targetNode);
           }
         }
@@ -156,23 +151,27 @@ export class Editor extends React.Component<EditorProps, EditorState> {
         }
         break;
       }
+      // TODO: Usecase
       case command === Command.INSERT: {
         this.props.selection.mode = 'insert';
         this.props.selection.dispatch();
         this.focusComponent('end');
         break;
       }
+      // TODO: Usecase
       case command === Command.INSERT_BEGINNING: {
         this.props.selection.mode = 'insert';
         this.props.selection.dispatch();
         this.focusComponent('beginning');
         break;
       }
+      // TODO: Usecase
       case command === Command.SELECT: {
         this.props.selection.mode = 'select';
         this.props.selection.dispatch();
         break;
       }
+      // TODO: Usecase
       case command === Command.ADD_AFTER: {
         const node = new Clap.ParagraphNode();
         currentNode.after(node);
@@ -186,8 +185,10 @@ export class Editor extends React.Component<EditorProps, EditorState> {
   }
 
   private onClickItem(event: React.MouseEvent<HTMLDivElement>, itemProps: ItemProps) {
+    // TODO: Usecase
     this.props.selection.id = itemProps.node.id;
     this.props.selection.mode = 'insert';
+    this.props.selection.dispatch();
   }
 
   private renderItems(nodes: Clap.PureItemNode[], indent: number = 0, items: JSX.Element[] = []): JSX.Element[] {
