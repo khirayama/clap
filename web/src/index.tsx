@@ -93,8 +93,8 @@ const sampleDocument: Clap.PureDocumentNode = {
       id: uuid(),
       object: 'item',
       type: 'horizontal-rule',
-      leaves: [],
-      nodes: [],
+      leaves: null,
+      nodes: null,
     },
     {
       id: uuid(),
