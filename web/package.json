@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "webpack-dev-server",
+    "dev": "webpack-dev-server --cache --liveReload=false",
     "test": "jest",
     "lint": "eslint '{src/**/,cli/**/,}*.{ts,tsx,js,jsx,json}'",
     "lint:fix": "eslint --fix '{src/**/,cli/**/,}*.{ts,tsx,js,jsx,json}'"
