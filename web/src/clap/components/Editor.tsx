@@ -54,15 +54,14 @@ export class Editor extends React.Component<EditorProps, EditorState> {
     this.onKeyDown = this.onKeyDown.bind(this);
     this.onFocus = this.onFocus.bind(this);
     this.onClickItem = this.onClickItem.bind(this);
+    this.onKeyDownItem = this.onKeyDownItem.bind(this);
   }
 
   public componentDidMount() {
     this.props.selection.on(() => {
-      console.log(this.props.selection.toJSON());
       this.setState({ selection: this.props.selection.toJSON() });
     });
     this.props.document.on(() => {
-      console.log(this.props.document.toJSON());
       this.setState({ document: this.props.document.toJSON() });
     });
   }
@@ -165,6 +164,29 @@ export class Editor extends React.Component<EditorProps, EditorState> {
         this.focusComponent('beginning');
         break;
       }
+    }
+  }
+
+  private onKeyDownItem(event: React.KeyboardEvent<HTMLDivElement>) {
+    const selection = this.state.selection;
+    const mode = selection.mode;
+    const currentNode = this.props.document.find(selection.id);
+
+    const keyMap = {
+      mode,
+      keyCode: event.keyCode,
+      meta: event.metaKey,
+      ctrl: event.ctrlKey,
+      shift: event.shiftKey,
+      alt: event.altKey,
+    };
+    const command = keyBinder.getCommand(keyMap, event);
+
+    if (command !== null) {
+      event.preventDefault();
+    }
+
+    switch (true) {
       // TODO: Usecase
       case command === Command.SELECT: {
         this.props.selection.mode = 'select';
@@ -207,7 +229,7 @@ export class Editor extends React.Component<EditorProps, EditorState> {
             node={node}
             selection={this.state.selection}
             onClick={this.onClickItem}
-            onKeyDown={this.onKeyDown}
+            onKeyDown={this.onKeyDownItem}
           >
             <Component ref={this.ref.items[node.id].component} node={node} selection={this.state.selection} />
           </Item>,
