@@ -34,6 +34,7 @@ interface KeyMap {
 }
 
 export const keyBinder = new KeyBinder<Command, KeyMap>();
+// In insert
 keyBinder.register(Command.DOWN, {
   mode: 'select',
   keyCode: KEY_CODE.DOWN,
@@ -50,14 +51,6 @@ keyBinder.register(Command.DOWN, {
   shift: null,
   alt: null,
 });
-keyBinder.register(Command.DOWN, {
-  mode: 'insert',
-  keyCode: KEY_CODE.DOWN,
-  meta: null,
-  ctrl: null,
-  shift: null,
-  alt: null,
-});
 keyBinder.register(Command.UP, {
   mode: 'select',
   keyCode: KEY_CODE.UP,
@@ -69,14 +62,6 @@ keyBinder.register(Command.UP, {
 keyBinder.register(Command.UP, {
   mode: 'select',
   keyCode: KEY_CODE.K,
-  meta: null,
-  ctrl: null,
-  shift: null,
-  alt: null,
-});
-keyBinder.register(Command.UP, {
-  mode: 'insert',
-  keyCode: KEY_CODE.UP,
   meta: null,
   ctrl: null,
   shift: null,
@@ -106,9 +91,18 @@ keyBinder.register(Command.INSERT, {
   shift: false,
   alt: null,
 });
-keyBinder.register(Command.SELECT, {
+// In insert
+keyBinder.register(Command.UP, {
   mode: 'insert',
-  keyCode: KEY_CODE.ESC,
+  keyCode: KEY_CODE.UP,
+  meta: null,
+  ctrl: null,
+  shift: null,
+  alt: null,
+});
+keyBinder.register(Command.DOWN, {
+  mode: 'insert',
+  keyCode: KEY_CODE.DOWN,
   meta: null,
   ctrl: null,
   shift: null,
@@ -119,6 +113,14 @@ keyBinder.register(Command.SELECT, {
   keyCode: KEY_CODE.C,
   meta: null,
   ctrl: true,
+  shift: null,
+  alt: null,
+});
+keyBinder.register(Command.SELECT, {
+  mode: 'insert',
+  keyCode: KEY_CODE.ESC,
+  meta: null,
+  ctrl: null,
   shift: null,
   alt: null,
 });

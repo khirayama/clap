@@ -2,16 +2,13 @@ import * as React from 'react';
 import styled from 'styled-components';
 
 import * as Clap from '../index';
+import { keyBinder, Command } from './keyBinds';
+import { focus } from './utils';
 
 export interface ItemProps {
   indent: number;
-  selection: Clap.PureSelection;
-  node: Clap.PureItemNode;
-  onClick?: (event: React.MouseEvent<HTMLDivElement>, props: ItemProps) => void;
-  onFocus?: (event: React.FormEvent<HTMLDivElement>, props: ItemProps) => void;
-  onKeyDown?: (event: React.KeyboardEvent<HTMLDivElement>, props: ItemProps) => void;
-  onKeyPress?: (event: React.KeyboardEvent<HTMLDivElement>, props: ItemProps) => void;
-  onKeyUp?: (event: React.KeyboardEvent<HTMLDivElement>, props: ItemProps) => void;
+  selection: Clap.Selection;
+  node: Clap.ItemNode;
 }
 
 const Wrapper = styled.div`
@@ -38,36 +35,58 @@ export class Item extends React.Component<ItemProps> {
   public render(): JSX.Element {
     const onClick = (event: React.MouseEvent<HTMLDivElement>) => {
       event.stopPropagation();
-      if (this.props.onClick) {
-        this.props.onClick(event, this.props);
-      }
+      // TODO: Usecase
+      this.props.selection.id = this.props.node.id;
+      this.props.selection.mode = 'insert';
+      this.props.selection.dispatch();
     };
 
     const onFocus = (event: React.FormEvent<HTMLDivElement>) => {
       event.stopPropagation();
-      if (this.props.onFocus) {
-        this.props.onFocus(event, this.props);
-      }
+      // TODO: Usecase
+      this.props.selection.id = this.props.node.id;
+      this.props.selection.mode = 'insert';
+      this.props.selection.dispatch();
     };
 
     const onKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
-      event.stopPropagation();
-      if (this.props.onKeyDown) {
-        this.props.onKeyDown(event, this.props);
-      }
-    };
+      const selection = this.props.selection;
+      const mode = selection.mode;
+      const currentNode = this.props.node.document().find(selection.id);
 
-    const onKeyPress = (event: React.KeyboardEvent<HTMLDivElement>) => {
-      event.stopPropagation();
-      if (this.props.onKeyPress) {
-        this.props.onKeyPress(event, this.props);
-      }
-    };
+      const keyMap = {
+        mode,
+        keyCode: event.keyCode,
+        meta: event.metaKey,
+        ctrl: event.ctrlKey,
+        shift: event.shiftKey,
+        alt: event.altKey,
+      };
+      const command = keyBinder.getCommand(keyMap, event);
 
-    const onKeyUp = (event: React.KeyboardEvent<HTMLDivElement>) => {
-      event.stopPropagation();
-      if (this.props.onKeyUp) {
-        this.props.onKeyUp(event, this.props);
+      if (command !== null) {
+        event.preventDefault();
+      }
+
+      switch (true) {
+        // TODO: Usecase
+        case command === Command.SELECT: {
+          this.props.selection.mode = 'select';
+          this.props.selection.dispatch();
+          break;
+        }
+        // TODO: Usecase
+        case command === Command.ADD_AFTER: {
+          const node = new Clap.ParagraphNode();
+          currentNode.after(node);
+          this.props.selection.id = node.id;
+          this.props.selection.mode = 'insert';
+          this.props.selection.dispatch();
+          // TODO: Next item
+          // TODO: Solve this problem by creating focusFromSelection function
+          focus(this.ref.self.current, 'beginning');
+          break;
+        }
       }
     };
 
@@ -81,8 +100,6 @@ export class Item extends React.Component<ItemProps> {
         onClick={onClick}
         onFocus={onFocus}
         onKeyDown={onKeyDown}
-        onKeyPress={onKeyPress}
-        onKeyUp={onKeyUp}
       >
         {this.props.children}
       </Wrapper>

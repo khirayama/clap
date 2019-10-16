@@ -2,8 +2,6 @@ import * as React from 'react';
 import styled from 'styled-components';
 
 import * as Clap from '../index';
-import { ComponentPool } from './ComponentPool';
-import { Item, ItemProps } from './Item';
 import { keyBinder, Command } from './keyBinds';
 import { isItemNode, focus, findUpperNode, findDownnerNode } from './utils';
 
@@ -34,7 +32,7 @@ export class Editor extends React.Component<EditorProps, EditorState> {
     self: React.RefObject<HTMLDivElement>;
     items: {
       [key: string]: {
-        item: React.RefObject<Item>;
+        item: React.RefObject<Clap.Item>;
         component: React.RefObject<any>;
       };
     };
@@ -53,8 +51,6 @@ export class Editor extends React.Component<EditorProps, EditorState> {
 
     this.onKeyDown = this.onKeyDown.bind(this);
     this.onFocus = this.onFocus.bind(this);
-    this.onClickItem = this.onClickItem.bind(this);
-    this.onKeyDownItem = this.onKeyDownItem.bind(this);
   }
 
   public componentDidMount() {
@@ -167,72 +163,24 @@ export class Editor extends React.Component<EditorProps, EditorState> {
     }
   }
 
-  private onKeyDownItem(event: React.KeyboardEvent<HTMLDivElement>) {
-    const selection = this.state.selection;
-    const mode = selection.mode;
-    const currentNode = this.props.document.find(selection.id);
-
-    const keyMap = {
-      mode,
-      keyCode: event.keyCode,
-      meta: event.metaKey,
-      ctrl: event.ctrlKey,
-      shift: event.shiftKey,
-      alt: event.altKey,
-    };
-    const command = keyBinder.getCommand(keyMap, event);
-
-    if (command !== null) {
-      event.preventDefault();
-    }
-
-    switch (true) {
-      // TODO: Usecase
-      case command === Command.SELECT: {
-        this.props.selection.mode = 'select';
-        this.props.selection.dispatch();
-        break;
-      }
-      // TODO: Usecase
-      case command === Command.ADD_AFTER: {
-        const node = new Clap.ParagraphNode();
-        currentNode.after(node);
-        this.props.selection.id = node.id;
-        this.props.selection.mode = 'insert';
-        this.props.selection.dispatch();
-        this.focusComponent('beginning');
-        break;
-      }
-    }
-  }
-
-  private onClickItem(event: React.MouseEvent<HTMLDivElement>, itemProps: ItemProps) {
-    // TODO: Usecase
-    this.props.selection.id = itemProps.node.id;
-    this.props.selection.mode = 'insert';
-    this.props.selection.dispatch();
-  }
-
-  private renderItems(nodes: Clap.PureItemNode[], indent: number = 0, items: JSX.Element[] = []): JSX.Element[] {
+  private renderItems(nodes: Clap.ItemNode[], indent: number = 0, items: JSX.Element[] = []): JSX.Element[] {
     for (const node of nodes) {
-      const Component = ComponentPool.take(node.type);
+      const Component = Clap.ComponentPool.take(node.type);
       this.ref.items[node.id] = {
         item: React.createRef(),
         component: React.createRef(),
       };
       if (Component) {
         items.push(
-          <Item
+          <Clap.Item
             ref={this.ref.items[node.id].item}
             key={node.id}
             indent={indent}
             node={node}
-            selection={this.state.selection}
-            onClick={this.onClickItem}
-            onKeyDown={this.onKeyDownItem}
+            selection={this.props.selection}
           >
             <Component ref={this.ref.items[node.id].component} node={node} selection={this.state.selection} />
-          </Item>,
+          </Clap.Item>,
         );
       }
 
@@ -245,11 +193,9 @@ export class Editor extends React.Component<EditorProps, EditorState> {
   }
 
   public render(): JSX.Element {
-    const doc = this.state.document;
-
     return (
       <Wrapper ref={this.ref.self} tabIndex={0} onKeyDown={this.onKeyDown} onFocus={this.onFocus}>
-        {this.renderItems(doc.nodes)}
+        {this.renderItems(this.props.document.nodes)}
       </Wrapper>
     );
   }
