@@ -3,31 +3,31 @@ import { PureLeaf, Leaf } from './Leaf';
 
 export interface PureBaseItemNode extends PureBaseNode {
   type: 'paragraph' | 'horizontal-rule';
-  leaves: PureLeaf[];
+  leaves: PureLeaf[] | null;
 }
 
 export class BaseItemNode extends BaseNode {
-  public static type: PureBaseItemNode['type'];
-
   public type: PureBaseItemNode['type'];
 
-  public leaves: Leaf[] = [];
+  public leaves: Leaf[] | null = [];
 
   constructor(node?: Partial<PureBaseItemNode>, relations?: BaseNode['relations']) {
     super(node, relations);
 
-    this.leaves = node
-      ? node.leaves.map((leaf: PureLeaf) => {
-          return new Leaf(leaf);
-        })
-      : [];
+    this.object = 'item';
+    this.leaves =
+      node && node.leaves
+        ? node.leaves.map((leaf: PureLeaf) => {
+            return new Leaf(leaf);
+          })
+        : [];
   }
 
   public toJSON(): PureBaseItemNode {
     return {
       ...super.toJSON(),
       type: this.type,
-      leaves: this.leaves.map(leaf => leaf.toJSON()),
+      leaves: this.leaves ? this.leaves.map(leaf => leaf.toJSON()) : null,
     };
   }
 }

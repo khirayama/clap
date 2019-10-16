@@ -12,13 +12,13 @@ export { PureLeaf, Leaf } from './Leaf';
 export { PureParagraphNode, ParagraphNode } from './items/ParagraphNode';
 export { PureHorizontalRuleNode, HorizontalRuleNode } from './items/HorizontalRuleNode';
 
-export type PureNode = PureDocumentNode | PureItemNode;
-
-export type Node = DocumentNode | ItemNode;
-
 export type PureItemNode = PureParagraphNode | PureHorizontalRuleNode;
 
 export type ItemNode = ParagraphNode | HorizontalRuleNode;
+
+export type PureNode = PureDocumentNode | PureItemNode;
+
+export type Node = DocumentNode | ItemNode;
 
 ItemNodePool.register('paragraph', ParagraphNode);
 ItemNodePool.register('horizontal-rule', HorizontalRuleNode);

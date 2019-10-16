@@ -6,7 +6,7 @@ import { ItemNodePool } from './ItemNodePool';
 export interface PureBaseNode {
   id: string;
   object: 'document' | 'item';
-  nodes: PureItemNode[];
+  nodes: PureItemNode[] | null;
 }
 
 const cache: { [key: string]: Node } = {};
@@ -16,7 +16,7 @@ export class BaseNode {
 
   public object: PureBaseNode['object'];
 
-  public nodes: ItemNode[] = [];
+  public nodes: ItemNode[] | null = [];
 
   public relations: {
     document: string;
@@ -97,7 +97,7 @@ export class BaseNode {
     return {
       id: this.id,
       object: this.object,
-      nodes: this.nodes.map(node => node.toJSON()),
+      nodes: this.nodes ? this.nodes.map(node => node.toJSON()) : null,
     };
   }
 
@@ -108,7 +108,7 @@ export class BaseNode {
 
     if (this.id === id) {
       return this;
-    } else if (this.nodes.length) {
+    } else if (this.nodes && this.nodes.length) {
       for (const node of this.nodes) {
         const result = node.find(id);
         if (result) {
@@ -135,7 +135,7 @@ export class BaseNode {
     return cache[this.relations.prev] || null;
   }
 
-  public children(): Node[] {
+  public children(): Node[] | null {
     return this.nodes;
   }
 
