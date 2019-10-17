@@ -7,7 +7,7 @@ export class HorizontalRuleNode extends BaseItemNode {
     super(node, relations);
 
     this.type = 'horizontal-rule';
-    this.leaves = null;
+    this.contents = null;
     this.nodes = null;
   }
 }

@@ -5,7 +5,7 @@ import * as ClapNode from '../nodes/index';
 type LeafElement = HTMLSpanElement | HTMLAnchorElement;
 
 interface ItemTextProps {
-  leaves: ClapNode.PureLeaf[];
+  contents: ClapNode.PureLeaf[];
 }
 
 export class ItemText extends React.Component<ItemTextProps> {
@@ -41,7 +41,7 @@ export class ItemText extends React.Component<ItemTextProps> {
       }
     }
     if (startElementIndex === endElementIndex) {
-      const leaf = this.props.leaves[startElementIndex];
+      const leaf = this.props.contents[startElementIndex];
       console.log(leaf);
     }
   }
@@ -49,7 +49,7 @@ export class ItemText extends React.Component<ItemTextProps> {
   public render() {
     return (
       <span onKeyUp={this.onKeyUp} contentEditable suppressContentEditableWarning={true} ref={this.ref.self}>
-        {this.props.leaves.map(leaf => {
+        {this.props.contents.map(leaf => {
           let tag = 'span';
           let style: any = {};
           let attributes: any = {};

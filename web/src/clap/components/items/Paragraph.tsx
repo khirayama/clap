@@ -25,7 +25,7 @@ export class Paragraph extends React.Component<ParagraphProps> {
   public render(): JSX.Element {
     return (
       <Wrapper>
-        <Clap.ItemText ref={this.ref.text} leaves={this.props.node.leaves} />
+        <Clap.ItemText ref={this.ref.text} contents={this.props.node.contents} />
       </Wrapper>
     );
   }

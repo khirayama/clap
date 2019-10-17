@@ -13,7 +13,7 @@ const sampleDocument: Clap.PureDocumentNode = {
       id: uuid(),
       object: 'item',
       type: 'paragraph',
-      leaves: [
+      contents: [
         {
           id: uuid(),
           text: '1',
@@ -25,7 +25,7 @@ const sampleDocument: Clap.PureDocumentNode = {
           id: uuid(),
           object: 'item',
           type: 'paragraph',
-          leaves: [
+          contents: [
             {
               id: uuid(),
               text: '1 - 1',
@@ -41,7 +41,7 @@ const sampleDocument: Clap.PureDocumentNode = {
               id: uuid(),
               object: 'item',
               type: 'paragraph',
-              leaves: [
+              contents: [
                 {
                   id: uuid(),
                   text: '1 - ',
@@ -74,7 +74,7 @@ const sampleDocument: Clap.PureDocumentNode = {
           id: uuid(),
           object: 'item',
           type: 'paragraph',
-          leaves: [
+          contents: [
             {
               id: uuid(),
               text: '1 - 2',
@@ -93,14 +93,14 @@ const sampleDocument: Clap.PureDocumentNode = {
       id: uuid(),
       object: 'item',
       type: 'horizontal-rule',
-      leaves: null,
+      contents: null,
       nodes: null,
     },
     {
       id: uuid(),
       object: 'item',
       type: 'paragraph',
-      leaves: [
+      contents: [
         {
           id: uuid(),
           text: '2',
@@ -119,7 +119,7 @@ const sampleDocument: Clap.PureDocumentNode = {
           id: uuid(),
           object: 'item',
           type: 'paragraph',
-          leaves: [
+          contents: [
             {
               id: uuid(),
               text: '2 - 1',
@@ -136,7 +136,7 @@ const sampleDocument: Clap.PureDocumentNode = {
               id: uuid(),
               object: 'item',
               type: 'paragraph',
-              leaves: [
+              contents: [
                 {
                   id: uuid(),
                   text: '2 - 1 - 1',
@@ -148,7 +148,7 @@ const sampleDocument: Clap.PureDocumentNode = {
                   id: uuid(),
                   object: 'item',
                   type: 'paragraph',
-                  leaves: [
+                  contents: [
                     {
                       id: uuid(),
                       text: '2 - 1 - 1 - 1',
@@ -161,7 +161,7 @@ const sampleDocument: Clap.PureDocumentNode = {
                   id: uuid(),
                   object: 'item',
                   type: 'paragraph',
-                  leaves: [
+                  contents: [
                     {
                       id: uuid(),
                       text: '2 - 1 - 1 - 2',
@@ -178,7 +178,7 @@ const sampleDocument: Clap.PureDocumentNode = {
           id: uuid(),
           object: 'item',
           type: 'paragraph',
-          leaves: [
+          contents: [
             {
               id: uuid(),
               text: '2 - 2',

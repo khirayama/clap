@@ -73,7 +73,7 @@ export class Editor extends React.Component<EditorProps, EditorState> {
     setTimeout(() => {
       const target = this.ref.items[this.state.selection.id];
       const targetNode = this.props.document.find(this.state.selection.id);
-      if (target && isItemNode(targetNode) && targetNode.leaves) {
+      if (target && isItemNode(targetNode) && targetNode.contents) {
         focus(target.component.current.ref.text.current.ref.self.current, pos);
       } else {
         this.props.selection.mode = 'select';
@@ -116,7 +116,7 @@ export class Editor extends React.Component<EditorProps, EditorState> {
       case command === Command.DOWN: {
         let targetNode = findDownnerNode(currentNode);
         if (mode === 'insert') {
-          while (targetNode && isItemNode(targetNode) && targetNode.leaves === null) {
+          while (targetNode && isItemNode(targetNode) && targetNode.contents === null) {
             targetNode = findDownnerNode(targetNode);
           }
         }
@@ -133,7 +133,7 @@ export class Editor extends React.Component<EditorProps, EditorState> {
       case command === Command.UP: {
         let targetNode = findUpperNode(currentNode);
         if (mode === 'insert') {
-          while (targetNode && isItemNode(targetNode) && targetNode.leaves === null) {
+          while (targetNode && isItemNode(targetNode) && targetNode.contents === null) {
             targetNode = findUpperNode(targetNode);
           }
         }
