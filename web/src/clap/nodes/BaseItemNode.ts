@@ -1,5 +1,5 @@
 import { PureBaseNode, BaseNode } from './BaseNode';
-import { Text } from './Text';
+import { TextContent } from './TextContent';
 import { PureContent, Content } from './index';
 
 export interface PureBaseItemNode extends PureBaseNode {
@@ -20,7 +20,7 @@ export class BaseItemNode extends BaseNode {
       node && node.contents
         ? node.contents.map((content: PureContent) => {
             // TODO: Need pool
-            return new Text(content);
+            return new TextContent(content);
           })
         : [];
   }

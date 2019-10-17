@@ -17,6 +17,7 @@ const sampleDocument: Clap.PureDocumentNode = {
         {
           id: uuid(),
           text: '1',
+          object: 'text',
           marks: [],
         },
       ],
@@ -28,6 +29,7 @@ const sampleDocument: Clap.PureDocumentNode = {
           contents: [
             {
               id: uuid(),
+              object: 'text',
               text: '1 - 1',
               marks: [
                 {
@@ -45,6 +47,7 @@ const sampleDocument: Clap.PureDocumentNode = {
                 {
                   id: uuid(),
                   text: '1 - ',
+                  object: 'text',
                   marks: [
                     {
                       type: 'italic',
@@ -54,6 +57,7 @@ const sampleDocument: Clap.PureDocumentNode = {
                 {
                   id: uuid(),
                   text: '1 -',
+                  object: 'text',
                   marks: [
                     {
                       type: 'bold',
@@ -63,6 +67,7 @@ const sampleDocument: Clap.PureDocumentNode = {
                 {
                   id: uuid(),
                   text: '1',
+                  object: 'text',
                   marks: [],
                 },
               ],
@@ -78,6 +83,7 @@ const sampleDocument: Clap.PureDocumentNode = {
             {
               id: uuid(),
               text: '1 - 2',
+              object: 'text',
               marks: [
                 {
                   type: 'code',
@@ -104,6 +110,7 @@ const sampleDocument: Clap.PureDocumentNode = {
         {
           id: uuid(),
           text: '2',
+          object: 'text',
           marks: [
             {
               type: 'bold',
@@ -123,6 +130,7 @@ const sampleDocument: Clap.PureDocumentNode = {
             {
               id: uuid(),
               text: '2 - 1',
+              object: 'text',
               marks: [
                 {
                   type: 'link',
@@ -140,6 +148,7 @@ const sampleDocument: Clap.PureDocumentNode = {
                 {
                   id: uuid(),
                   text: '2 - 1 - 1',
+                  object: 'text',
                   marks: [],
                 },
               ],
@@ -152,6 +161,7 @@ const sampleDocument: Clap.PureDocumentNode = {
                     {
                       id: uuid(),
                       text: '2 - 1 - 1 - 1',
+                      object: 'text',
                       marks: [],
                     },
                   ],
@@ -165,6 +175,7 @@ const sampleDocument: Clap.PureDocumentNode = {
                     {
                       id: uuid(),
                       text: '2 - 1 - 1 - 2',
+                      object: 'text',
                       marks: [],
                     },
                   ],
@@ -182,6 +193,7 @@ const sampleDocument: Clap.PureDocumentNode = {
             {
               id: uuid(),
               text: '2 - 2',
+              object: 'text',
               marks: [],
             },
           ],
