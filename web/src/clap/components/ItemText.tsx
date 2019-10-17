@@ -2,10 +2,8 @@ import * as React from 'react';
 
 import * as ClapNode from '../nodes/index';
 
-type LeafElement = HTMLSpanElement | HTMLAnchorElement;
-
 interface ItemTextProps {
-  contents: ClapNode.PureLeaf[];
+  contents: ClapNode.PureContent[];
 }
 
 export class ItemText extends React.Component<ItemTextProps> {
@@ -41,23 +39,23 @@ export class ItemText extends React.Component<ItemTextProps> {
       }
     }
     if (startElementIndex === endElementIndex) {
-      const leaf = this.props.contents[startElementIndex];
-      console.log(leaf);
+      const content = this.props.contents[startElementIndex];
+      console.log(content);
     }
   }
 
   public render() {
     return (
       <span onKeyUp={this.onKeyUp} contentEditable suppressContentEditableWarning={true} ref={this.ref.self}>
-        {this.props.contents.map(leaf => {
+        {this.props.contents.map(content => {
           let tag = 'span';
           let style: any = {};
           let attributes: any = {};
 
-          if (!leaf.marks.length) {
-            return <React.Fragment key={leaf.id}>{leaf.text}</React.Fragment>;
+          if (!content.marks.length) {
+            return <React.Fragment key={content.id}>{content.text}</React.Fragment>;
           }
-          for (const mark of leaf.marks) {
+          for (const mark of content.marks) {
             switch (mark.type) {
               case 'bold': {
                 style.fontWeight = 'bold';
@@ -85,11 +83,11 @@ export class ItemText extends React.Component<ItemTextProps> {
           return React.createElement(
             tag,
             {
-              key: leaf.id,
+              key: content.id,
               ...attributes,
               style,
             },
-            leaf.text,
+            content.text,
           );
         })}
       </span>

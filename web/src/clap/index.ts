@@ -14,6 +14,6 @@ export {
   BaseItemNode,
   PureParagraphNode,
   ParagraphNode,
-  PureLeaf,
-  Leaf,
+  PureText,
+  Text,
 } from './nodes/index';
