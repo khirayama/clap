@@ -1,17 +1,16 @@
 import { ItemNodePool } from './ItemNodePool';
-import { PureDocumentNode, DocumentNode } from './DocumentNode';
-import { PureParagraphNode, ParagraphNode } from './items/ParagraphNode';
-import { PureHorizontalRuleNode, HorizontalRuleNode } from './items/HorizontalRuleNode';
-import { PureTextContent, TextContent } from './TextContent';
+import { PureDocumentNode, DocumentNode } from './document/DocumentNode';
+import { PureParagraphNode, ParagraphNode } from './item/ParagraphNode';
+import { PureHorizontalRuleNode, HorizontalRuleNode } from './item/HorizontalRuleNode';
+import { PureTextContent, TextContent } from './content/TextContent';
 
 export { ItemNodePool } from './ItemNodePool';
 export { PureBaseNode, BaseNode } from './BaseNode';
-export { PureDocumentNode, DocumentNode } from './DocumentNode';
-export { PureBaseItemNode, BaseItemNode } from './BaseItemNode';
-export { PureTextContent, TextContent } from './TextContent';
-// items
-export { PureParagraphNode, ParagraphNode } from './items/ParagraphNode';
-export { PureHorizontalRuleNode, HorizontalRuleNode } from './items/HorizontalRuleNode';
+export { PureDocumentNode, DocumentNode } from './document/DocumentNode';
+export { PureBaseItemNode, BaseItemNode } from './item/BaseItemNode';
+export { PureTextContent, TextContent } from './content/TextContent';
+export { PureParagraphNode, ParagraphNode } from './item/ParagraphNode';
+export { PureHorizontalRuleNode, HorizontalRuleNode } from './item/HorizontalRuleNode';
 
 export type PureContent = PureTextContent;
 

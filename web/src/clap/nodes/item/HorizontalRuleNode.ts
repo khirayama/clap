@@ -1,4 +1,4 @@
-import { PureBaseItemNode, BaseItemNode } from '../BaseItemNode';
+import { PureBaseItemNode, BaseItemNode } from './BaseItemNode';
 
 export interface PureHorizontalRuleNode extends PureBaseItemNode {}
 

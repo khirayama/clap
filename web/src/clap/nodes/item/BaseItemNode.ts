@@ -1,6 +1,7 @@
-import { PureBaseNode, BaseNode } from './BaseNode';
-import { TextContent } from './TextContent';
-import { PureContent, Content } from './index';
+import { PureContent, Content } from '../index';
+import { PureBaseNode, BaseNode } from '../BaseNode';
+
+import { TextContent } from '../content/TextContent';
 
 export interface PureBaseItemNode extends PureBaseNode {
   type: 'paragraph' | 'horizontal-rule';

@@ -1,4 +1,4 @@
-import { PureBaseNode, BaseNode } from './BaseNode';
+import { PureBaseNode, BaseNode } from '../BaseNode';
 
 export interface PureDocumentNode extends PureBaseNode {}
 
