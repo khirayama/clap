@@ -28,7 +28,7 @@ const Hr = styled.hr`
 `;
 
 interface HorizontalRuleProps {
-  node: ClapNode.PureParagraphNode;
+  node: ClapNode.PureNode;
 }
 
 export class HorizontalRule extends React.Component<HorizontalRuleProps> {

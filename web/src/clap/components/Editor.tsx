@@ -24,7 +24,7 @@ interface EditorProps {
 
 interface EditorState {
   selection: Clap.PureSelection;
-  document: Clap.PureDocumentNode;
+  document: Clap.PureNode;
 }
 
 export class Editor extends React.Component<EditorProps, EditorState> {
