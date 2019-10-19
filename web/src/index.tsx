@@ -5,9 +5,11 @@ import uuid from 'uuid/v4';
 
 import * as Clap from './clap';
 
-const sampleDocument: Clap.PureDocumentNode = {
+const sampleDocument: Clap.PureNode = {
   id: uuid(),
   object: 'document',
+  type: 'document',
+  contents: null,
   nodes: [
     {
       id: uuid(),
