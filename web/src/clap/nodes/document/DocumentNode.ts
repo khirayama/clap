@@ -1,11 +1,11 @@
-import { PureBaseNode, BaseNode } from '../BaseNode';
-
-export interface PureDocumentNode extends PureBaseNode {}
+import { PureNode, BaseNode } from '../BaseNode';
 
 export class DocumentNode extends BaseNode {
-  constructor(node?: Partial<PureDocumentNode>, relations?: BaseNode['relations']) {
-    super(node, relations);
+  constructor(node?: Partial<PureNode>) {
+    super(node);
 
     this.object = 'document';
+    this.type = 'document';
+    this.contents = null;
   }
 }

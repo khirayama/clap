@@ -1,50 +1,87 @@
 import uuid from 'uuid/v4';
 
-import { PureNode, Node, PureItemNode, ItemNode, DocumentNode } from './index';
+import { PureContent, Content, Node, ItemNode, DocumentNode } from './index';
+import { TextContent } from './content/TextContent';
 import { ItemNodePool } from './ItemNodePool';
 
-export interface PureBaseNode {
+export interface PureNode {
   id: string;
   object: 'document' | 'item';
-  nodes: PureItemNode[] | null;
+  type: 'document' | 'paragraph' | 'horizontal-rule';
+  nodes: PureNode[] | null;
+  contents: PureContent[] | null;
 }
 
 const cache: { [key: string]: Node } = {};
 
-export class BaseNode {
-  public id: PureBaseNode['id'];
+/*
+ * BaseNode
+ * id
+ * object
+ * type
+ * nodes
+ * contents
+ * relations
+ *  document
+ *  parent
+ *  next
+ *  prev
+ *
+ * listeners
+ *
+ * dispatch
+ * on
+ * off
+ *
+ * toJSON
+ *
+ * find
+ * document
+ * parent
+ * next
+ * prev
+ * children
+ *
+ * after
+ *
+ * isDocumentNode
+ * isItemNode
+ */
 
-  public object: PureBaseNode['object'];
+export class BaseNode {
+  public id: PureNode['id'];
+
+  public object: PureNode['object'];
+
+  public type: PureNode['type'];
 
   public nodes: ItemNode[] | null = [];
 
+  public contents: Content[] | null = [];
+
   public relations: {
-    document: string;
+    document: string | null;
     parent: string | null;
     next: string | null;
     prev: string | null;
+  } = {
+    document: null,
+    parent: null,
+    next: null,
+    prev: null,
   };
 
   private listeners: ((node: Node) => void)[] = [];
 
-  constructor(node: Partial<PureNode>, relations?: BaseNode['relations']) {
+  constructor(node?: Partial<PureNode>, relations?: BaseNode['relations']) {
     this.id = node ? node.id || uuid() : uuid();
     this.object = node ? node.object : 'item';
+    this.type = node ? node.type : 'paragraph';
 
-    if (this.object === 'document') {
-      this.relations = {
-        document: this.id,
-        parent: null,
-        next: null,
-        prev: null,
-      };
+    if (this.isDocumentNode()) {
+      this.relations.document = this.id;
     } else {
-      this.relations = relations || {
-        document: null,
-        parent: null,
-        next: null,
-        prev: null,
-      };
+      this.relations = Object.assign({}, this.relations, relations) || this.relations;
     }
 
     this.nodes =
@@ -54,21 +91,30 @@ export class BaseNode {
               const nextNode = node.nodes[i + 1];
               const prevNode = node.nodes[i - 1];
               const relations = {
+                // TODO
                 document: this.relations.document,
                 parent: this.id,
                 next: nextNode ? nextNode.id : null,
                 prev: prevNode ? prevNode.id : null,
               };
 
-              const nodeClass = ItemNodePool.take((n as PureItemNode).type);
+              const nodeClass = ItemNodePool.take(n.type);
               return new (nodeClass as any)(n, relations);
             },
           )
+        : [];
+    this.contents =
+      node && node.contents
+        ? node.contents.map((content: PureContent) => {
+            // TODO: Need pool
+            return new TextContent(content);
+          })
         : [];
 
     cache[this.id] = this;
   }
 
+  /*--- Event Emitter -----------------------------------------------------*/
   public dispatch() {
     for (const listener of this.listeners) {
       listener(this);
@@ -93,14 +139,18 @@ export class BaseNode {
     }
   }
 
+  /*--- toJSON -----------------------------------------------------*/
   public toJSON(): PureNode {
     return {
       id: this.id,
       object: this.object,
+      type: this.type,
       nodes: this.nodes ? this.nodes.map(node => node.toJSON()) : null,
+      contents: this.contents ? this.contents.map(content => content.toJSON()) : null,
     };
   }
 
+  /*--- Query -----------------------------------------------------*/
   public find(id: string): Node | null {
     if (cache[id]) {
       return cache[id];
@@ -139,6 +189,7 @@ export class BaseNode {
     return this.nodes;
   }
 
+  /*--- Command -----------------------------------------------------*/
   public after(node: ItemNode): ItemNode {
     const parentNode = this.parent();
     const len = parentNode.nodes.length;
@@ -171,5 +222,14 @@ export class BaseNode {
     }
     this.dispatch();
     return node;
+  }
+
+  /*--- Check -----------------------------------------------------*/
+  public isDocumentNode(): boolean {
+    return this.object === 'document';
+  }
+
+  public isItemNode(): boolean {
+    return this.object === 'item';
   }
 }
