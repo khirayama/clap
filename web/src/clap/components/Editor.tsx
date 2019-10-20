@@ -62,6 +62,11 @@ export class Editor extends React.Component<EditorProps, EditorState> {
     this.onFocus = this.onFocus.bind(this);
   }
 
+  private emit(usecase: Symbol) {
+    const payload = { document: this.document, selection: this.selection };
+    this.emitter.emit(usecase, payload);
+  }
+
   public componentDidMount() {
     this.selection.on(() => {
       this.setState({ selection: this.selection.toJSON() });
@@ -104,7 +109,6 @@ export class Editor extends React.Component<EditorProps, EditorState> {
   private onKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
     const selection = this.state.selection;
     const mode = selection.mode;
-    const payload = { document: this.document, selection: this.selection };
 
     const keyMap = {
       mode,
@@ -123,7 +127,7 @@ export class Editor extends React.Component<EditorProps, EditorState> {
     switch (true) {
       // TODO: Usecase
       case command === Command.DOWN: {
-        this.emitter.emit(Clap.USECASE.DOWN, payload);
+        this.emit(Clap.USECASE.DOWN);
         if (mode === 'insert') {
           this.focusComponent('end');
         }
@@ -131,7 +135,7 @@ export class Editor extends React.Component<EditorProps, EditorState> {
       }
       // TODO: Usecase
       case command === Command.UP: {
-        this.emitter.emit(Clap.USECASE.UP, payload);
+        this.emit(Clap.USECASE.UP);
         if (mode === 'insert') {
           this.focusComponent('end');
         }
@@ -139,13 +143,13 @@ export class Editor extends React.Component<EditorProps, EditorState> {
       }
       // TODO: Usecase
       case command === Command.INSERT: {
-        this.emitter.emit(Clap.USECASE.INSERT_MODE, payload);
+        this.emit(Clap.USECASE.INSERT_MODE);
         this.focusComponent('end');
         break;
       }
       // TODO: Usecase
       case command === Command.INSERT_BEGINNING: {
-        this.emitter.emit(Clap.USECASE.INSERT_MODE, payload);
+        this.emit(Clap.USECASE.INSERT_MODE);
         this.focusComponent('beginning');
         break;
       }
