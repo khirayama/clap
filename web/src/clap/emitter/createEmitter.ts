@@ -1,7 +1,10 @@
 import * as Clap from '../index';
 
+import * as handlers from './handlers';
+
 export const USECASE = {
   UP: Symbol(),
+  DOWN: Symbol(),
 };
 
 export interface EmitterPayload {
@@ -12,9 +15,7 @@ export interface EmitterPayload {
 export function createEmitter() {
   const emitter = new Clap.Emitter<EmitterPayload>();
 
-  emitter.addListener(USECASE.UP, payload => {
-    console.log('up', payload);
-  });
+  emitter.addListener(USECASE.UP, handlers.up).addListener(USECASE.DOWN, handlers.down);
 
   return emitter;
 }
