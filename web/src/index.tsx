@@ -206,21 +206,15 @@ const sampleDocument: Clap.PureNode = {
   ],
 };
 
-interface State {
+interface Payload {
   documentNode: Clap.DocumentNode;
   selection: Clap.Selection;
-}
-
-interface Action {
 }
 
 window.addEventListener('DOMContentLoaded', () => {
   const documentNode = new Clap.DocumentNode(sampleDocument);
   const selection = new Clap.Selection();
-  const actionEmitter = new Clap.ActionEmitter<State, Action>({ documentNode, selection }, (state, action) => {
-    console.log(state, action);
-    return state;
-  });
+  const emitter = new Clap.Emitter<Payload>();
   ReactDOM.render(
     <Clap.Editor document={documentNode} selection={selection} />,
     window.document.querySelector('#root'),
