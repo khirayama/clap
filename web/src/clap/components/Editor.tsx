@@ -91,8 +91,7 @@ export class Editor extends React.Component<EditorProps, EditorState> {
       if (target && isItemNode(targetNode) && targetNode.contents) {
         focus(target.component.current.ref.text.current.ref.self.current, pos);
       } else {
-        this.selection.mode = 'select';
-        this.selection.dispatch();
+        this.emit(Clap.USECASE.SELECT_MODE);
       }
     }, 0);
   }
@@ -126,7 +125,6 @@ export class Editor extends React.Component<EditorProps, EditorState> {
     }
 
     switch (true) {
-      // TODO: Usecase
       case command === Command.DOWN: {
         this.emit(Clap.USECASE.DOWN);
         if (mode === 'insert') {
@@ -134,7 +132,6 @@ export class Editor extends React.Component<EditorProps, EditorState> {
         }
         break;
       }
-      // TODO: Usecase
       case command === Command.UP: {
         this.emit(Clap.USECASE.UP);
         if (mode === 'insert') {
@@ -142,13 +139,11 @@ export class Editor extends React.Component<EditorProps, EditorState> {
         }
         break;
       }
-      // TODO: Usecase
       case command === Command.INSERT: {
         this.emit(Clap.USECASE.INSERT_MODE);
         this.focusComponent('end');
         break;
       }
-      // TODO: Usecase
       case command === Command.INSERT_BEGINNING: {
         this.emit(Clap.USECASE.INSERT_MODE);
         this.focusComponent('beginning');
