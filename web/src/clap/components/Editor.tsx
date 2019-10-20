@@ -18,13 +18,17 @@ const Wrapper = styled.div`
 `;
 
 interface EditorProps {
-  selection: Clap.Selection;
-  document: Clap.DocumentNode;
+  document: Clap.PureNode;
 }
 
 interface EditorState {
   selection: Clap.PureSelection;
   document: Clap.PureNode;
+}
+
+interface Payload {
+  documentNode: Clap.DocumentNode;
+  selection: Clap.Selection;
 }
 
 export class Editor extends React.Component<EditorProps, EditorState> {
@@ -41,12 +45,19 @@ export class Editor extends React.Component<EditorProps, EditorState> {
     items: {},
   };
 
+  private selection: Clap.Selection;
+
+  private document: Clap.DocumentNode;
+
   constructor(props: EditorProps) {
     super(props);
 
+    this.document = new Clap.DocumentNode(props.document);
+    this.selection = new Clap.Selection();
+
     this.state = {
-      selection: this.props.selection.toJSON(),
-      document: this.props.document.toJSON(),
+      selection: this.selection.toJSON(),
+      document: this.document.toJSON(),
     };
 
     this.onKeyDown = this.onKeyDown.bind(this);
@@ -54,11 +65,11 @@ export class Editor extends React.Component<EditorProps, EditorState> {
   }
 
   public componentDidMount() {
-    this.props.selection.on(() => {
-      this.setState({ selection: this.props.selection.toJSON() });
+    this.selection.on(() => {
+      this.setState({ selection: this.selection.toJSON() });
     });
-    this.props.document.on(() => {
-      this.setState({ document: this.props.document.toJSON() });
+    this.document.on(() => {
+      this.setState({ document: this.document.toJSON() });
     });
   }
 
@@ -72,12 +83,12 @@ export class Editor extends React.Component<EditorProps, EditorState> {
     // FYI: focusComponent have to wait next tick of `setState` to make sure target focus.
     setTimeout(() => {
       const target = this.ref.items[this.state.selection.id];
-      const targetNode = this.props.document.find(this.state.selection.id);
+      const targetNode = this.document.find(this.state.selection.id);
       if (target && isItemNode(targetNode) && targetNode.contents) {
         focus(target.component.current.ref.text.current.ref.self.current, pos);
       } else {
-        this.props.selection.mode = 'select';
-        this.props.selection.dispatch();
+        this.selection.mode = 'select';
+        this.selection.dispatch();
       }
     }, 0);
   }
@@ -85,17 +96,17 @@ export class Editor extends React.Component<EditorProps, EditorState> {
   // EventHandler
   private onFocus() {
     // TODO: Usecase
-    this.props.selection.mode = 'select';
-    if (this.props.selection.id === null) {
-      this.props.selection.id = this.props.document.nodes[0].id;
+    this.selection.mode = 'select';
+    if (this.selection.id === null) {
+      this.selection.id = this.document.nodes[0].id;
     }
-    this.props.selection.dispatch();
+    this.selection.dispatch();
   }
 
   private onKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
     const selection = this.state.selection;
     const mode = selection.mode;
-    const currentNode = this.props.document.find(selection.id);
+    const currentNode = this.document.find(selection.id);
 
     const keyMap = {
       mode,
@@ -121,8 +132,8 @@ export class Editor extends React.Component<EditorProps, EditorState> {
           }
         }
         if (targetNode) {
-          this.props.selection.id = targetNode.id;
-          this.props.selection.dispatch();
+          this.selection.id = targetNode.id;
+          this.selection.dispatch();
         }
         if (mode === 'insert') {
           this.focusComponent('end');
@@ -138,8 +149,8 @@ export class Editor extends React.Component<EditorProps, EditorState> {
           }
         }
         if (targetNode) {
-          this.props.selection.id = targetNode.id;
-          this.props.selection.dispatch();
+          this.selection.id = targetNode.id;
+          this.selection.dispatch();
         }
         if (mode === 'insert') {
           this.focusComponent('end');
@@ -148,15 +159,15 @@ export class Editor extends React.Component<EditorProps, EditorState> {
       }
       // TODO: Usecase
       case command === Command.INSERT: {
-        this.props.selection.mode = 'insert';
-        this.props.selection.dispatch();
+        this.selection.mode = 'insert';
+        this.selection.dispatch();
         this.focusComponent('end');
         break;
       }
       // TODO: Usecase
       case command === Command.INSERT_BEGINNING: {
-        this.props.selection.mode = 'insert';
-        this.props.selection.dispatch();
+        this.selection.mode = 'insert';
+        this.selection.dispatch();
         this.focusComponent('beginning');
         break;
       }
@@ -177,7 +188,7 @@ export class Editor extends React.Component<EditorProps, EditorState> {
             key={node.id}
             indent={indent}
             node={node}
-            selection={this.props.selection}
+            selection={this.selection}
           >
             <Component ref={this.ref.items[node.id].component} node={node} selection={this.state.selection} />
           </Clap.Item>,
@@ -195,7 +206,7 @@ export class Editor extends React.Component<EditorProps, EditorState> {
   public render(): JSX.Element {
     return (
       <Wrapper ref={this.ref.self} tabIndex={0} onKeyDown={this.onKeyDown} onFocus={this.onFocus}>
-        {this.renderItems(this.props.document.nodes)}
+        {this.renderItems(this.document.nodes)}
       </Wrapper>
     );
   }

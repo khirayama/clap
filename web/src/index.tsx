@@ -206,17 +206,6 @@ const sampleDocument: Clap.PureNode = {
   ],
 };
 
-interface Payload {
-  documentNode: Clap.DocumentNode;
-  selection: Clap.Selection;
-}
-
 window.addEventListener('DOMContentLoaded', () => {
-  const documentNode = new Clap.DocumentNode(sampleDocument);
-  const selection = new Clap.Selection();
-  const emitter = new Clap.Emitter<Payload>();
-  ReactDOM.render(
-    <Clap.Editor document={documentNode} selection={selection} />,
-    window.document.querySelector('#root'),
-  );
+  ReactDOM.render(<Clap.Editor document={sampleDocument} />, window.document.querySelector('#root'));
 });
