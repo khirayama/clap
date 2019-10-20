@@ -36,11 +36,17 @@ export function down(payload: Clap.EmitterPayload) {
 
 export function insertMode(payload: Clap.EmitterPayload) {
   payload.selection.mode = 'insert';
+  if (payload.data) {
+    payload.selection.id = payload.data.id;
+  }
   payload.selection.dispatch();
 }
 
 export function selectMode(payload: Clap.EmitterPayload) {
   payload.selection.mode = 'select';
+  if (payload.data) {
+    payload.selection.id = payload.data.id;
+  }
   payload.selection.dispatch();
 }
 

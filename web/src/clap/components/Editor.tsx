@@ -63,8 +63,8 @@ export class Editor extends React.Component<EditorProps, EditorState> {
     this.onFocus = this.onFocus.bind(this);
   }
 
-  private emit(usecase: Symbol) {
-    const payload = { document: this.document, selection: this.selection };
+  private emit(usecase: Symbol, data?: { id: string }) {
+    const payload = { document: this.document, selection: this.selection, data };
     this.emitter.emit(usecase, payload);
   }
 
@@ -99,12 +99,8 @@ export class Editor extends React.Component<EditorProps, EditorState> {
 
   // EventHandler
   private onFocus() {
-    // TODO: Usecase
-    this.selection.mode = 'select';
-    if (this.selection.id === null) {
-      this.selection.id = this.document.nodes[0].id;
-    }
-    this.selection.dispatch();
+    const id = this.selection.id ? this.selection.id : this.document.nodes[0].id;
+    this.emit(Clap.USECASE.SELECT_MODE, { id });
   }
 
   private onKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {

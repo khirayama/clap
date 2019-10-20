@@ -13,6 +13,9 @@ export const USECASE = {
 export interface EmitterPayload {
   document: Clap.DocumentNode;
   selection: Clap.Selection;
+  data?: {
+    id: string;
+  };
 }
 
 function logMiddleware(type: string | Symbol, payload: EmitterPayload) {
