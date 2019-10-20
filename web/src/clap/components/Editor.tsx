@@ -26,11 +26,6 @@ interface EditorState {
   document: Clap.PureNode;
 }
 
-interface Payload {
-  documentNode: Clap.DocumentNode;
-  selection: Clap.Selection;
-}
-
 export class Editor extends React.Component<EditorProps, EditorState> {
   public ref: {
     self: React.RefObject<HTMLDivElement>;
@@ -45,6 +40,8 @@ export class Editor extends React.Component<EditorProps, EditorState> {
     items: {},
   };
 
+  private emitter: Clap.Emitter<Clap.EmitterPayload>;
+
   private selection: Clap.Selection;
 
   private document: Clap.DocumentNode;
@@ -52,6 +49,7 @@ export class Editor extends React.Component<EditorProps, EditorState> {
   constructor(props: EditorProps) {
     super(props);
 
+    this.emitter = Clap.createEmitter();
     this.document = new Clap.DocumentNode(props.document);
     this.selection = new Clap.Selection();
 
