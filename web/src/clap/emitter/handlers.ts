@@ -43,3 +43,13 @@ export function selectMode(payload: Clap.EmitterPayload) {
   payload.selection.mode = 'select';
   payload.selection.dispatch();
 }
+
+export function addAfter(payload: Clap.EmitterPayload) {
+  const currentNode = payload.document.find(payload.selection.id);
+  const node = new Clap.ParagraphNode();
+  currentNode.after(node);
+  // TODO: Focus next item
+  payload.selection.id = node.id;
+  payload.selection.mode = 'insert';
+  payload.selection.dispatch();
+}

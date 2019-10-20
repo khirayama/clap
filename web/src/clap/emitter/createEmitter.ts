@@ -7,6 +7,7 @@ export const USECASE = {
   DOWN: Symbol(),
   SELECT_MODE: Symbol(),
   INSERT_MODE: Symbol(),
+  ADD_AFTER: Symbol(),
 };
 
 export interface EmitterPayload {
@@ -21,7 +22,8 @@ export function createEmitter() {
     .addListener(USECASE.UP, handlers.up)
     .addListener(USECASE.DOWN, handlers.down)
     .addListener(USECASE.INSERT_MODE, handlers.insertMode)
-    .addListener(USECASE.SELECT_MODE, handlers.selectMode);
+    .addListener(USECASE.SELECT_MODE, handlers.selectMode)
+    .addListener(USECASE.ADD_AFTER, handlers.addAfter);
 
   return emitter;
 }

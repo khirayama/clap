@@ -58,6 +58,7 @@ export class Editor extends React.Component<EditorProps, EditorState> {
       document: this.document.toJSON(),
     };
 
+    this.emit = this.emit.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
     this.onFocus = this.onFocus.bind(this);
   }
@@ -167,6 +168,7 @@ export class Editor extends React.Component<EditorProps, EditorState> {
             indent={indent}
             node={node}
             selection={this.selection}
+            emit={this.emit}
           >
             <Component ref={this.ref.items[node.id].component} node={node} selection={this.state.selection} />
           </Clap.Item>,

@@ -9,6 +9,7 @@ export interface ItemProps {
   indent: number;
   selection: Clap.Selection;
   node: Clap.ItemNode;
+  emit: Clap.Editor['emit'];
 }
 
 const Wrapper = styled.div`
@@ -52,7 +53,6 @@ export class Item extends React.Component<ItemProps> {
     const onKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
       const selection = this.props.selection;
       const mode = selection.mode;
-      const currentNode = this.props.node.document().find(selection.id);
 
       const keyMap = {
         mode,
@@ -71,18 +71,12 @@ export class Item extends React.Component<ItemProps> {
       switch (true) {
         // TODO: Usecase
         case command === Command.SELECT: {
-          this.props.selection.mode = 'select';
-          this.props.selection.dispatch();
+          this.props.emit(Clap.USECASE.SELECT_MODE);
           break;
         }
         // TODO: Usecase
         case command === Command.ADD_AFTER: {
-          const node = new Clap.ParagraphNode();
-          currentNode.after(node);
-          this.props.selection.id = node.id;
-          this.props.selection.mode = 'insert';
-          this.props.selection.dispatch();
-          // TODO: Next item
+          this.props.emit(Clap.USECASE.ADD_AFTER);
           // TODO: Solve this problem by creating focusFromSelection function
           focus(this.ref.self.current, 'beginning');
           break;
@@ -97,6 +91,7 @@ export class Item extends React.Component<ItemProps> {
         indent={this.props.indent}
         selection={this.props.selection}
         node={this.props.node}
+        emit={this.props.emit}
         onClick={onClick}
         onFocus={onFocus}
         onKeyDown={onKeyDown}
