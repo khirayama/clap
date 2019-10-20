@@ -1,34 +1,34 @@
 type Listener<P> = (payload: P) => void;
 
 export class Emitter<P> {
-  private listeners: { [key: string]: Listener<P>[] } = {};
+  private listeners: Map<string | Symbol, Listener<P>[]> = new Map();
 
-  public addListener(type: string, listener: Listener<P>): Emitter<P> {
-    this.listeners[type] = this.listeners[type] || [];
-    this.listeners[type].push(listener);
+  public addListener(type: string | Symbol, listener: Listener<P>): Emitter<P> {
+    const listeners = this.listeners.get(type) || null;
+    this.listeners.set(type, listeners ? [...listeners, listener] : [listener]);
     return this;
   }
 
-  public removeListener(type: string, listener: Listener<P>): Emitter<P> {
-    if (!this.listeners[type]) {
+  public removeListener(type: string | Symbol, listener: Listener<P>): Emitter<P> {
+    if (!this.listeners.get(type)) {
       return this;
     }
-    if (!this.listeners[type].length) {
+    if (!this.listeners.get(type).length) {
       return this;
     }
     if (!listener) {
-      delete this.listeners[type];
+      this.listeners.delete(type);
       return this;
     }
-    this.listeners[type] = this.listeners[type].filter(_listener => !(_listener === listener));
+    this.listeners.set(type, this.listeners.get(type).filter(_listener => !(_listener === listener)));
     return this;
   }
 
-  public emit(type: string, payload: P): Emitter<P> {
-    if (!this.listeners[type]) {
+  public emit(type: string | Symbol, payload: P): Emitter<P> {
+    if (!this.listeners.get(type)) {
       return this;
     }
-    this.listeners[type].forEach((listener: Listener<P>) => {
+    this.listeners.get(type).forEach((listener: Listener<P>) => {
       listener.apply(this, [payload]);
     });
     return this;

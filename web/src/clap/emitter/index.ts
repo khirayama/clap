@@ -1,2 +1,2 @@
 export { Emitter } from './Emitter';
-export { EmitterPayload, createEmitter } from './createEmitter';
+export { EmitterPayload, createEmitter, USECASE } from './createEmitter';
