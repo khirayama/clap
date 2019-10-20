@@ -105,6 +105,7 @@ export class Editor extends React.Component<EditorProps, EditorState> {
     const selection = this.state.selection;
     const mode = selection.mode;
     const currentNode = this.document.find(selection.id);
+    const payload = { document: this.document, selection: this.selection };
 
     const keyMap = {
       mode,
@@ -140,6 +141,7 @@ export class Editor extends React.Component<EditorProps, EditorState> {
       }
       // TODO: Usecase
       case command === Command.UP: {
+        this.emitter.emit(Clap.USECASE.UP, payload);
         let targetNode = findUpperNode(currentNode);
         if (mode === 'insert') {
           while (targetNode && isItemNode(targetNode) && targetNode.contents === null) {
