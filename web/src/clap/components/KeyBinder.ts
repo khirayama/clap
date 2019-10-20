@@ -10,8 +10,6 @@ export class KeyBinder<T, P> {
   }
 
   public getCommand(keyMap: P, event: any): T | null {
-    console.log(keyMap);
-
     for (const keyBind of this.pool) {
       let isMatch = true;
 
