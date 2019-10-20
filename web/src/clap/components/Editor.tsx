@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import * as Clap from '../index';
 import { keyBinder, Command } from './keyBinds';
-import { isItemNode, focus, findUpperNode, findDownnerNode } from './utils';
+import { isItemNode, focus } from './utils';
 
 const Wrapper = styled.div`
   font-family: sans-serif;
@@ -104,7 +104,6 @@ export class Editor extends React.Component<EditorProps, EditorState> {
   private onKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
     const selection = this.state.selection;
     const mode = selection.mode;
-    const currentNode = this.document.find(selection.id);
     const payload = { document: this.document, selection: this.selection };
 
     const keyMap = {
@@ -124,16 +123,7 @@ export class Editor extends React.Component<EditorProps, EditorState> {
     switch (true) {
       // TODO: Usecase
       case command === Command.DOWN: {
-        let targetNode = findDownnerNode(currentNode);
-        if (mode === 'insert') {
-          while (targetNode && isItemNode(targetNode) && targetNode.contents === null) {
-            targetNode = findDownnerNode(targetNode);
-          }
-        }
-        if (targetNode) {
-          this.selection.id = targetNode.id;
-          this.selection.dispatch();
-        }
+        this.emitter.emit(Clap.USECASE.DOWN, payload);
         if (mode === 'insert') {
           this.focusComponent('end');
         }
@@ -142,16 +132,6 @@ export class Editor extends React.Component<EditorProps, EditorState> {
       // TODO: Usecase
       case command === Command.UP: {
         this.emitter.emit(Clap.USECASE.UP, payload);
-        let targetNode = findUpperNode(currentNode);
-        if (mode === 'insert') {
-          while (targetNode && isItemNode(targetNode) && targetNode.contents === null) {
-            targetNode = findUpperNode(targetNode);
-          }
-        }
-        if (targetNode) {
-          this.selection.id = targetNode.id;
-          this.selection.dispatch();
-        }
         if (mode === 'insert') {
           this.focusComponent('end');
         }
