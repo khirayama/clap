@@ -16,9 +16,6 @@ export function up(payload: Clap.EmitterPayload) {
     payload.selection.id = targetNode.id;
     payload.selection.dispatch();
   }
-  if (mode === 'insert') {
-    // TODO: focus component end
-  }
 }
 
 export function down(payload: Clap.EmitterPayload) {
