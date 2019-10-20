@@ -15,10 +15,23 @@ export interface EmitterPayload {
   selection: Clap.Selection;
 }
 
+function logMiddleware(type: string | Symbol, payload: EmitterPayload) {
+  let typeName = '';
+  for (const key of Object.keys(USECASE)) {
+    if (USECASE[key] === type) {
+      typeName = key;
+    }
+  }
+  if (typeName) {
+    console.log(typeName, payload);
+  }
+}
+
 export function createEmitter() {
   const emitter = new Clap.Emitter<EmitterPayload>();
 
   emitter
+    .use(logMiddleware)
     .addListener(USECASE.UP, handlers.up)
     .addListener(USECASE.DOWN, handlers.down)
     .addListener(USECASE.INSERT_MODE, handlers.insertMode)
