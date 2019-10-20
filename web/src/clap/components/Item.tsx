@@ -36,18 +36,12 @@ export class Item extends React.Component<ItemProps> {
   public render(): JSX.Element {
     const onClick = (event: React.MouseEvent<HTMLDivElement>) => {
       event.stopPropagation();
-      // TODO: Usecase
-      this.props.selection.id = this.props.node.id;
-      this.props.selection.mode = 'insert';
-      this.props.selection.dispatch();
+      this.props.emit(Clap.USECASE.INSERT_MODE, { id: this.props.node.id });
     };
 
     const onFocus = (event: React.FormEvent<HTMLDivElement>) => {
       event.stopPropagation();
-      // TODO: Usecase
-      this.props.selection.id = this.props.node.id;
-      this.props.selection.mode = 'insert';
-      this.props.selection.dispatch();
+      this.props.emit(Clap.USECASE.INSERT_MODE, { id: this.props.node.id });
     };
 
     const onKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
