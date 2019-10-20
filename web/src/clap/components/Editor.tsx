@@ -83,6 +83,7 @@ export class Editor extends React.Component<EditorProps, EditorState> {
   }
 
   private focusComponent(pos: 'beginning' | 'end') {
+    // TODO: Migrate it to handler
     // FYI: focusComponent have to wait next tick of `setState` to make sure target focus.
     setTimeout(() => {
       const target = this.ref.items[this.state.selection.id];
