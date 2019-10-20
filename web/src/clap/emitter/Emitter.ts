@@ -1,7 +1,16 @@
 type Listener<P> = (payload: P) => void;
 
+type Middleware<P> = (type: string | Symbol, payload: P) => void;
+
 export class Emitter<P> {
+  private middlewares: Middleware<P>[] = [];
+
   private listeners: Map<string | Symbol, Listener<P>[]> = new Map();
+
+  public use(middleware: Middleware<P>): Emitter<P> {
+    this.middlewares.push(middleware);
+    return this;
+  }
 
   public addListener(type: string | Symbol, listener: Listener<P>): Emitter<P> {
     const listeners = this.listeners.get(type) || null;
@@ -25,6 +34,10 @@ export class Emitter<P> {
   }
 
   public emit(type: string | Symbol, payload: P): Emitter<P> {
+    for (const middleware of this.middlewares) {
+      middleware.apply(this, [type, payload]);
+    }
+
     if (!this.listeners.get(type)) {
       return this;
     }
