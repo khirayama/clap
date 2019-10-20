@@ -1,4 +1,4 @@
-import * as Clap from './index';
+import * as Clap from '../index';
 
 export interface EmitterPayload {
   document: Clap.DocumentNode;
