@@ -5,6 +5,7 @@ import * as handlers from './handlers';
 export const USECASE = {
   UP: Symbol(),
   DOWN: Symbol(),
+  INSERT_MODE: Symbol(),
 };
 
 export interface EmitterPayload {

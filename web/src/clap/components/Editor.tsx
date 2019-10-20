@@ -139,15 +139,13 @@ export class Editor extends React.Component<EditorProps, EditorState> {
       }
       // TODO: Usecase
       case command === Command.INSERT: {
-        this.selection.mode = 'insert';
-        this.selection.dispatch();
+        this.emitter.emit(Clap.USECASE.INSERT_MODE, payload);
         this.focusComponent('end');
         break;
       }
       // TODO: Usecase
       case command === Command.INSERT_BEGINNING: {
-        this.selection.mode = 'insert';
-        this.selection.dispatch();
+        this.emitter.emit(Clap.USECASE.INSERT_MODE, payload);
         this.focusComponent('beginning');
         break;
       }
