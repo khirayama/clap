@@ -2,7 +2,17 @@ import * as Clap from '../index';
 
 import { isItemNode, findUpperNode, findDownnerNode } from './utils';
 
-export function up(payload: Clap.EmitterPayload) {
+interface BaseAction<T, P = {}> {
+  type: T;
+  payload: P & {
+    document: Clap.DocumentNode;
+    selection: Clap.Selection;
+  };
+}
+
+type Up = BaseAction<'UP'>;
+
+export function up(payload: Up['payload']) {
   const currentNode = payload.document.find(payload.selection.id);
   const mode = payload.selection.mode;
 
@@ -18,7 +28,9 @@ export function up(payload: Clap.EmitterPayload) {
   }
 }
 
-export function down(payload: Clap.EmitterPayload) {
+type Down = BaseAction<'DOWN'>;
+
+export function down(payload: Down['payload']) {
   const currentNode = payload.document.find(payload.selection.id);
   const mode = payload.selection.mode;
 
@@ -34,23 +46,25 @@ export function down(payload: Clap.EmitterPayload) {
   }
 }
 
-export function insertMode(payload: Clap.EmitterPayload) {
+type InsertMode = BaseAction<'INSERT_MODE', { id?: string }>;
+
+export function insertMode(payload: InsertMode['payload']) {
   payload.selection.mode = 'insert';
-  if (payload.data) {
-    payload.selection.id = payload.data.id;
-  }
+  payload.selection.id = payload.id || payload.selection.id;
   payload.selection.dispatch();
 }
 
-export function selectMode(payload: Clap.EmitterPayload) {
+type SelectMode = BaseAction<'SELECT_MODE', { id?: string }>;
+
+export function selectMode(payload: SelectMode['payload']) {
   payload.selection.mode = 'select';
-  if (payload.data) {
-    payload.selection.id = payload.data.id;
-  }
+  payload.selection.id = payload.id || payload.selection.id;
   payload.selection.dispatch();
 }
 
-export function addAfter(payload: Clap.EmitterPayload) {
+type AddAfter = BaseAction<'ADD_AFTER'>;
+
+export function addAfter(payload: AddAfter['payload']) {
   const currentNode = payload.document.find(payload.selection.id);
   const node = new Clap.ParagraphNode();
   currentNode.after(node);
@@ -59,3 +73,14 @@ export function addAfter(payload: Clap.EmitterPayload) {
   payload.selection.mode = 'insert';
   payload.selection.dispatch();
 }
+
+export type Action = Up | Down | InsertMode | SelectMode | AddAfter;
+
+export const actionTypes = {
+  UP: 'UP' as Action['type'],
+  DOWN: 'DOWN' as Action['type'],
+  INSERT_MODE: 'INSERT_MODE' as Action['type'],
+  INSERT_MODE_BEGINNING: 'INSERT_MODE_BEGINNING' as Action['type'],
+  SELECT_MODE: 'SELECT_MODE' as Action['type'],
+  ADD_AFTER: 'ADD_AFTER' as Action['type'],
+};

@@ -1,2 +1,3 @@
 export { Emitter } from './Emitter';
-export { EmitterPayload, createEmitter, USECASE } from './createEmitter';
+export { ACTION, createEmitter } from './createEmitter';
+export { Action, actionTypes } from './handlers';
