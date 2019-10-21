@@ -1,6 +1,6 @@
 export { ComponentPool, Editor, Item, ItemText } from './components';
 export { PureSelection, Selection } from './Selection';
-export { Emitter, EmitterPayload, createEmitter, USECASE } from './emitter';
+export { Emitter, createEmitter, Action, ACTION, actionTypes } from './emitter';
 export {
   ItemNodePool,
   PureNode,
