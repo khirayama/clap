@@ -6,6 +6,6 @@
 
 ## TODO
 
-- [ ] commandまとめる
-- [ ] insertはitemに、selectはeditorに集約
+- [x] commandまとめる
+- [x] insertはitemに、selectはeditorに集約
 - [ ] selectionからfocusを起こせるように
