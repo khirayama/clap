@@ -2,8 +2,6 @@ import * as React from 'react';
 import styled from 'styled-components';
 
 import * as Clap from '../index';
-import { keyBinder, Command } from './keyBinds';
-import { focus } from './utils';
 
 export interface ItemProps {
   indent: number;
@@ -31,64 +29,34 @@ const Wrapper = styled.div`
 `;
 
 export class Item extends React.Component<ItemProps> {
-  public ref: { self: React.RefObject<HTMLParagraphElement> } = { self: React.createRef() };
+  constructor(props: ItemProps) {
+    super(props);
+
+    this.onClick = this.onClick.bind(this);
+    this.onFocus = this.onFocus.bind(this);
+  }
+
+  private onClick(event: React.MouseEvent<HTMLDivElement>): void {
+    // FYI: Basically, `onFocus` is enough, but it is needed for non-text item.
+    event.stopPropagation();
+    this.props.emit('INSERT_MODE', { id: this.props.node.id });
+  }
+
+  private onFocus(event: React.FormEvent<HTMLDivElement>): void {
+    event.stopPropagation();
+    this.props.emit('INSERT_MODE', { id: this.props.node.id });
+  }
 
   public render(): JSX.Element {
-    const onClick = (event: React.MouseEvent<HTMLDivElement>) => {
-      event.stopPropagation();
-      this.props.emit(Clap.USECASE.INSERT_MODE, { id: this.props.node.id });
-    };
-
-    const onFocus = (event: React.FormEvent<HTMLDivElement>) => {
-      event.stopPropagation();
-      this.props.emit(Clap.USECASE.INSERT_MODE, { id: this.props.node.id });
-    };
-
-    const onKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
-      const selection = this.props.selection;
-      const mode = selection.mode;
-
-      const keyMap = {
-        mode,
-        keyCode: event.keyCode,
-        meta: event.metaKey,
-        ctrl: event.ctrlKey,
-        shift: event.shiftKey,
-        alt: event.altKey,
-      };
-      const command = keyBinder.getCommand(keyMap, event);
-
-      if (command !== null) {
-        event.preventDefault();
-      }
-
-      switch (true) {
-        // TODO: Usecase
-        case command === Command.SELECT: {
-          this.props.emit(Clap.USECASE.SELECT_MODE);
-          break;
-        }
-        // TODO: Usecase
-        case command === Command.ADD_AFTER: {
-          this.props.emit(Clap.USECASE.ADD_AFTER);
-          // TODO: Solve this problem by creating focusFromSelection function
-          focus(this.ref.self.current, 'beginning');
-          break;
-        }
-      }
-    };
-
     return (
       <Wrapper
-        ref={this.ref.self}
         tabIndex={0}
         indent={this.props.indent}
         selection={this.props.selection}
         node={this.props.node}
         emit={this.props.emit}
-        onClick={onClick}
-        onFocus={onFocus}
-        onKeyDown={onKeyDown}
+        onClick={this.onClick}
+        onFocus={this.onFocus}
       >
         {this.props.children}
       </Wrapper>

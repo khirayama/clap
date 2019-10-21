@@ -2,7 +2,8 @@ import * as React from 'react';
 import styled from 'styled-components';
 
 import * as Clap from '../index';
-import { keyBinder, Command } from './keyBinds';
+import { KeyBinder } from './KeyBinder';
+import { createKeyBinder, KeyMap } from './keyBinds';
 import { isItemNode, focus } from './utils';
 
 const Wrapper = styled.div`
@@ -40,7 +41,9 @@ export class Editor extends React.Component<EditorProps, EditorState> {
     items: {},
   };
 
-  private emitter: Clap.Emitter<Clap.EmitterPayload>;
+  private emitter: Clap.Emitter<Clap.Action>;
+
+  private keyBinder: KeyBinder<Clap.Action['type'], KeyMap>;
 
   private selection: Clap.Selection;
 
@@ -50,6 +53,7 @@ export class Editor extends React.Component<EditorProps, EditorState> {
     super(props);
 
     this.emitter = Clap.createEmitter();
+    this.keyBinder = createKeyBinder();
     this.document = new Clap.DocumentNode(props.document);
     this.selection = new Clap.Selection();
 
@@ -63,9 +67,14 @@ export class Editor extends React.Component<EditorProps, EditorState> {
     this.onFocus = this.onFocus.bind(this);
   }
 
-  private emit(usecase: Symbol, data?: { id: string }) {
-    const payload = { document: this.document, selection: this.selection, data };
-    this.emitter.emit(usecase, payload);
+  private emit(actionType: Clap.Action['type'], payload: Partial<Clap.Action['payload']> = {}) {
+    this.emitter.emit(Clap.ACTION, {
+      type: actionType,
+      payload: Object.assign({}, payload, {
+        document: this.document,
+        selection: this.selection,
+      }),
+    });
   }
 
   public componentDidMount() {
@@ -92,7 +101,7 @@ export class Editor extends React.Component<EditorProps, EditorState> {
       if (target && isItemNode(targetNode) && targetNode.contents) {
         focus(target.component.current.ref.text.current.ref.self.current, pos);
       } else {
-        this.emit(Clap.USECASE.SELECT_MODE);
+        this.emit('SELECT_MODE');
       }
     }, 0);
   }
@@ -100,7 +109,7 @@ export class Editor extends React.Component<EditorProps, EditorState> {
   // EventHandler
   private onFocus() {
     const id = this.selection.id ? this.selection.id : this.document.nodes[0].id;
-    this.emit(Clap.USECASE.SELECT_MODE, { id });
+    this.emit('SELECT_MODE', { id });
   }
 
   private onKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
@@ -115,38 +124,48 @@ export class Editor extends React.Component<EditorProps, EditorState> {
       shift: event.shiftKey,
       alt: event.altKey,
     };
-    const command = keyBinder.getCommand(keyMap, event);
+    const actionType = this.keyBinder.getAction(keyMap, event);
 
-    if (command !== null) {
+    if (actionType !== null) {
       event.preventDefault();
+      this.emit(actionType);
     }
-
-    switch (true) {
-      case command === Command.DOWN: {
-        this.emit(Clap.USECASE.DOWN);
-        if (mode === 'insert') {
-          this.focusComponent('end');
-        }
-        break;
-      }
-      case command === Command.UP: {
-        this.emit(Clap.USECASE.UP);
-        if (mode === 'insert') {
-          this.focusComponent('end');
-        }
-        break;
-      }
-      case command === Command.INSERT: {
-        this.emit(Clap.USECASE.INSERT_MODE);
-        this.focusComponent('end');
-        break;
-      }
-      case command === Command.INSERT_BEGINNING: {
-        this.emit(Clap.USECASE.INSERT_MODE);
-        this.focusComponent('beginning');
-        break;
-      }
-    }
+    // TODO: Implement focus from selection. Then delete following lines.
+    // switch (true) {
+    //   case command === Command.DOWN: {
+    //     this.emit('DOWN');
+    //     if (mode === 'insert') {
+    //       this.focusComponent('end');
+    //     }
+    //     break;
+    //   }
+    //   case command === Command.UP: {
+    //     this.emit('UP');
+    //     if (mode === 'insert') {
+    //       this.focusComponent('end');
+    //     }
+    //     break;
+    //   }
+    //   case command === Command.INSERT: {
+    //     this.emit('INSERT_MODE');
+    //     this.focusComponent('end');
+    //     break;
+    //   }
+    //   case command === Command.INSERT_BEGINNING: {
+    //     this.emit('INSERT_MODE');
+    //     this.focusComponent('beginning');
+    //     break;
+    //   }
+    //   case command === Command.SELECT: {
+    //     this.emit('SELECT_MODE');
+    //     break;
+    //   }
+    //   case command === Command.ADD_AFTER: {
+    //     this.emit('ADD_AFTER');
+    //     this.focusComponent('beginning');
+    //     break;
+    //   }
+    // }
   }
 
   private renderItems(nodes: Clap.ItemNode[], indent: number = 0, items: JSX.Element[] = []): JSX.Element[] {
