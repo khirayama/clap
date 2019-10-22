@@ -11,4 +11,5 @@ export {
   BaseItemNode,
   ParagraphNode,
   TextContent,
+  PureContent,
 } from './nodes';
