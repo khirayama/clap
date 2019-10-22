@@ -17,7 +17,7 @@ export class ItemText extends React.Component<ItemTextProps> {
   }
 
   public componentDidMount() {
-    // TODO: まとめないとhandlerの数がヤバイな
+    // TODO: まとめないとhandlerの数がヤバイな - EventEmitterでselectionchange.idみたいなの飛ばしてキャッチか。listenersの数が多くなりすぎるかもだけどO(1)だからマシか
     window.document.addEventListener('selectionchange', () => {
       const selection = window.getSelection();
       let startElementIndex = null;
