@@ -17,15 +17,14 @@ const Wrapper = styled.p`
 
 interface ParagraphProps {
   node: Clap.PureNode;
+  emit: Clap.Editor['emit'];
 }
 
 export class Paragraph extends React.Component<ParagraphProps> {
-  public ref: { text: React.RefObject<Clap.ItemText> } = { text: React.createRef() };
-
   public render(): JSX.Element {
     return (
       <Wrapper>
-        <Clap.ItemText ref={this.ref.text} contents={this.props.node.contents} />
+        <Clap.ItemText contents={this.props.node.contents} emit={this.props.emit} />
       </Wrapper>
     );
   }

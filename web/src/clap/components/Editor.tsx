@@ -67,13 +67,14 @@ export class Editor extends React.Component<EditorProps, EditorState> {
     this.onFocus = this.onFocus.bind(this);
   }
 
-  private emit(actionType: Clap.Action['type'], payload: Partial<Clap.Action['payload']> = {}) {
+  private emit(actionType: Clap.Action['type'], payload: any = {}) {
     this.emitter.emit(Clap.ACTION, {
       type: actionType,
-      payload: Object.assign({}, payload, {
+      payload: {
         document: this.document,
         selection: this.selection,
-      }),
+        ...payload,
+      },
     });
   }
 
@@ -101,7 +102,7 @@ export class Editor extends React.Component<EditorProps, EditorState> {
       if (target && isItemNode(targetNode) && targetNode.contents) {
         focus(target.component.current.ref.text.current.ref.self.current, pos);
       } else {
-        this.emit('SELECT_MODE');
+        this.emit(Clap.actionTypes.SELECT_MODE);
       }
     }, 0);
   }
@@ -109,7 +110,7 @@ export class Editor extends React.Component<EditorProps, EditorState> {
   // EventHandler
   private onFocus() {
     const id = this.selection.id ? this.selection.id : this.document.nodes[0].id;
-    this.emit('SELECT_MODE', { id });
+    this.emit(Clap.actionTypes.SELECT_MODE, { id });
   }
 
   private onKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
@@ -185,7 +186,12 @@ export class Editor extends React.Component<EditorProps, EditorState> {
             selection={this.selection}
             emit={this.emit}
           >
-            <Component ref={this.ref.items[node.id].component} node={node} selection={this.state.selection} />
+            <Component
+              ref={this.ref.items[node.id].component}
+              node={node}
+              selection={this.state.selection}
+              emit={this.emit}
+            />
           </Clap.Item>,
         );
       }

@@ -1,9 +1,10 @@
 import * as React from 'react';
 
-import * as ClapNode from '../nodes/index';
+import * as Clap from '../index';
 
 interface ItemTextProps {
-  contents: ClapNode.PureContent[];
+  emit: Clap.Editor['emit'];
+  contents: Clap.PureContent[];
 }
 
 export class ItemText extends React.Component<ItemTextProps> {
@@ -15,34 +16,50 @@ export class ItemText extends React.Component<ItemTextProps> {
     this.onKeyUp = this.onKeyUp.bind(this);
   }
 
-  private onKeyUp() {
-    const selection = window.getSelection();
-    let startElementIndex = 0;
-    let endElementIndex = 0;
+  public componentDidMount() {
+    // TODO: まとめないとhandlerの数がヤバイな
+    window.document.addEventListener('selectionchange', () => {
+      const selection = window.getSelection();
+      let startElementIndex = null;
+      let endElementIndex = null;
 
-    for (let i = 0; i < this.ref.self.current.childNodes.length; i += 1) {
-      const childNode = this.ref.self.current.childNodes[i];
-      let targetStartNode = selection.anchorNode;
-      while (targetStartNode.parentNode && targetStartNode.parentNode !== this.ref.self.current) {
-        targetStartNode = targetStartNode.parentNode;
+      for (let i = 0; i < this.ref.self.current.childNodes.length; i += 1) {
+        const childNode = this.ref.self.current.childNodes[i];
+        let targetStartNode = selection.anchorNode;
+        while (targetStartNode.parentNode && targetStartNode.parentNode !== this.ref.self.current) {
+          targetStartNode = targetStartNode.parentNode;
+        }
+        let targetEndNode = selection.focusNode;
+        while (targetEndNode.parentNode && targetEndNode.parentNode !== this.ref.self.current) {
+          targetEndNode = targetEndNode.parentNode;
+        }
+        if (targetStartNode === childNode) {
+          startElementIndex = i;
+        }
+        if (targetEndNode === childNode) {
+          endElementIndex = i;
+        }
       }
-      let targetEndNode = selection.focusNode;
-      while (targetEndNode.parentNode && targetEndNode.parentNode !== this.ref.self.current) {
-        targetEndNode = targetEndNode.parentNode;
+      if (startElementIndex !== null && endElementIndex !== null) {
+        const anchorContent = this.props.contents[startElementIndex];
+        const focusContent = this.props.contents[endElementIndex];
+        const range = {
+          anchor: {
+            id: anchorContent.id,
+            offset: selection.anchorOffset,
+          },
+          focus: {
+            id: focusContent.id,
+            offset: selection.focusOffset,
+          },
+        };
+        console.log(range);
+        // this.props.emit(Clap.actionTypes.SET_RANGE, { range });
       }
-      if (targetStartNode === childNode) {
-        startElementIndex = i;
-      }
-      if (targetEndNode === childNode) {
-        endElementIndex = i;
-        break;
-      }
-    }
-    if (startElementIndex === endElementIndex) {
-      const content = this.props.contents[startElementIndex];
-      console.log(content);
-    }
+    });
   }
+
+  private onKeyUp() {}
 
   public render() {
     return (
