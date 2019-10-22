@@ -74,7 +74,13 @@ export function addAfter(payload: AddAfter['payload']) {
   payload.selection.dispatch();
 }
 
-export type Action = Up | Down | InsertMode | SelectMode | AddAfter;
+type SetRange = BaseAction<'SET_RANGE', { range: Clap.Selection['range'] }>;
+
+export function setState(payload: SetRange['payload']) {
+  console.log('set range', payload);
+}
+
+export type Action = Up | Down | InsertMode | SelectMode | AddAfter | SetRange;
 
 export const actionTypes = {
   UP: 'UP' as Action['type'],
@@ -83,4 +89,5 @@ export const actionTypes = {
   INSERT_MODE_BEGINNING: 'INSERT_MODE_BEGINNING' as Action['type'],
   SELECT_MODE: 'SELECT_MODE' as Action['type'],
   ADD_AFTER: 'ADD_AFTER' as Action['type'],
+  SET_RANGE: 'SET_RANGE' as Action['type'],
 };
