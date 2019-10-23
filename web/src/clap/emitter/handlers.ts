@@ -54,6 +54,14 @@ export function insertMode(payload: InsertMode['payload']) {
   payload.selection.dispatch();
 }
 
+type InsertModeBeginning = BaseAction<'INSERT_MODE_BEGINNING', { id?: string }>;
+
+export function insertModeBeginning(payload: InsertMode['payload']) {
+  payload.selection.mode = 'insert';
+  payload.selection.id = payload.id || payload.selection.id;
+  payload.selection.dispatch();
+}
+
 type SelectMode = BaseAction<'SELECT_MODE', { id?: string }>;
 
 export function selectMode(payload: SelectMode['payload']) {
@@ -80,14 +88,14 @@ export function setState(payload: SetRange['payload']) {
   console.log('set range', payload);
 }
 
-export type Action = Up | Down | InsertMode | SelectMode | AddAfter | SetRange;
+export type Action = Up | Down | InsertMode | InsertModeBeginning | SelectMode | AddAfter | SetRange;
 
 export const actionTypes = {
-  UP: 'UP' as Action['type'],
-  DOWN: 'DOWN' as Action['type'],
-  INSERT_MODE: 'INSERT_MODE' as Action['type'],
-  INSERT_MODE_BEGINNING: 'INSERT_MODE_BEGINNING' as Action['type'],
-  SELECT_MODE: 'SELECT_MODE' as Action['type'],
-  ADD_AFTER: 'ADD_AFTER' as Action['type'],
-  SET_RANGE: 'SET_RANGE' as Action['type'],
+  UP: 'UP' as 'UP',
+  DOWN: 'DOWN' as 'DOWN',
+  INSERT_MODE: 'INSERT_MODE' as 'INSERT_MODE',
+  INSERT_MODE_BEGINNING: 'INSERT_MODE_BEGINNING' as 'INSERT_MODE_BEGINNING',
+  SELECT_MODE: 'SELECT_MODE' as 'SELECT_MODE',
+  ADD_AFTER: 'ADD_AFTER' as 'ADD_AFTER',
+  SET_RANGE: 'SET_RANGE' as 'SET_RANGE',
 };

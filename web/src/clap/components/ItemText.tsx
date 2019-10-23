@@ -53,8 +53,7 @@ export class ItemText extends React.Component<ItemTextProps> {
             offset: selection.focusOffset,
           },
         };
-        console.log(range);
-        // this.props.emit(Clap.actionTypes.SET_RANGE, { range });
+        this.props.emit(Clap.actionTypes.SET_RANGE, { range });
       }
     });
   }

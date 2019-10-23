@@ -67,7 +67,7 @@ export class Editor extends React.Component<EditorProps, EditorState> {
     this.onFocus = this.onFocus.bind(this);
   }
 
-  private emit(actionType: Clap.Action['type'], payload: any = {}) {
+  private emit(actionType: Clap.Action['type'], payload: Partial<Clap.Action['payload']> = {}) {
     this.emitter.emit(Clap.ACTION, {
       type: actionType,
       payload: {
@@ -75,7 +75,7 @@ export class Editor extends React.Component<EditorProps, EditorState> {
         selection: this.selection,
         ...payload,
       },
-    });
+    } as Clap.Action);
   }
 
   public componentDidMount() {
