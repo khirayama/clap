@@ -34,7 +34,7 @@ export function createEmitter() {
         break;
       }
       case handlers.actionTypes.SET_RANGE: {
-        handlers.setState(action.payload);
+        handlers.setRange(action.payload);
         break;
       }
     }
