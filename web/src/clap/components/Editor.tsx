@@ -82,6 +82,7 @@ export class Editor extends React.Component<EditorProps, EditorState> {
     this.selection.on(() => {
       this.setState({ selection: this.selection.toJSON() });
       console.log(this.selection.toJSON());
+      // TODO: clap.selectionからfocusを起こせるようにしないといけない
       // TODO: window.selection to clap.selection
       // TODO: clap.selection to window.selection
     });
