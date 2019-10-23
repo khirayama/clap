@@ -18,6 +18,7 @@ export class Selection {
 
   public mode: PureSelection['mode'] = 'normal';
 
+  // TODO: 複数item選択を考えると配列の必要がありそう
   public id: PureSelection['id'] = null;
 
   public range: PureSelection['range'] = {

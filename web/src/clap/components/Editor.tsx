@@ -81,6 +81,9 @@ export class Editor extends React.Component<EditorProps, EditorState> {
   public componentDidMount() {
     this.selection.on(() => {
       this.setState({ selection: this.selection.toJSON() });
+      console.log(this.selection.toJSON());
+      // TODO: window.selection to clap.selection
+      // TODO: clap.selection to window.selection
     });
     this.document.on(() => {
       this.setState({ document: this.document.toJSON() });
