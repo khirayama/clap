@@ -3,6 +3,7 @@ import styled from 'styled-components';
 
 import * as Clap from '../index';
 import { KeyBinder } from './KeyBinder';
+import { EditorContext } from './EditorContext';
 import { createKeyBinder, KeyMap } from './keyBinds';
 import { isItemNode, focus } from './utils';
 
@@ -28,16 +29,35 @@ interface EditorState {
 }
 
 export class Editor extends React.Component<EditorProps, EditorState> {
-  public ref: {
-    self: React.RefObject<HTMLDivElement>;
+  // FYI: id to React.RefObject
+  private ref: {
+    document: React.RefObject<HTMLDivElement>;
     items: {
-      [key: string]: {
+      [id: string]: {
         item: React.RefObject<Clap.Item>;
         component: React.RefObject<any>;
+        contents: React.RefObject<any>;
       };
     };
   } = {
-    self: React.createRef(),
+    document: React.createRef(),
+    items: {},
+  };
+
+  // FYI: id to window.Node
+  private mapping: {
+    document: any;
+    items: {
+      [id: string]: {
+        item: any;
+        component: any;
+        contents: {
+          [id: string]: any;
+        };
+      };
+    };
+  } = {
+    document: null,
     items: {},
   };
 
@@ -79,6 +99,9 @@ export class Editor extends React.Component<EditorProps, EditorState> {
   }
 
   public componentDidMount() {
+    // FYI: Map ref to mapping(id to node)
+    this.mapping.document = this.ref.document.current;
+
     this.selection.on(() => {
       this.setState({ selection: this.selection.toJSON() });
       console.log(this.selection.toJSON());
@@ -92,8 +115,12 @@ export class Editor extends React.Component<EditorProps, EditorState> {
   }
 
   public componentDidUpdate(prevProps: EditorProps, prevState: EditorState) {
-    if (this.state.selection.mode === 'select' && prevState.selection.mode !== 'select' && this.ref.self.current) {
-      this.ref.self.current.focus();
+    if (
+      this.state.selection.mode === 'select' &&
+      prevState.selection.mode !== 'select' &&
+      this.mapping.document.current
+    ) {
+      this.mapping.document.current.focus();
     }
   }
 
@@ -101,7 +128,7 @@ export class Editor extends React.Component<EditorProps, EditorState> {
     // TODO: Migrate it to handler
     // FYI: focusComponent have to wait next tick of `setState` to make sure target focus.
     setTimeout(() => {
-      const target = this.ref.items[this.state.selection.id];
+      const target = this.mapping.items[this.state.selection.id];
       const targetNode = this.document.find(this.state.selection.id);
       if (target && isItemNode(targetNode) && targetNode.contents) {
         focus(target.component.current.ref.text.current.ref.self.current, pos);
@@ -179,6 +206,7 @@ export class Editor extends React.Component<EditorProps, EditorState> {
       this.ref.items[node.id] = {
         item: React.createRef(),
         component: React.createRef(),
+        contents: React.createRef(),
       };
       if (Component) {
         items.push(
@@ -188,7 +216,6 @@ export class Editor extends React.Component<EditorProps, EditorState> {
             indent={indent}
             node={node}
             selection={this.selection}
-            emit={this.emit}
           >
             <Component
               ref={this.ref.items[node.id].component}
@@ -209,10 +236,14 @@ export class Editor extends React.Component<EditorProps, EditorState> {
   }
 
   public render(): JSX.Element {
+    this.mapping.document = React.createRef();
+
     return (
-      <Wrapper ref={this.ref.self} tabIndex={0} onKeyDown={this.onKeyDown} onFocus={this.onFocus}>
-        {this.renderItems(this.document.nodes)}
-      </Wrapper>
+      <EditorContext.Provider value={{ mapping: this.mapping, emit: this.emit }}>
+        <Wrapper ref={this.ref.self} tabIndex={0} onKeyDown={this.onKeyDown} onFocus={this.onFocus}>
+          {this.renderItems(this.document.nodes)}
+        </Wrapper>
+      </EditorContext.Provider>
     );
   }
 }

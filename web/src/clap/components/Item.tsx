@@ -2,12 +2,12 @@ import * as React from 'react';
 import styled from 'styled-components';
 
 import * as Clap from '../index';
+import { EditorContext } from './EditorContext';
 
 export interface ItemProps {
   indent: number;
   selection: Clap.Selection;
   node: Clap.ItemNode;
-  emit: Clap.Editor['emit'];
 }
 
 const Wrapper = styled.div`
@@ -29,6 +29,10 @@ const Wrapper = styled.div`
 `;
 
 export class Item extends React.Component<ItemProps> {
+  public static contextType = EditorContext;
+
+  public context!: React.ContextType<typeof EditorContext>;
+
   constructor(props: ItemProps) {
     super(props);
 
@@ -39,12 +43,12 @@ export class Item extends React.Component<ItemProps> {
   private onClick(event: React.MouseEvent<HTMLDivElement>): void {
     // FYI: Basically, `onFocus` is enough, but it is needed for non-text item.
     event.stopPropagation();
-    this.props.emit('INSERT_MODE', { id: this.props.node.id });
+    this.context.emit('INSERT_MODE', { id: this.props.node.id });
   }
 
   private onFocus(event: React.FormEvent<HTMLDivElement>): void {
     event.stopPropagation();
-    this.props.emit('INSERT_MODE', { id: this.props.node.id });
+    this.context.emit('INSERT_MODE', { id: this.props.node.id });
   }
 
   public render(): JSX.Element {
@@ -54,7 +58,6 @@ export class Item extends React.Component<ItemProps> {
         indent={this.props.indent}
         selection={this.props.selection}
         node={this.props.node}
-        emit={this.props.emit}
         onClick={this.onClick}
         onFocus={this.onFocus}
       >

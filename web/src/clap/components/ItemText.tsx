@@ -1,14 +1,16 @@
 import * as React from 'react';
 
 import * as Clap from '../index';
+import { EditorContext } from './EditorContext';
 
 interface ItemTextProps {
-  emit: Clap.Editor['emit'];
   contents: Clap.PureContent[];
 }
 
 export class ItemText extends React.Component<ItemTextProps> {
-  public ref: { self: React.RefObject<HTMLSpanElement> } = { self: React.createRef() };
+  public static contextType = EditorContext;
+
+  public context!: React.ContextType<typeof EditorContext>;
 
   constructor(props: ItemTextProps) {
     super(props);
@@ -53,12 +55,14 @@ export class ItemText extends React.Component<ItemTextProps> {
             offset: selection.focusOffset,
           },
         };
-        this.props.emit(Clap.actionTypes.SET_RANGE, { range });
+        this.context.emit(Clap.actionTypes.SET_RANGE, { range });
       }
     });
   }
 
-  private onKeyUp() {}
+  private onKeyUp() {
+    console.log(this.context);
+  }
 
   public render() {
     return (
