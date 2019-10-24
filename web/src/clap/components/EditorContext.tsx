@@ -2,24 +2,16 @@ import * as React from 'react';
 
 import { Editor } from './Editor';
 
-interface Mapping {
-  document: React.RefObject<HTMLDivElement> | null;
-  items: {
-    [id: string]: {
-      item: React.RefObject<any>;
-      component: React.RefObject<any>;
-      contents: {
-        [id: string]: React.RefObject<any>;
-      };
-    };
-  };
-}
-
 const initialContext: {
   emit: Editor['emit'] | null;
-  mapping: Mapping;
+  ref: Editor['ref'];
+  mapping: Editor['mapping'];
 } = {
   emit: null,
+  ref: {
+    document: null,
+    items: {},
+  },
   mapping: {
     document: null,
     items: {},

@@ -5,7 +5,7 @@ import * as Clap from '../index';
 import { KeyBinder } from './KeyBinder';
 import { EditorContext } from './EditorContext';
 import { createKeyBinder, KeyMap } from './keyBinds';
-import { isItemNode, focus } from './utils';
+import { isItemNode } from './utils';
 
 const Wrapper = styled.div`
   font-family: sans-serif;
@@ -34,9 +34,8 @@ export class Editor extends React.Component<EditorProps, EditorState> {
     document: React.RefObject<HTMLDivElement>;
     items: {
       [id: string]: {
-        item: React.RefObject<Clap.Item>;
-        component: React.RefObject<any>;
-        contents: React.RefObject<any>;
+        item: React.RefObject<HTMLDivElement>;
+        contents: React.RefObject<HTMLSpanElement>;
       };
     };
   } = {
@@ -46,13 +45,12 @@ export class Editor extends React.Component<EditorProps, EditorState> {
 
   // FYI: id to window.Node
   private mapping: {
-    document: any;
+    document: HTMLDivElement;
     items: {
       [id: string]: {
-        item: any;
-        component: any;
+        item: HTMLDivElement;
         contents: {
-          [id: string]: any;
+          [id: string]: ChildNode;
         };
       };
     };
@@ -98,30 +96,98 @@ export class Editor extends React.Component<EditorProps, EditorState> {
     } as Clap.Action);
   }
 
-  public componentDidMount() {
+  private mapRefToDOMNode() {
     // FYI: Map ref to mapping(id to node)
     this.mapping.document = this.ref.document.current;
+    Object.keys(this.ref.items).forEach((id: string) => {
+      this.mapping.items[id] = {
+        item: this.ref.items[id].item.current,
+        contents: {},
+      };
+      const node = this.document.find(id);
+      if (node.contents !== null) {
+        for (let i = 0; i < node.contents.length; i += 1) {
+          this.mapping.items[id].contents[node.contents[i].id] = this.ref.items[id].contents.current.childNodes[i];
+        }
+      }
+    });
+  }
+
+  public componentDidMount() {
+    this.mapRefToDOMNode();
 
     this.selection.on(() => {
       this.setState({ selection: this.selection.toJSON() });
       console.log(this.selection.toJSON());
       // TODO: clap.selectionからfocusを起こせるようにしないといけない
-      // TODO: window.selection to clap.selection
-      // TODO: clap.selection to window.selection
     });
     this.document.on(() => {
       this.setState({ document: this.document.toJSON() });
     });
+
+    window.document.addEventListener('selectionchange', () => {
+      const range = this.windowSelectionToClapSelection();
+      if (range) {
+        this.emit(Clap.actionTypes.SET_RANGE, { range });
+      }
+    });
   }
 
-  public componentDidUpdate(prevProps: EditorProps, prevState: EditorState) {
-    if (
-      this.state.selection.mode === 'select' &&
-      prevState.selection.mode !== 'select' &&
-      this.mapping.document.current
-    ) {
-      this.mapping.document.current.focus();
+  // public componentDidUpdate(prevProps: EditorProps, prevState: EditorState) {
+  public componentDidUpdate() {
+    this.mapRefToDOMNode();
+    this.windowSelectionToClapSelection();
+
+    // if (this.state.selection.mode === 'select' && prevState.selection.mode !== 'select' && this.ref.document.current) {
+    //   this.ref.document.current.focus();
+    // }
+    // TODO: clap.selection to window.selection
+  }
+
+  private windowSelectionToClapSelection() {
+    const windowSelection = window.getSelection();
+    const clapSelection = this.selection.toJSON();
+
+    if (windowSelection.anchorNode && windowSelection.focusNode) {
+      const ref = this.ref.items[clapSelection.id].contents;
+      const currentNode = this.document.find(clapSelection.id);
+      let startElementIndex = null;
+      let endElementIndex = null;
+
+      for (let i = 0; i < ref.current.childNodes.length; i += 1) {
+        const childNode = ref.current.childNodes[i];
+        let targetStartNode = windowSelection.anchorNode;
+        while (targetStartNode.parentNode && targetStartNode.parentNode !== ref.current) {
+          targetStartNode = targetStartNode.parentNode;
+        }
+        let targetEndNode = windowSelection.focusNode;
+        while (targetEndNode.parentNode && targetEndNode.parentNode !== ref.current) {
+          targetEndNode = targetEndNode.parentNode;
+        }
+        if (targetStartNode === childNode) {
+          startElementIndex = i;
+        }
+        if (targetEndNode === childNode) {
+          endElementIndex = i;
+        }
+      }
+      if (startElementIndex !== null && endElementIndex !== null) {
+        const anchorContent = currentNode.contents[startElementIndex];
+        const focusContent = currentNode.contents[endElementIndex];
+        const range = {
+          anchor: {
+            id: anchorContent.id,
+            offset: windowSelection.anchorOffset,
+          },
+          focus: {
+            id: focusContent.id,
+            offset: windowSelection.focusOffset,
+          },
+        };
+        return range;
+      }
     }
+    return null;
   }
 
   private focusComponent(pos: 'beginning' | 'end') {
@@ -131,7 +197,8 @@ export class Editor extends React.Component<EditorProps, EditorState> {
       const target = this.mapping.items[this.state.selection.id];
       const targetNode = this.document.find(this.state.selection.id);
       if (target && isItemNode(targetNode) && targetNode.contents) {
-        focus(target.component.current.ref.text.current.ref.self.current, pos);
+        console.log(target, pos);
+        // focus(target.component.current.ref.text.current.ref.self.current, pos);
       } else {
         this.emit(Clap.actionTypes.SELECT_MODE);
       }
@@ -203,26 +270,11 @@ export class Editor extends React.Component<EditorProps, EditorState> {
   private renderItems(nodes: Clap.ItemNode[], indent: number = 0, items: JSX.Element[] = []): JSX.Element[] {
     for (const node of nodes) {
       const Component = Clap.ComponentPool.take(node.type);
-      this.ref.items[node.id] = {
-        item: React.createRef(),
-        component: React.createRef(),
-        contents: React.createRef(),
-      };
+
       if (Component) {
         items.push(
-          <Clap.Item
-            ref={this.ref.items[node.id].item}
-            key={node.id}
-            indent={indent}
-            node={node}
-            selection={this.selection}
-          >
-            <Component
-              ref={this.ref.items[node.id].component}
-              node={node}
-              selection={this.state.selection}
-              emit={this.emit}
-            />
+          <Clap.Item key={node.id} indent={indent} node={node} selection={this.selection}>
+            <Component node={node} selection={this.state.selection} emit={this.emit} />
           </Clap.Item>,
         );
       }
@@ -236,11 +288,9 @@ export class Editor extends React.Component<EditorProps, EditorState> {
   }
 
   public render(): JSX.Element {
-    this.mapping.document = React.createRef();
-
     return (
-      <EditorContext.Provider value={{ mapping: this.mapping, emit: this.emit }}>
-        <Wrapper ref={this.ref.self} tabIndex={0} onKeyDown={this.onKeyDown} onFocus={this.onFocus}>
+      <EditorContext.Provider value={{ ref: this.ref, mapping: this.mapping, emit: this.emit }}>
+        <Wrapper ref={this.ref.document} tabIndex={0} onKeyDown={this.onKeyDown} onFocus={this.onFocus}>
           {this.renderItems(this.document.nodes)}
         </Wrapper>
       </EditorContext.Provider>

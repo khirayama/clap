@@ -52,8 +52,16 @@ export class Item extends React.Component<ItemProps> {
   }
 
   public render(): JSX.Element {
+    const node = this.props.node;
+
+    this.context.ref.items[node.id] = {
+      item: React.createRef(),
+      contents: React.createRef(),
+    };
+
     return (
       <Wrapper
+        ref={this.context.ref.items[node.id].item}
         tabIndex={0}
         indent={this.props.indent}
         selection={this.props.selection}
