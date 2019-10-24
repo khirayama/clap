@@ -3,16 +3,16 @@ import * as React from 'react';
 import * as Clap from '../index';
 import { EditorContext } from './EditorContext';
 
-interface ItemTextProps {
+interface ContentsProps {
   node: Clap.PureNode;
 }
 
-export class ItemText extends React.Component<ItemTextProps> {
+export class Contents extends React.Component<ContentsProps> {
   public static contextType = EditorContext;
 
   public context!: React.ContextType<typeof EditorContext>;
 
-  constructor(props: ItemTextProps) {
+  constructor(props: ContentsProps) {
     super(props);
 
     this.onKeyUp = this.onKeyUp.bind(this);

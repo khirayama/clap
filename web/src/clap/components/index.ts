@@ -8,7 +8,7 @@ export { Item } from './Item';
 export { KeyBinder } from './KeyBinder';
 export { Paragraph } from './items/Paragraph';
 export { HorizontalRule } from './items/HorizontalRule';
-export { ItemText } from './ItemText';
+export { Contents } from './Contents';
 
 ComponentPool.register('paragraph', Paragraph);
 ComponentPool.register('horizontal-rule', HorizontalRule);
