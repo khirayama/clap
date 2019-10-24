@@ -6,7 +6,6 @@ import * as Clap from '../index';
 import { KeyBinder } from './KeyBinder';
 import { EditorContext } from './EditorContext';
 import { createKeyBinder, KeyMap } from './keyBinds';
-import { isItemNode } from './utils';
 
 const Wrapper = styled.div`
   font-family: sans-serif;

@@ -1,9 +1,5 @@
 import * as Clap from '../index';
 
-export function isItemNode(node: any): node is Clap.ItemNode {
-  return node.object === 'item';
-}
-
 export function focus(el: HTMLElement, position: 'beginning' | 'end' = 'end'): void {
   // FYI: https://stackoverflow.com/questions/4233265/contenteditable-set-caret-at-the-end-of-the-text-cross-browser
   const range: Range = document.createRange();
