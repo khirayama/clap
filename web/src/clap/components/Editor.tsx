@@ -133,6 +133,7 @@ export class Editor extends React.Component<EditorProps, EditorState> {
 
   public componentDidUpdate(prevProps: EditorProps, prevState: EditorState) {
     this.mapRefToDOMNode();
+
     // FYI: Wait to update range by `selectionchange` event.
     setTimeout(() => {
       const clapSelection = this.selection.toJSON();
@@ -140,7 +141,7 @@ export class Editor extends React.Component<EditorProps, EditorState> {
         this.ref.document.current.focus();
       } else if (clapSelection.mode === 'insert') {
         const range = this.windowSelectionToClapSelection();
-        if (!deepEqual(range, clapSelection.range)) {
+        if (!deepEqual(range, clapSelection.range) || prevState.selection.mode !== 'insert') {
           this.focus(clapSelection);
         }
       }
@@ -161,8 +162,10 @@ export class Editor extends React.Component<EditorProps, EditorState> {
      */
     const anchorNode = this.mapping.items[selection.id].contents[selection.range.anchor.id];
     const focusNode = this.mapping.items[selection.id].contents[selection.range.focus.id];
-    range.setStart(anchorNode.childNodes[0] || anchorNode, selection.range.anchor.offset);
-    range.setEnd(focusNode.childNodes[0] || focusNode, selection.range.focus.offset);
+    if (anchorNode && focusNode) {
+      range.setStart(anchorNode.childNodes[0] || anchorNode, selection.range.anchor.offset);
+      range.setEnd(focusNode.childNodes[0] || focusNode, selection.range.focus.offset);
+    }
 
     const windowSelection: Selection = window.getSelection();
     windowSelection.removeAllRanges();
