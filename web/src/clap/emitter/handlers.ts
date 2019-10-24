@@ -24,6 +24,18 @@ export function up(payload: Up['payload']) {
   }
   if (targetNode) {
     payload.selection.id = targetNode.id;
+    if (targetNode.contents) {
+      payload.selection.range = {
+        anchor: {
+          id: targetNode.contents[targetNode.contents.length - 1].id,
+          offset: targetNode.contents[targetNode.contents.length - 1].text.length,
+        },
+        focus: {
+          id: targetNode.contents[targetNode.contents.length - 1].id,
+          offset: targetNode.contents[targetNode.contents.length - 1].text.length,
+        },
+      };
+    }
     payload.selection.dispatch();
   }
 }
@@ -42,6 +54,18 @@ export function down(payload: Down['payload']) {
   }
   if (targetNode) {
     payload.selection.id = targetNode.id;
+    if (targetNode.contents) {
+      payload.selection.range = {
+        anchor: {
+          id: targetNode.contents[targetNode.contents.length - 1].id,
+          offset: targetNode.contents[targetNode.contents.length - 1].text.length,
+        },
+        focus: {
+          id: targetNode.contents[targetNode.contents.length - 1].id,
+          offset: targetNode.contents[targetNode.contents.length - 1].text.length,
+        },
+      };
+    }
     payload.selection.dispatch();
   }
 }
@@ -51,19 +75,23 @@ type InsertMode = BaseAction<'INSERT_MODE', { id?: string }>;
 export function insertMode(payload: InsertMode['payload']) {
   const currentNode = payload.document.find(payload.selection.id);
 
-  payload.selection.mode = 'insert';
-  payload.selection.id = payload.id || payload.selection.id;
-  payload.selection.range = {
-    anchor: {
-      id: currentNode.contents[currentNode.contents.length - 1].id,
-      offset: currentNode.contents[currentNode.contents.length - 1].text.length,
-    },
-    focus: {
-      id: currentNode.contents[currentNode.contents.length - 1].id,
-      offset: currentNode.contents[currentNode.contents.length - 1].text.length,
-    },
-  };
-  payload.selection.dispatch();
+  if (currentNode.contents) {
+    payload.selection.mode = 'insert';
+    payload.selection.id = payload.id || payload.selection.id;
+    if (currentNode.contents) {
+      payload.selection.range = {
+        anchor: {
+          id: currentNode.contents[currentNode.contents.length - 1].id,
+          offset: currentNode.contents[currentNode.contents.length - 1].text.length,
+        },
+        focus: {
+          id: currentNode.contents[currentNode.contents.length - 1].id,
+          offset: currentNode.contents[currentNode.contents.length - 1].text.length,
+        },
+      };
+    }
+    payload.selection.dispatch();
+  }
 }
 
 type InsertModeBeginning = BaseAction<'INSERT_MODE_BEGINNING', { id?: string }>;
@@ -73,16 +101,18 @@ export function insertModeBeginning(payload: InsertModeBeginning['payload']) {
 
   payload.selection.mode = 'insert';
   payload.selection.id = payload.id || payload.selection.id;
-  payload.selection.range = {
-    anchor: {
-      id: currentNode.contents[0].id,
-      offset: 0,
-    },
-    focus: {
-      id: currentNode.contents[0].id,
-      offset: 0,
-    },
-  };
+  if (currentNode.contents) {
+    payload.selection.range = {
+      anchor: {
+        id: currentNode.contents[0].id,
+        offset: 0,
+      },
+      focus: {
+        id: currentNode.contents[0].id,
+        offset: 0,
+      },
+    };
+  }
   payload.selection.dispatch();
 }
 
