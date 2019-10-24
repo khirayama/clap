@@ -25,6 +25,10 @@ export function createEmitter() {
         handlers.insertMode(action.payload);
         break;
       }
+      case handlers.actionTypes.INSERT_MODE_BEGINNING: {
+        handlers.insertModeBeginning(action.payload);
+        break;
+      }
       case handlers.actionTypes.SELECT_MODE: {
         handlers.selectMode(action.payload);
         break;

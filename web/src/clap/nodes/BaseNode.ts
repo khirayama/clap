@@ -91,7 +91,6 @@ export class BaseNode {
               const nextNode = node.nodes[i + 1];
               const prevNode = node.nodes[i - 1];
               const relations = {
-                // TODO
                 document: this.relations.document,
                 parent: this.id,
                 next: nextNode ? nextNode.id : null,

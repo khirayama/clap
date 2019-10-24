@@ -49,16 +49,40 @@ export function down(payload: Down['payload']) {
 type InsertMode = BaseAction<'INSERT_MODE', { id?: string }>;
 
 export function insertMode(payload: InsertMode['payload']) {
+  const currentNode = payload.document.find(payload.selection.id);
+
   payload.selection.mode = 'insert';
   payload.selection.id = payload.id || payload.selection.id;
+  payload.selection.range = {
+    anchor: {
+      id: currentNode.contents[currentNode.contents.length - 1].id,
+      offset: currentNode.contents[currentNode.contents.length - 1].text.length,
+    },
+    focus: {
+      id: currentNode.contents[currentNode.contents.length - 1].id,
+      offset: currentNode.contents[currentNode.contents.length - 1].text.length,
+    },
+  };
   payload.selection.dispatch();
 }
 
 type InsertModeBeginning = BaseAction<'INSERT_MODE_BEGINNING', { id?: string }>;
 
-export function insertModeBeginning(payload: InsertMode['payload']) {
+export function insertModeBeginning(payload: InsertModeBeginning['payload']) {
+  const currentNode = payload.document.find(payload.selection.id);
+
   payload.selection.mode = 'insert';
   payload.selection.id = payload.id || payload.selection.id;
+  payload.selection.range = {
+    anchor: {
+      id: currentNode.contents[0].id,
+      offset: 0,
+    },
+    focus: {
+      id: currentNode.contents[0].id,
+      offset: 0,
+    },
+  };
   payload.selection.dispatch();
 }
 
@@ -76,7 +100,6 @@ export function addAfter(payload: AddAfter['payload']) {
   const currentNode = payload.document.find(payload.selection.id);
   const node = new Clap.ParagraphNode();
   currentNode.after(node);
-  // TODO: Focus next item
   payload.selection.id = node.id;
   payload.selection.mode = 'insert';
   payload.selection.dispatch();

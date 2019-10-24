@@ -1,3 +1,4 @@
+import deepEqual from 'fast-deep-equal';
 import * as React from 'react';
 import styled from 'styled-components';
 
@@ -118,8 +119,6 @@ export class Editor extends React.Component<EditorProps, EditorState> {
 
     this.selection.on(() => {
       this.setState({ selection: this.selection.toJSON() });
-      console.log(this.selection.toJSON());
-      // TODO: clap.selectionからfocusを起こせるようにしないといけない
     });
     this.document.on(() => {
       this.setState({ document: this.document.toJSON() });
@@ -133,15 +132,42 @@ export class Editor extends React.Component<EditorProps, EditorState> {
     });
   }
 
-  // public componentDidUpdate(prevProps: EditorProps, prevState: EditorState) {
-  public componentDidUpdate() {
+  public componentDidUpdate(prevProps: EditorProps, prevState: EditorState) {
     this.mapRefToDOMNode();
-    this.windowSelectionToClapSelection();
+    // FYI: Wait to update range by `selectionchange` event.
+    setTimeout(() => {
+      const clapSelection = this.selection.toJSON();
+      if (this.state.selection.mode === 'select' && prevState.selection.mode !== 'select') {
+        this.ref.document.current.focus();
+      } else if (clapSelection.mode === 'insert') {
+        const range = this.windowSelectionToClapSelection();
+        if (!deepEqual(range, clapSelection.range)) {
+          this.focus(clapSelection);
+        }
+      }
+    }, 0);
+  }
 
-    // if (this.state.selection.mode === 'select' && prevState.selection.mode !== 'select' && this.ref.document.current) {
-    //   this.ref.document.current.focus();
-    // }
-    // TODO: clap.selection to window.selection
+  private focus(selection: Clap.PureSelection) {
+    console.log('Set new range from clap selection.');
+    // FYI: https://stackoverflow.com/questions/4233265/contenteditable-set-caret-at-the-end-of-the-text-cross-browser
+    const range: Range = document.createRange();
+    /*
+    FYI: If you use following lines, it doesn't work. It returns selection start and end are 1.
+    Maybe it is react's problem. Raw content editable doesn't have.
+    ```
+    range.selectNodeContents(el);
+    range.collapse(false);
+    ```
+     */
+    const anchorNode = this.mapping.items[selection.id].contents[selection.range.anchor.id];
+    const focusNode = this.mapping.items[selection.id].contents[selection.range.focus.id];
+    range.setStart(anchorNode.childNodes[0] || anchorNode, selection.range.anchor.offset);
+    range.setEnd(focusNode.childNodes[0] || focusNode, selection.range.focus.offset);
+
+    const windowSelection: Selection = window.getSelection();
+    windowSelection.removeAllRanges();
+    windowSelection.addRange(range);
   }
 
   private windowSelectionToClapSelection() {
@@ -190,21 +216,6 @@ export class Editor extends React.Component<EditorProps, EditorState> {
     return null;
   }
 
-  private focusComponent(pos: 'beginning' | 'end') {
-    // TODO: Migrate it to handler
-    // FYI: focusComponent have to wait next tick of `setState` to make sure target focus.
-    setTimeout(() => {
-      const target = this.mapping.items[this.state.selection.id];
-      const targetNode = this.document.find(this.state.selection.id);
-      if (target && isItemNode(targetNode) && targetNode.contents) {
-        console.log(target, pos);
-        // focus(target.component.current.ref.text.current.ref.self.current, pos);
-      } else {
-        this.emit(Clap.actionTypes.SELECT_MODE);
-      }
-    }, 0);
-  }
-
   // EventHandler
   private onFocus() {
     const id = this.selection.id ? this.selection.id : this.document.nodes[0].id;
@@ -229,42 +240,6 @@ export class Editor extends React.Component<EditorProps, EditorState> {
       event.preventDefault();
       this.emit(actionType);
     }
-    // TODO: Implement focus from selection. Then delete following lines.
-    // switch (true) {
-    //   case command === Command.DOWN: {
-    //     this.emit('DOWN');
-    //     if (mode === 'insert') {
-    //       this.focusComponent('end');
-    //     }
-    //     break;
-    //   }
-    //   case command === Command.UP: {
-    //     this.emit('UP');
-    //     if (mode === 'insert') {
-    //       this.focusComponent('end');
-    //     }
-    //     break;
-    //   }
-    //   case command === Command.INSERT: {
-    //     this.emit('INSERT_MODE');
-    //     this.focusComponent('end');
-    //     break;
-    //   }
-    //   case command === Command.INSERT_BEGINNING: {
-    //     this.emit('INSERT_MODE');
-    //     this.focusComponent('beginning');
-    //     break;
-    //   }
-    //   case command === Command.SELECT: {
-    //     this.emit('SELECT_MODE');
-    //     break;
-    //   }
-    //   case command === Command.ADD_AFTER: {
-    //     this.emit('ADD_AFTER');
-    //     this.focusComponent('beginning');
-    //     break;
-    //   }
-    // }
   }
 
   private renderItems(nodes: Clap.ItemNode[], indent: number = 0, items: JSX.Element[] = []): JSX.Element[] {
