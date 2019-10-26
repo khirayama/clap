@@ -7,7 +7,9 @@ export class ParagraphNode extends BaseItemNode {
     super(node, relations);
 
     this.type = 'paragraph';
-    this.contents.push(new TextContent());
+    if (!this.contents.length) {
+      this.contents.push(new TextContent());
+    }
   }
 
   public isParagraphNode(): this is ParagraphNode {
