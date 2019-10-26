@@ -19,6 +19,7 @@ export class Contents extends React.Component<ContentsProps> {
   }
 
   private onKeyUp() {
+    // TODO: Sync value to Node
     console.log(this.context);
   }
 
