@@ -18,9 +18,39 @@ export class Contents extends React.Component<ContentsProps> {
     this.onKeyUp = this.onKeyUp.bind(this);
   }
 
-  private onKeyUp() {
-    // TODO: Sync value to Node
-    console.log(this.context);
+  private onKeyUp(): void {
+    const windowSelection = window.getSelection();
+    const clapSelection = this.context.selection.toJSON();
+
+    if (windowSelection.anchorNode && windowSelection.focusNode) {
+      const ref = this.context.ref.items[clapSelection.id].contents;
+      let startElementIndex = null;
+      let endElementIndex = null;
+      let contents = '';
+
+      for (let i = 0; i < ref.current.childNodes.length; i += 1) {
+        const childNode = ref.current.childNodes[i];
+        let targetStartNode = windowSelection.anchorNode;
+        while (targetStartNode.parentNode && targetStartNode.parentNode !== ref.current) {
+          targetStartNode = targetStartNode.parentNode;
+        }
+        let targetEndNode = windowSelection.focusNode;
+        while (targetEndNode.parentNode && targetEndNode.parentNode !== ref.current) {
+          targetEndNode = targetEndNode.parentNode;
+        }
+        if (targetStartNode === childNode) {
+          startElementIndex = i;
+          contents = childNode.textContent;
+        }
+        if (targetEndNode === childNode) {
+          endElementIndex = i;
+        }
+      }
+      if (startElementIndex === endElementIndex) {
+        console.log(contents);
+        // TODO: emit contents
+      }
+    }
   }
 
   public render() {
