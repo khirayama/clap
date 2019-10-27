@@ -250,7 +250,7 @@ export class Editor extends React.Component<EditorProps, EditorState> {
 
       if (Component) {
         items.push(
-          <Clap.Item key={node.id} indent={indent} node={node} selection={this.selection}>
+          <Clap.Item key={node.id} indent={indent} node={node}>
             <Component node={node} selection={this.state.selection} emit={this.emit} />
           </Clap.Item>,
         );
@@ -266,7 +266,9 @@ export class Editor extends React.Component<EditorProps, EditorState> {
 
   public render(): JSX.Element {
     return (
-      <EditorContext.Provider value={{ ref: this.ref, mapping: this.mapping, emit: this.emit }}>
+      <EditorContext.Provider
+        value={{ ref: this.ref, mapping: this.mapping, emit: this.emit, selection: this.selection }}
+      >
         <Wrapper ref={this.ref.document} tabIndex={0} onKeyDown={this.onKeyDown} onFocus={this.onFocus}>
           {this.renderItems(this.document.nodes)}
         </Wrapper>
