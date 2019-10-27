@@ -6,6 +6,7 @@ interface Decoration {
   type: 'bold' | 'italic' | 'code' | 'strike';
 }
 
+// TODO: Migrate Link as Inline
 interface Link {
   type: 'link';
   href: string;
