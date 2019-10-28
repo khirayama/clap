@@ -126,6 +126,7 @@ export class Editor extends React.Component<EditorProps, EditorState> {
     window.document.addEventListener('selectionchange', () => {
       const range = this.windowSelectionToClapSelection();
       if (range) {
+        // TODO: よくわからないタイミングでSET_RANGEがoffset 0 で飛んでるのでチェック
         this.emit(Clap.actionTypes.SET_RANGE, { range });
       }
     });
