@@ -135,18 +135,15 @@ export class Editor extends React.Component<EditorProps, EditorState> {
   public componentDidUpdate(prevProps: EditorProps, prevState: EditorState) {
     this.mapRefToDOMNode();
 
-    // FYI: Wait to update range by `selectionchange` event.
-    setTimeout(() => {
-      const clapSelection = this.selection.toJSON();
-      if (this.state.selection.mode === 'select' && prevState.selection.mode !== 'select') {
-        this.ref.document.current.focus();
-      } else if (clapSelection.mode === 'insert') {
-        const range = this.windowSelectionToClapSelection();
-        if (!deepEqual(range, clapSelection.range) || prevState.selection.mode !== 'insert') {
-          this.focus(clapSelection);
-        }
+    const clapSelection = this.selection.toJSON();
+    if (this.state.selection.mode === 'select' && prevState.selection.mode !== 'select') {
+      this.ref.document.current.focus();
+    } else if (clapSelection.mode === 'insert') {
+      const range = this.windowSelectionToClapSelection();
+      if (!deepEqual(range, clapSelection.range) || prevState.selection.mode !== 'insert') {
+        this.focus(clapSelection);
       }
-    }, 0);
+    }
   }
 
   private focus(selection: Clap.PureSelection) {
