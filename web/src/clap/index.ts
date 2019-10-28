@@ -12,4 +12,5 @@ export {
   ParagraphNode,
   TextContent,
   PureContent,
+  Content,
 } from './nodes';

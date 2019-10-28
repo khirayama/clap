@@ -41,6 +41,10 @@ export function createEmitter() {
         handlers.setRange(action.payload);
         break;
       }
+      case handlers.actionTypes.UPDATE_TEXT: {
+        handlers.updateText(action.payload);
+        break;
+      }
     }
   });
 

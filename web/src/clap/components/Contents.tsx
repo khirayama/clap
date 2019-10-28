@@ -24,9 +24,10 @@ export class Contents extends React.Component<ContentsProps> {
 
     if (windowSelection.anchorNode && windowSelection.focusNode) {
       const ref = this.context.ref.items[clapSelection.id].contents;
+      const currentNode = this.props.node;
       let startElementIndex = null;
       let endElementIndex = null;
-      let contents = '';
+      let text = '';
 
       for (let i = 0; i < ref.current.childNodes.length; i += 1) {
         const childNode = ref.current.childNodes[i];
@@ -40,15 +41,18 @@ export class Contents extends React.Component<ContentsProps> {
         }
         if (targetStartNode === childNode) {
           startElementIndex = i;
-          contents = childNode.textContent;
+          text = childNode.textContent;
         }
         if (targetEndNode === childNode) {
           endElementIndex = i;
         }
       }
-      if (startElementIndex === endElementIndex) {
-        console.log(contents);
-        // TODO: emit contents
+      if (startElementIndex !== null && endElementIndex !== null) {
+        this.context.emit(Clap.actionTypes.UPDATE_TEXT, {
+          id: currentNode.id,
+          contentId: currentNode.contents[startElementIndex].id,
+          text,
+        });
       }
     }
   }

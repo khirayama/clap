@@ -168,6 +168,22 @@ export class BaseNode {
     return null;
   }
 
+  public findContent(nodeId: string, contentId: string): Content | null {
+    const node = this.find(nodeId);
+
+    if (!node.contents) {
+      return null;
+    }
+
+    for (const content of node.contents) {
+      if (content.id === contentId) {
+        return content;
+      }
+    }
+
+    return null;
+  }
+
   public document(): DocumentNode {
     return cache[this.relations.document];
   }
@@ -221,6 +237,14 @@ export class BaseNode {
     }
     this.dispatch();
     return node;
+  }
+
+  public updateText(nodeId: string, contentId: string, text: string) {
+    const content = this.findContent(nodeId, contentId);
+    if (content && content.text !== text) {
+      content.text = text;
+      this.dispatch();
+    }
   }
 
   /*--- Check -----------------------------------------------------*/

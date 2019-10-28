@@ -142,7 +142,13 @@ export function setRange(payload: SetRange['payload']) {
   payload.selection.dispatch();
 }
 
-export type Action = Up | Down | InsertMode | InsertModeBeginning | SelectMode | AddAfter | SetRange;
+type UpdateText = BaseAction<'UPDATE_TEXT', { id: Clap.Node['id']; contentId: Clap.Content['id']; text: string }>;
+
+export function updateText(payload: UpdateText['payload']) {
+  payload.document.updateText(payload.id, payload.contentId, payload.text);
+}
+
+export type Action = Up | Down | InsertMode | InsertModeBeginning | SelectMode | AddAfter | SetRange | UpdateText;
 
 export const actionTypes = {
   UP: 'UP' as 'UP',
@@ -152,4 +158,5 @@ export const actionTypes = {
   SELECT_MODE: 'SELECT_MODE' as 'SELECT_MODE',
   ADD_AFTER: 'ADD_AFTER' as 'ADD_AFTER',
   SET_RANGE: 'SET_RANGE' as 'SET_RANGE',
+  UPDATE_TEXT: 'UPDATE_TEXT' as 'UPDATE_TEXT',
 };
