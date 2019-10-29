@@ -126,8 +126,11 @@ export class Editor extends React.Component<EditorProps, EditorState> {
     window.document.addEventListener('selectionchange', () => {
       const range = this.windowSelectionToClapSelection();
       if (range) {
-        // TODO: よくわからないタイミングでSET_RANGEがoffset 0 で飛んでるのでチェック
-        this.emit(Clap.actionTypes.SET_RANGE, { range });
+        const clapSelection = this.selection.toJSON();
+        const range = this.windowSelectionToClapSelection();
+        if (!deepEqual(range, clapSelection.range)) {
+          this.emit(Clap.actionTypes.SET_RANGE, { range });
+        }
       }
     });
   }
@@ -138,16 +141,15 @@ export class Editor extends React.Component<EditorProps, EditorState> {
     const clapSelection = this.selection.toJSON();
     if (this.state.selection.mode === 'select' && prevState.selection.mode !== 'select') {
       this.ref.document.current.focus();
-    } else if (clapSelection.mode === 'insert') {
+    } else if (clapSelection.mode === 'insert' && prevState.selection.mode !== 'insert') {
       const range = this.windowSelectionToClapSelection();
-      if (!deepEqual(range, clapSelection.range) || prevState.selection.mode !== 'insert') {
+      if (!deepEqual(range, clapSelection.range) || (!range && !!clapSelection.range)) {
         this.focus(clapSelection);
       }
     }
   }
 
   private focus(selection: Clap.PureSelection) {
-    console.log('Set new range from clap selection.');
     // FYI: https://stackoverflow.com/questions/4233265/contenteditable-set-caret-at-the-end-of-the-text-cross-browser
     const range: Range = document.createRange();
     /*
@@ -173,6 +175,9 @@ export class Editor extends React.Component<EditorProps, EditorState> {
   private windowSelectionToClapSelection() {
     const windowSelection = window.getSelection();
     const clapSelection = this.selection.toJSON();
+    if (windowSelection.anchorNode === null) {
+      return null;
+    }
 
     if (windowSelection.anchorNode && windowSelection.focusNode) {
       const ref = this.ref.items[clapSelection.id].contents;

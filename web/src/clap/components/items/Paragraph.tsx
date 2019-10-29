@@ -17,14 +17,13 @@ const Wrapper = styled.p`
 
 interface ParagraphProps {
   node: Clap.PureNode;
-  emit: Clap.Editor['emit'];
 }
 
 export class Paragraph extends React.Component<ParagraphProps> {
   public render(): JSX.Element {
     return (
       <Wrapper>
-        <Clap.Contents node={this.props.node} />
+        <Clap.Contents node={this.props.node} key={this.props.node.id} />
       </Wrapper>
     );
   }
