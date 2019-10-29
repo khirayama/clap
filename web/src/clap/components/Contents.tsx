@@ -12,6 +12,8 @@ interface ContentsInnerProps {
 class ContentsInner extends React.Component<ContentsInnerProps> {
   public shouldComponentUpdate(prevProps: ContentsInnerProps) {
     return !(
+      prevProps.selection.range &&
+      this.props.selection.range &&
       prevProps.selection.id === this.props.selection.id &&
       prevProps.selection.range.anchor.id === this.props.selection.range.anchor.id &&
       prevProps.selection.range.focus.id === this.props.selection.range.focus.id

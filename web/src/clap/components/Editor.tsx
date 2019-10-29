@@ -124,13 +124,14 @@ export class Editor extends React.Component<EditorProps, EditorState> {
     });
 
     window.document.addEventListener('selectionchange', () => {
-      const range = this.windowSelectionToClapSelection();
-      if (range) {
-        const clapSelection = this.selection.toJSON();
+      if (this.state.selection.mode === 'insert') {
         const range = this.windowSelectionToClapSelection();
+        const clapSelection = this.selection.toJSON();
         if (!deepEqual(range, clapSelection.range)) {
           this.emit(Clap.actionTypes.SET_RANGE, { range });
         }
+      } else {
+        this.emit(Clap.actionTypes.SET_RANGE, { range: null });
       }
     });
   }
@@ -138,14 +139,10 @@ export class Editor extends React.Component<EditorProps, EditorState> {
   public componentDidUpdate(prevProps: EditorProps, prevState: EditorState) {
     this.mapRefToDOMNode();
 
-    const clapSelection = this.selection.toJSON();
-    if (this.state.selection.mode === 'select' && prevState.selection.mode !== 'select') {
+    if (this.state.selection.mode === 'select') {
       this.ref.document.current.focus();
-    } else if (clapSelection.mode === 'insert' && prevState.selection.mode !== 'insert') {
-      const range = this.windowSelectionToClapSelection();
-      if (!deepEqual(range, clapSelection.range) || (!range && !!clapSelection.range)) {
-        this.focus(clapSelection);
-      }
+    } else if (this.state.selection.mode === 'insert' && prevState.selection.mode !== 'insert') {
+      this.focus(this.state.selection);
     }
   }
 
