@@ -73,7 +73,7 @@ export function down(payload: Down['payload']) {
 type InsertMode = BaseAction<'INSERT_MODE', { id?: string }>;
 
 export function insertMode(payload: InsertMode['payload']) {
-  const currentNode = payload.document.find(payload.selection.id);
+  const currentNode = payload.document.find(payload.id || payload.selection.id);
 
   if (currentNode.contents) {
     payload.selection.mode = 'insert';
@@ -97,7 +97,7 @@ export function insertMode(payload: InsertMode['payload']) {
 type InsertModeBeginning = BaseAction<'INSERT_MODE_BEGINNING', { id?: string }>;
 
 export function insertModeBeginning(payload: InsertModeBeginning['payload']) {
-  const currentNode = payload.document.find(payload.selection.id);
+  const currentNode = payload.document.find(payload.id || payload.selection.id);
 
   payload.selection.mode = 'insert';
   payload.selection.id = payload.id || payload.selection.id;

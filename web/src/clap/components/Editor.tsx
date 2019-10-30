@@ -141,7 +141,10 @@ export class Editor extends React.Component<EditorProps, EditorState> {
 
     if (this.state.selection.mode === 'select') {
       this.ref.document.current.focus();
-    } else if (this.state.selection.mode === 'insert' && prevState.selection.mode !== 'insert') {
+    } else if (
+      (this.state.selection.mode === 'insert' && prevState.selection.mode !== 'insert') ||
+      this.state.selection.id !== prevState.selection.id
+    ) {
       this.focus(this.state.selection);
     }
   }

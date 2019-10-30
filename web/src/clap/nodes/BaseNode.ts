@@ -168,14 +168,8 @@ export class BaseNode {
     return null;
   }
 
-  public findContent(nodeId: string, contentId: string): Content | null {
-    const node = this.find(nodeId);
-
-    if (!node.contents) {
-      return null;
-    }
-
-    for (const content of node.contents) {
+  public findContent(contentId: string): Content | null {
+    for (const content of this.contents) {
       if (content.id === contentId) {
         return content;
       }
