@@ -234,10 +234,25 @@ export class BaseNode {
   }
 
   public updateText(nodeId: string, contentId: string, text: string) {
-    const content = this.findContent(nodeId, contentId);
-    if (content && content.text !== text) {
-      content.text = text;
-      this.dispatch();
+    const node = this.find(nodeId);
+    if (node) {
+      const content = node.findContent(contentId);
+      if (content && content.text !== text) {
+        if (text) {
+          console.log(`Replace with new text(${text}).`);
+          content.text = text;
+        } else {
+          console.log('Remove content.', content);
+          node.contents = node.contents.filter(tmp => content.id !== tmp.id);
+          console.log('Removed.', node.contents);
+          if (!node.contents.length) {
+            console.log('Add text content because the node content is empty.');
+            node.contents.push(new TextContent());
+          }
+        }
+        console.log(node.contents);
+        this.dispatch();
+      }
     }
   }
 
