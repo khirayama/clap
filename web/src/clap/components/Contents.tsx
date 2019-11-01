@@ -1,5 +1,6 @@
 // import deepEqual from 'fast-deep-equal';
 import * as React from 'react';
+import styled from 'styled-components';
 
 import * as Clap from '../index';
 import { EditorContext } from './EditorContext';
@@ -8,6 +9,40 @@ interface ContentsInnerProps {
   node: Clap.PureNode;
   selection: Clap.Selection;
 }
+
+interface StyleProps {
+  bold?: boolean;
+  italic?: boolean;
+  code?: boolean;
+  strike?: boolean;
+}
+
+const Wrapper = styled.span`
+  box-sizing: border-box;
+  margin: 0;
+  outline: 0;
+  border: 0;
+  border-radius: 0;
+  vertical-align: baseline;
+  -webkit-appearance: none;
+
+  display: inline; /* FYI: It's for cmd + left/right to jump. If inline-block, it is stopped with a element */
+
+  ${(props: StyleProps) => (props.bold ? 'font-weight: bold;' : '')}
+  ${(props: StyleProps) => (props.italic ? 'font-style: italic' : '')}
+  ${(props: StyleProps) => (props.code ? 'background: #aaa;' : '')}
+  ${(props: StyleProps) => (props.strike ? 'text-decoration: line-through;' : '')}
+
+  &:empty {
+    display: inline-block;
+
+    &:before {
+      display: inline-block;
+      content: 'clap!';
+      visibility: hidden;
+    }
+  }
+`;
 
 class ContentsInner extends React.Component<ContentsInnerProps> {
   public shouldComponentUpdate(prevProps: ContentsInnerProps) {
@@ -24,46 +59,32 @@ class ContentsInner extends React.Component<ContentsInnerProps> {
     return (
       <React.Fragment>
         {this.props.node.contents.map(content => {
-          let tag = 'span';
-          let style: { [key: string]: string } = {};
-          let attributes: { [key: string]: string } = {};
-
-          if (!content.marks.length) {
-            return <React.Fragment key={content.id}>{content.text}</React.Fragment>;
-          }
+          const styleProps: StyleProps = {};
           for (const mark of content.marks) {
             switch (mark.type) {
               case 'bold': {
-                style.fontWeight = 'bold';
+                styleProps.bold = true;
                 break;
               }
               case 'italic': {
-                style.fontStyle = 'italic';
+                styleProps.italic = true;
                 break;
               }
               case 'code': {
-                tag = 'code';
+                styleProps.code = true;
                 break;
               }
               case 'strike': {
-                style.textDecoration = 'line-through';
+                styleProps.strike = true;
                 break;
               }
-              case 'link': {
-                tag = 'a';
-                attributes.href = mark.href;
-                break;
-              }
+              // TODO: Support link
             }
           }
-          return React.createElement(
-            tag,
-            {
-              key: content.id,
-              ...attributes,
-              style,
-            },
-            content.text,
+          return (
+            <Wrapper key={content.id} {...styleProps}>
+              {content.text}
+            </Wrapper>
           );
         })}
       </React.Fragment>
@@ -118,14 +139,12 @@ export class Contents extends React.Component<ContentsProps> {
           endElementIndex = i;
         }
       }
-      if (
-        startElementIndex !== null &&
-        endElementIndex !== null &&
-        text !== currentNode.contents[startElementIndex].text
-      ) {
+      console.log('input', text, startElementIndex, endElementIndex);
+      console.log((this.context.mapping.items[this.context.selection.id] || {}).contents);
+      if (text !== currentNode.contents[startElementIndex || 0].text) {
         this.context.emit(Clap.actionTypes.UPDATE_TEXT, {
           id: currentNode.id,
-          contentId: currentNode.contents[startElementIndex].id,
+          contentId: currentNode.contents[startElementIndex || 0].id,
           text,
         });
       }
