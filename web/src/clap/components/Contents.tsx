@@ -83,10 +83,13 @@ export class Contents extends React.Component<ContentsProps> {
   constructor(props: ContentsProps) {
     super(props);
 
-    this.onKeyUp = this.onKeyUp.bind(this);
+    this.onInput = this.onInput.bind(this);
   }
 
-  private onKeyUp(): void {
+  private onInput(): void {
+    // TODO: keyPressのときのwindowSelectionが必要かも。keyUpまで待つとTextNodeが消えてしまって、indexが一致しない
+    // TODO: keydown / inputのときに正しいindexは取れる。
+    // TODO: textContentはinputで取れてるけど、ref[contentId]がない。場合 = ''という感じにしなきゃかかも？
     const windowSelection = window.getSelection();
     const clapSelection = this.context.selection.toJSON();
 
@@ -132,9 +135,9 @@ export class Contents extends React.Component<ContentsProps> {
   public render() {
     return (
       <span
-        onKeyUp={this.onKeyUp}
         contentEditable
-        suppressContentEditableWarning={true}
+        suppressContentEditableWarning
+        onInput={this.onInput}
         ref={this.context.ref.items[this.props.node.id].contents}
       >
         <ContentsInner node={this.props.node} selection={this.context.selection} />
