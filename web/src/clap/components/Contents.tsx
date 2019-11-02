@@ -139,12 +139,13 @@ export class Contents extends React.Component<ContentsProps> {
           endElementIndex = i;
         }
       }
+      const contentId = currentNode.contents[startElementIndex || 0].id;
       console.log('input', text, startElementIndex, endElementIndex);
-      console.log((this.context.mapping.items[this.context.selection.id] || {}).contents);
+      console.log((this.context.mapping.items[this.context.selection.id] || {}).contents[contentId]);
       if (text !== currentNode.contents[startElementIndex || 0].text) {
         this.context.emit(Clap.actionTypes.UPDATE_TEXT, {
           id: currentNode.id,
-          contentId: currentNode.contents[startElementIndex || 0].id,
+          contentId,
           text,
         });
       }
