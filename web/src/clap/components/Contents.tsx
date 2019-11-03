@@ -105,6 +105,7 @@ export class Contents extends React.Component<ContentsProps> {
     super(props);
 
     this.onInput = this.onInput.bind(this);
+    this.onKeyUp = this.onKeyUp.bind(this);
   }
 
   private onInput(): void {
@@ -152,12 +153,20 @@ export class Contents extends React.Component<ContentsProps> {
     }
   }
 
+  private onKeyUp() {
+    console.log('keyup');
+    console.log(
+      (this.context.mapping.items[this.context.selection.id] || {}).contents[this.context.selection.range.anchor.id],
+    );
+  }
+
   public render() {
     return (
       <span
         contentEditable
         suppressContentEditableWarning
         onInput={this.onInput}
+        onKeyUp={this.onKeyUp}
         ref={this.context.ref.items[this.props.node.id].contents}
       >
         <ContentsInner node={this.props.node} selection={this.context.selection} />
