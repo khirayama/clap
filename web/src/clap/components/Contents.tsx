@@ -105,21 +105,17 @@ export class Contents extends React.Component<ContentsProps> {
     super(props);
 
     this.onInput = this.onInput.bind(this);
-    this.onKeyUp = this.onKeyUp.bind(this);
   }
 
   private onInput(): void {
-    // TODO: keyPressのときのwindowSelectionが必要かも。keyUpまで待つとTextNodeが消えてしまって、indexが一致しない
-    // TODO: keydown / inputのときに正しいindexは取れる。
-    // TODO: textContentはinputで取れてるけど、ref[contentId]がない。場合 = ''という感じにしなきゃかかも？
     const windowSelection = window.getSelection();
     const clapSelection = this.context.selection.toJSON();
 
     if (windowSelection.anchorNode && windowSelection.focusNode) {
       const ref = this.context.ref.items[clapSelection.id].contents;
       const currentNode = this.props.node;
-      let startElementIndex = null;
-      let endElementIndex = null;
+      let startElementIndex: number | null = null;
+      let endElementIndex: number | null = null;
       let text = '';
 
       for (let i = 0; i < ref.current.childNodes.length; i += 1) {
@@ -141,23 +137,28 @@ export class Contents extends React.Component<ContentsProps> {
         }
       }
       const contentId = currentNode.contents[startElementIndex || 0].id;
-      console.log('input', text, startElementIndex, endElementIndex);
-      console.log((this.context.mapping.items[this.context.selection.id] || {}).contents[contentId]);
-      if (text !== currentNode.contents[startElementIndex || 0].text) {
-        this.context.emit(Clap.actionTypes.UPDATE_TEXT, {
-          id: currentNode.id,
-          contentId,
-          text,
-        });
-      }
+      const selectionNodeId = this.context.selection.id;
+      const selectionContentId = this.context.selection.range.anchor.id;
+      // FYI: ちょっと危険だ。SET_RANGEとUPDATE_TEXTのタイミングも変わってしまう。
+      // FYI: 変な動きが出るまで試す。
+      /* FYI:
+       * When updated selection with empty text content, selection.range.id is on prev content.
+       * So, when removing all text in content, current node can not be gotten.
+       */
+      setTimeout(() => {
+        const content = (this.context.mapping.items[selectionNodeId] || {}).contents[selectionContentId];
+        if (!content) {
+          text = '';
+        }
+        if (text !== currentNode.contents[startElementIndex || 0].text) {
+          this.context.emit(Clap.actionTypes.UPDATE_TEXT, {
+            id: currentNode.id,
+            contentId,
+            text,
+          });
+        }
+      }, 0);
     }
-  }
-
-  private onKeyUp() {
-    console.log('keyup');
-    console.log(
-      (this.context.mapping.items[this.context.selection.id] || {}).contents[this.context.selection.range.anchor.id],
-    );
   }
 
   public render() {
@@ -166,7 +167,6 @@ export class Contents extends React.Component<ContentsProps> {
         contentEditable
         suppressContentEditableWarning
         onInput={this.onInput}
-        onKeyUp={this.onKeyUp}
         ref={this.context.ref.items[this.props.node.id].contents}
       >
         <ContentsInner node={this.props.node} selection={this.context.selection} />
