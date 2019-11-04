@@ -207,5 +207,12 @@ const sampleDocument: Clap.PureNode = {
 };
 
 window.addEventListener('DOMContentLoaded', () => {
-  ReactDOM.render(<Clap.Editor document={sampleDocument} />, window.document.querySelector('#root'));
+  ReactDOM.render(
+    <div>
+      <Clap.Editor document={sampleDocument} />
+      <h2>Readonly Copy</h2>
+      <Clap.Editor document={sampleDocument} readonly />
+    </div>,
+    window.document.querySelector('#root'),
+  );
 });
