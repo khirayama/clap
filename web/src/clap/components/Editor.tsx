@@ -21,6 +21,7 @@ const Wrapper = styled.div`
 
 interface EditorProps {
   document: Clap.PureNode;
+  readonly?: boolean;
 }
 
 interface EditorState {
@@ -268,11 +269,20 @@ export class Editor extends React.Component<EditorProps, EditorState> {
   }
 
   public render(): JSX.Element {
+    const options = {
+      readonly: this.props.readonly,
+    };
+
     return (
       <EditorContext.Provider
-        value={{ ref: this.ref, mapping: this.mapping, emit: this.emit, selection: this.selection }}
+        value={{ ref: this.ref, mapping: this.mapping, emit: this.emit, selection: this.selection, options }}
       >
-        <Wrapper ref={this.ref.document} tabIndex={0} onKeyDown={this.onKeyDown} onFocus={this.onFocus}>
+        <Wrapper
+          ref={this.ref.document}
+          tabIndex={this.props.readonly ? 0 : -1}
+          onKeyDown={this.onKeyDown}
+          onFocus={this.onFocus}
+        >
           {this.renderItems(this.document.nodes)}
         </Wrapper>
       </EditorContext.Provider>

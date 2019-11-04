@@ -7,6 +7,9 @@ const initialContext: {
   emit: Clap.Editor['emit'] | null;
   ref: Clap.Editor['ref'];
   mapping: Clap.Editor['mapping'];
+  options: {
+    readonly?: boolean;
+  };
 } = {
   selection: null,
   emit: null,
@@ -17,6 +20,9 @@ const initialContext: {
   mapping: {
     document: null,
     items: {},
+  },
+  options: {
+    readonly: false,
   },
 };
 

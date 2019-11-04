@@ -159,7 +159,7 @@ export class Contents extends React.Component<ContentsProps> {
   public render() {
     return (
       <span
-        contentEditable
+        contentEditable={!this.context.options.readonly}
         suppressContentEditableWarning
         onInput={this.onInput}
         onKeyUp={this.onKeyUp}
