@@ -24,7 +24,7 @@ export function up(payload: Up['payload']) {
   }
   if (targetNode) {
     payload.selection.id = targetNode.id;
-    if (targetNode.contents) {
+    if (mode === 'insert' && targetNode.contents) {
       payload.selection.range = {
         anchor: {
           id: targetNode.contents[targetNode.contents.length - 1].id,
@@ -54,7 +54,7 @@ export function down(payload: Down['payload']) {
   }
   if (targetNode) {
     payload.selection.id = targetNode.id;
-    if (targetNode.contents) {
+    if (mode === 'insert' && targetNode.contents) {
       payload.selection.range = {
         anchor: {
           id: targetNode.contents[targetNode.contents.length - 1].id,
@@ -121,6 +121,16 @@ type SelectMode = BaseAction<'SELECT_MODE', { id?: string }>;
 export function selectMode(payload: SelectMode['payload']) {
   payload.selection.mode = 'select';
   payload.selection.id = payload.id || payload.selection.id;
+  payload.selection.range = {
+    anchor: {
+      id: null,
+      offset: 0,
+    },
+    focus: {
+      id: null,
+      offset: 0,
+    },
+  };
   payload.selection.dispatch();
 }
 
