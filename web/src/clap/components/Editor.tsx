@@ -5,6 +5,8 @@ import styled from 'styled-components';
 import * as Clap from '../index';
 import { KeyBinder } from './KeyBinder';
 import { EditorContext } from './EditorContext';
+import { DebugHelper } from './DebugHelper';
+import { ResetStyle } from './ResetStyle';
 import { createKeyBinder, KeyMap } from './keyBinds';
 
 const Wrapper = styled.div`
@@ -286,6 +288,7 @@ export class Editor extends React.Component<EditorProps, EditorState> {
         >
           {this.renderItems(this.document.nodes)}
         </Wrapper>
+        {this.props.debug ? <DebugHelper document={this.document} selection={this.selection} /> : null}
       </EditorContext.Provider>
     );
   }
