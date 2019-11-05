@@ -1,6 +1,7 @@
 // import deepEqual from 'fast-deep-equal';
 import * as React from 'react';
 import styled from 'styled-components';
+import deepEqual from 'fast-deep-equal';
 
 import * as Clap from '../index';
 import { EditorContext } from './EditorContext';
@@ -43,7 +44,8 @@ class ContentsInner extends React.Component<ContentsInnerProps> {
       this.props.selection.range &&
       prevProps.selection.id === this.props.selection.id &&
       prevProps.selection.range.anchor.id === this.props.selection.range.anchor.id &&
-      prevProps.selection.range.focus.id === this.props.selection.range.focus.id
+      prevProps.selection.range.focus.id === this.props.selection.range.focus.id &&
+      deepEqual(prevProps.node.contents, this.props.node.contents)
     );
   }
 
