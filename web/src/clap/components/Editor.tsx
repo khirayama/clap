@@ -277,6 +277,7 @@ export class Editor extends React.Component<EditorProps, EditorState> {
       <EditorContext.Provider
         value={{ ref: this.ref, mapping: this.mapping, emit: this.emit, selection: this.selection, options }}
       >
+        <ResetStyle />
         <Wrapper
           ref={this.ref.document}
           tabIndex={this.props.readonly ? 0 : -1}
