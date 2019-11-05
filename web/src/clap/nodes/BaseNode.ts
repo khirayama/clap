@@ -244,15 +244,13 @@ export class BaseNode {
         } else {
           console.log('Remove content.', content);
           node.contents = node.contents.filter(tmp => content.id !== tmp.id);
-          console.log('Removed.', node.contents);
           if (!node.contents.length) {
             console.log('Add text content because the node content is empty.');
             node.contents.push(new TextContent());
           }
         }
-        console.log(node.contents);
-        this.dispatch();
       }
+      node.dispatch();
     }
   }
 
