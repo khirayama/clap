@@ -267,7 +267,7 @@ export class Editor extends React.Component<EditorProps, EditorState> {
 
   public render(): JSX.Element {
     const options = {
-      readonly: this.props.readonly,
+      readonly: this.props.readonly === true,
     };
 
     return (
@@ -277,7 +277,7 @@ export class Editor extends React.Component<EditorProps, EditorState> {
         <ResetStyle />
         <Wrapper
           ref={this.ref.document}
-          tabIndex={this.props.readonly ? 0 : -1}
+          tabIndex={options.readonly ? -1 : 0}
           onKeyDown={this.onKeyDown}
           onFocus={this.onFocus}
         >

@@ -57,7 +57,7 @@ export class Item extends React.Component<ItemProps> {
         indent={this.props.indent}
         isSelected={this.context.selection.id === this.props.node.id && this.context.selection.mode === 'select'}
         ref={this.context.ref.items[node.id].item}
-        tabIndex={this.context.options.readonly ? 0 : -1}
+        tabIndex={this.context.options.readonly ? -1 : 0}
         onClick={this.onClick}
         onFocus={this.onFocus}
       >
