@@ -10,20 +10,15 @@ import { ResetStyle } from './ResetStyle';
 import { createKeyBinder, KeyMap } from './keyBinds';
 
 const Wrapper = styled.div`
-  font-family: sans-serif;
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  outline: 0;
-  border: 0;
-  border-radius: 0;
-  vertical-align: baseline;
-  -webkit-appearance: none;
+  display: inline-block;
+  vertical-align: top;
+  width: 50%;
 `;
 
 interface EditorProps {
   document: Clap.PureNode;
   readonly?: boolean;
+  debug?: boolean;
 }
 
 interface EditorState {

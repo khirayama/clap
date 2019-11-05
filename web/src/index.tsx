@@ -209,7 +209,7 @@ const sampleDocument: Clap.PureNode = {
 window.addEventListener('DOMContentLoaded', () => {
   ReactDOM.render(
     <div>
-      <Clap.Editor document={sampleDocument} />
+      <Clap.Editor document={sampleDocument} debug />
       <h2>Readonly Copy</h2>
       <Clap.Editor document={sampleDocument} readonly />
     </div>,
