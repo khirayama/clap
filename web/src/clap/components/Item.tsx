@@ -15,14 +15,6 @@ export interface ItemWrapperProps {
 }
 
 const Wrapper = styled.div`
-  box-sizing: border-box;
-  margin: 0;
-  outline: 0;
-  border: 0;
-  border-radius: 0;
-  vertical-align: baseline;
-  -webkit-appearance: none;
-
   padding: 0 0 0 ${(props: ItemWrapperProps) => `${props.indent * 10}px`};
   background: ${(props: ItemWrapperProps) => {
     return props.isSelected ? 'rgba(45, 170, 219, 0.3)' : 'transparent';

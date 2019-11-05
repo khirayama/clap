@@ -18,14 +18,6 @@ interface StyleProps {
 }
 
 const Wrapper = styled.span`
-  box-sizing: border-box;
-  margin: 0;
-  outline: 0;
-  border: 0;
-  border-radius: 0;
-  vertical-align: baseline;
-  -webkit-appearance: none;
-
   display: inline; /* FYI: It's for cmd + left/right to jump. If inline-block, it is stopped with a element */
 
   ${(props: StyleProps) => (props.bold ? 'font-weight: bold;' : '')}
