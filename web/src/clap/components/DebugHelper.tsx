@@ -9,32 +9,53 @@ interface DebugHelperProps {
 }
 
 const Wrapper = styled.div`
+  position: fixed;
+  top: 0;
+  right: 0;
   display: inline-block;
-  vertical-align: top;
   white-space: pre;
-  background: #666;
+  background: rgba(55, 55, 55, 0.93);
   color: #fff;
   font-family: serif;
-  width: 50%;
-  max-height: 800px;
+  max-width: 50%;
+  height: 100%;
   overflow: scroll;
-  padding: 12px;
+  font-size: 0.75rem;
 
   code {
+    position: relative;
     display: inline-block;
     width: 100%;
+    padding: 8px;
+
+    label {
+      display: inline-block;
+      position: absolute;
+      top: 0;
+      right: 0;
+      padding: 4px;
+      background: rgba(255, 255, 255, 0.67);
+    }
   }
 
-  code + code {
-    border-top: solid 2px #aaa;
+  hr {
+    width: 100%;
+    border-top: solid 1px #fff;
   }
 `;
 
 export function DebugHelper(props: DebugHelperProps) {
   return (
     <Wrapper>
-      <code>{JSON.stringify(props.selection, null, 2)}</code>
-      <code>{JSON.stringify(props.document.toJSON(), null, 2)}</code>
+      <code>
+        <label>selection</label>
+        {JSON.stringify(props.selection, null, 2)}
+      </code>
+      <hr />
+      <code>
+        <label>document</label>
+        {JSON.stringify(props.document.toJSON(), null, 2)}
+      </code>
     </Wrapper>
   );
 }

@@ -12,7 +12,7 @@ import { createKeyBinder, KeyMap } from './keyBinds';
 const Wrapper = styled.div`
   display: inline-block;
   vertical-align: top;
-  width: 50%;
+  width: 100%;
 `;
 
 interface EditorProps {
@@ -282,8 +282,8 @@ export class Editor extends React.Component<EditorProps, EditorState> {
           onFocus={this.onFocus}
         >
           {this.renderItems(this.document.nodes)}
+          {this.props.debug ? <DebugHelper document={this.document} selection={this.selection} /> : null}
         </Wrapper>
-        {this.props.debug ? <DebugHelper document={this.document} selection={this.selection} /> : null}
       </EditorContext.Provider>
     );
   }
