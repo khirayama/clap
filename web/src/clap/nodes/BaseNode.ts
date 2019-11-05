@@ -144,8 +144,8 @@ export class BaseNode {
       id: this.id,
       object: this.object,
       type: this.type,
-      nodes: this.nodes ? this.nodes.map(node => node.toJSON()) : null,
       contents: this.contents ? this.contents.map(content => content.toJSON()) : null,
+      nodes: this.nodes ? this.nodes.map(node => node.toJSON()) : null,
     };
   }
 
