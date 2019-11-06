@@ -26,6 +26,7 @@
     "@types/redux": "3.6.0",
     "@types/styled-components": "4.1.19",
     "@types/uuid": "3.4.5",
+    "@types/xregexp": "3.0.30",
     "@typescript-eslint/eslint-plugin": "2.3.2",
     "@typescript-eslint/parser": "2.3.2",
     "eslint": "6.5.1",
@@ -53,6 +54,7 @@
     "react-router": "5.1.2",
     "redux": "4.0.4",
     "styled-components": "4.4.0",
-    "uuid": "3.3.3"
+    "uuid": "3.3.3",
+    "xregexp": "4.2.4"
   }
 }
