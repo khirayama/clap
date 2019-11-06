@@ -114,12 +114,18 @@ export class Editor extends React.Component<EditorProps, EditorState> {
   public componentDidMount() {
     this.mapRefToDOMNode();
 
-    this.selection.on(() => {
-      this.setState({ selection: this.selection.toJSON() });
-    });
-    this.document.on(() => {
-      this.setState({ document: this.document.toJSON() });
-    });
+    if (this.props.readonly !== true) {
+      this.selection.on(() => {
+        this.setState({
+          selection: this.selection.toJSON(),
+        });
+      });
+      this.document.on(() => {
+        this.setState({
+          document: this.document.toJSON(),
+        });
+      });
+    }
 
     window.document.addEventListener('selectionchange', () => {
       if (this.state.selection.mode === 'insert') {
@@ -271,20 +277,22 @@ export class Editor extends React.Component<EditorProps, EditorState> {
     };
 
     return (
-      <EditorContext.Provider
-        value={{ ref: this.ref, mapping: this.mapping, emit: this.emit, selection: this.selection, options }}
-      >
-        <ResetStyle />
-        <Wrapper
-          ref={this.ref.document}
-          tabIndex={options.readonly ? -1 : 0}
-          onKeyDown={this.onKeyDown}
-          onFocus={this.onFocus}
+      <>
+        <EditorContext.Provider
+          value={{ ref: this.ref, mapping: this.mapping, emit: this.emit, selection: this.selection, options }}
         >
-          {this.renderItems(this.document.nodes)}
-          {this.props.debug ? <DebugHelper document={this.document} selection={this.selection} /> : null}
-        </Wrapper>
-      </EditorContext.Provider>
+          <ResetStyle />
+          <Wrapper
+            ref={this.ref.document}
+            tabIndex={options.readonly ? -1 : 0}
+            onKeyDown={this.onKeyDown}
+            onFocus={this.onFocus}
+          >
+            {this.renderItems(this.document.nodes)}
+          </Wrapper>
+        </EditorContext.Provider>
+        {this.props.debug ? <DebugHelper document={this.state.document} selection={this.state.selection} /> : null}
+      </>
     );
   }
 }

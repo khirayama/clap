@@ -4,8 +4,8 @@ import styled from 'styled-components';
 import * as Clap from '../index';
 
 interface DebugHelperProps {
-  document: Clap.DocumentNode;
-  selection: Clap.Selection;
+  document: Clap.PureNode;
+  selection: Clap.PureSelection;
 }
 
 const Wrapper = styled.div`
@@ -54,7 +54,7 @@ export function DebugHelper(props: DebugHelperProps) {
       <hr />
       <code>
         <label>document</label>
-        {JSON.stringify(props.document.toJSON(), null, 2)}
+        {JSON.stringify(props.document, null, 2)}
       </code>
     </Wrapper>
   );
