@@ -64,6 +64,7 @@ export class DebugHelper extends React.Component<DebugHelperProps> {
     content = XRegExp.replace(
       content,
       // FYI: Firefox and Safari RegExp doesn't support flag `s`.
+      // FYI: [New flags :: XRegExp](http://xregexp.com/flags/)
       XRegExp('"nodes": \\[.*\\]', 'gms'),
       `"nodes": [${node.nodes ? node.nodes.map(n => this.htmlNode(n)).join('') : ''}]`,
     );
