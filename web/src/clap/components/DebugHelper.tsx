@@ -1,5 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
+import XRegExp from 'xregexp';
 
 import * as Clap from '../index';
 
@@ -60,8 +61,10 @@ const Wrapper = styled.div`
 export class DebugHelper extends React.Component<DebugHelperProps> {
   private htmlNode(node: Clap.Node): any {
     let content = JSON.stringify(node, null, 2);
-    content = content.replace(
-      /"nodes": \[.*\]/gms,
+    content = XRegExp.replace(
+      content,
+      // FYI: Firefox and Safari RegExp doesn't support flag `s`.
+      XRegExp('"nodes": \\[.*\\]', 'gms'),
       `"nodes": [${node.nodes ? node.nodes.map(n => this.htmlNode(n)).join('') : ''}]`,
     );
     let classNames = ['node-block'];
