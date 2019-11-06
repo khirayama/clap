@@ -144,6 +144,10 @@ export class Editor extends React.Component<EditorProps, EditorState> {
     this.mapRefToDOMNode();
 
     if (this.state.selection.mode === 'select') {
+      // FYI: Safari keeps focus on contenteditable element when segue to select mode from insert mode.
+      if (this.ref.document.current !== window.document.activeElement) {
+        (window.document.activeElement as any).blur();
+      }
       this.ref.document.current.focus();
     } else if (
       (this.state.selection.mode === 'insert' && prevState.selection.mode !== 'insert') ||
