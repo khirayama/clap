@@ -4,8 +4,8 @@ import styled from 'styled-components';
 import * as Clap from '../index';
 
 interface DebugHelperProps {
-  document: Clap.PureNode;
-  selection: Clap.PureSelection;
+  document: Clap.Node;
+  selection: Clap.Selection;
 }
 
 const Wrapper = styled.div`
@@ -42,20 +42,62 @@ const Wrapper = styled.div`
     width: 100%;
     border-top: solid 1px #fff;
   }
+
+  .node-block {
+    color: rgba(255, 255, 255, 0.56);
+
+    &.node-block__active {
+      color: rgba(255, 255, 255, 1);
+      background: rgba(0, 0, 0, 0.73);
+
+      .node-block {
+        color: rgba(255, 255, 255, 0.56);
+      }
+    }
+  }
 `;
 
-export function DebugHelper(props: DebugHelperProps) {
-  return (
-    <Wrapper>
-      <code>
-        <label>selection</label>
-        {JSON.stringify(props.selection, null, 2)}
-      </code>
-      <hr />
-      <code>
-        <label>document</label>
-        {JSON.stringify(props.document, null, 2)}
-      </code>
-    </Wrapper>
-  );
+export class DebugHelper extends React.Component<DebugHelperProps> {
+  private htmlNode(node: Clap.Node): any {
+    let content = JSON.stringify(node, null, 2);
+    content = content.replace(
+      /"nodes": \[.*\]/gms,
+      `"nodes": [${node.nodes ? node.nodes.map(n => this.htmlNode(n)).join('') : ''}]`,
+    );
+    let classNames = ['node-block'];
+    if (node.id === this.props.selection.id) {
+      classNames.push('node-block__active');
+    }
+    return `<span class="${classNames.join(' ')}">${content}</span>`;
+  }
+
+  private renderCurrentNode(node: Clap.Node) {
+    if (node) {
+      const currentNode = node.toJSON();
+      delete currentNode.nodes;
+      return JSON.stringify(currentNode, null, 2);
+    }
+    return 'null';
+  }
+
+  public render() {
+    return (
+      <Wrapper>
+        <code>
+          <label>selection</label>
+          {JSON.stringify(this.props.selection, null, 2)}
+        </code>
+        <hr />
+        <code>
+          <label>current node</label>
+          {this.renderCurrentNode(this.props.document.find(this.props.selection.id))}
+        </code>
+        <hr />
+        <code>
+          <label>document</label>
+          <div dangerouslySetInnerHTML={{ __html: this.htmlNode(this.props.document) }} />
+        </code>
+      </Wrapper>
+    );
+  }
 }

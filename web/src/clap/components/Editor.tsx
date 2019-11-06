@@ -291,7 +291,7 @@ export class Editor extends React.Component<EditorProps, EditorState> {
             {this.renderItems(this.document.nodes)}
           </Wrapper>
         </EditorContext.Provider>
-        {this.props.debug ? <DebugHelper document={this.state.document} selection={this.state.selection} /> : null}
+        {this.props.debug ? <DebugHelper document={this.document} selection={this.selection} /> : null}
       </>
     );
   }
