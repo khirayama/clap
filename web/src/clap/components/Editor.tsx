@@ -8,6 +8,7 @@ import { EditorContext } from './EditorContext';
 import { DebugHelper } from './DebugHelper';
 import { ResetStyle } from './ResetStyle';
 import { createKeyBinder, KeyMap } from './keyBinds';
+import { windowSelectionToClapSelection } from './utils';
 
 const Wrapper = styled.div`
   display: inline-block;
@@ -129,7 +130,7 @@ export class Editor extends React.Component<EditorProps, EditorState> {
 
     window.document.addEventListener('selectionchange', () => {
       if (this.state.selection.mode === 'insert') {
-        const range = this.windowSelectionToClapSelection();
+        const range = windowSelectionToClapSelection(this.document, this.selection, this.ref);
         const clapSelection = this.selection.toJSON();
         if (!deepEqual(range, clapSelection.range)) {
           this.emit(Clap.actionTypes.SET_RANGE, { range });
@@ -178,55 +179,6 @@ export class Editor extends React.Component<EditorProps, EditorState> {
     const windowSelection: Selection = window.getSelection();
     windowSelection.removeAllRanges();
     windowSelection.addRange(range);
-  }
-
-  private windowSelectionToClapSelection() {
-    const windowSelection = window.getSelection();
-    const clapSelection = this.selection.toJSON();
-    if (windowSelection.anchorNode === null) {
-      return null;
-    }
-
-    if (windowSelection.anchorNode && windowSelection.focusNode) {
-      const ref = this.ref.items[clapSelection.id].contents;
-      const currentNode = this.document.find(clapSelection.id);
-      let startElementIndex = null;
-      let endElementIndex = null;
-
-      for (let i = 0; i < ref.current.childNodes.length; i += 1) {
-        const childNode = ref.current.childNodes[i];
-        let targetStartNode = windowSelection.anchorNode;
-        while (targetStartNode.parentNode && targetStartNode.parentNode !== ref.current) {
-          targetStartNode = targetStartNode.parentNode;
-        }
-        let targetEndNode = windowSelection.focusNode;
-        while (targetEndNode.parentNode && targetEndNode.parentNode !== ref.current) {
-          targetEndNode = targetEndNode.parentNode;
-        }
-        if (targetStartNode === childNode) {
-          startElementIndex = i;
-        }
-        if (targetEndNode === childNode) {
-          endElementIndex = i;
-        }
-      }
-      if (startElementIndex !== null && endElementIndex !== null) {
-        const anchorContent = currentNode.contents[startElementIndex];
-        const focusContent = currentNode.contents[endElementIndex];
-        const range = {
-          anchor: {
-            id: anchorContent.id,
-            offset: windowSelection.anchorOffset,
-          },
-          focus: {
-            id: focusContent.id,
-            offset: windowSelection.focusOffset,
-          },
-        };
-        return range;
-      }
-    }
-    return null;
   }
 
   // EventHandler
@@ -283,7 +235,14 @@ export class Editor extends React.Component<EditorProps, EditorState> {
     return (
       <>
         <EditorContext.Provider
-          value={{ ref: this.ref, mapping: this.mapping, emit: this.emit, selection: this.selection, options }}
+          value={{
+            ref: this.ref,
+            mapping: this.mapping,
+            emit: this.emit,
+            document: this.document,
+            selection: this.selection,
+            options,
+          }}
         >
           <ResetStyle />
           <Wrapper
