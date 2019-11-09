@@ -239,14 +239,13 @@ export class BaseNode {
       const content = node.findContent(contentId);
       if (content && content.text !== text) {
         if (text) {
-          console.log(`Replace with new text(${text}).`);
           content.text = text;
         } else {
-          console.log('Remove content.', content);
-          node.contents = node.contents.filter(tmp => content.id !== tmp.id);
-          if (!node.contents.length) {
-            console.log('Add text content because the node content is empty.');
-            node.contents.push(new TextContent());
+          if (node.contents.length === 1) {
+            node.contents[0].text = text;
+            node.contents[0].marks = [];
+          } else {
+            node.contents = node.contents.filter(tmp => content.id !== tmp.id);
           }
         }
       }
