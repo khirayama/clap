@@ -1,90 +1,19 @@
-// import deepEqual from 'fast-deep-equal';
-import * as React from 'react';
-import styled from 'styled-components';
 import deepEqual from 'fast-deep-equal';
+import * as React from 'react';
 
 import * as Clap from '../index';
 import { EditorContext } from './EditorContext';
+import { ContentsInner } from './ContentsInner';
+import { windowSelectionToClapSelection } from './utils';
 
-interface ContentsInnerProps {
-  node: Clap.PureNode;
-  selection: Clap.Selection;
-}
-
-interface StyleProps {
-  bold?: boolean;
-  italic?: boolean;
-  code?: boolean;
-  strike?: boolean;
-}
-
-const Wrapper = styled.span`
-  display: inline; /* FYI: It's for cmd + left/right to jump. If inline-block, it is stopped with a element */
-
-  ${(props: StyleProps) => (props.bold ? 'font-weight: bold;' : '')}
-  ${(props: StyleProps) => (props.italic ? 'font-style: italic' : '')}
-  ${(props: StyleProps) => (props.code ? 'background: #aaa;' : '')}
-  ${(props: StyleProps) => (props.strike ? 'text-decoration: line-through;' : '')}
-
-  &:empty {
-    display: inline-block;
-
-    &:before {
-      display: inline-block;
-      content: 'clap!';
-      visibility: hidden;
-    }
-  }
-`;
-
-class ContentsInner extends React.Component<ContentsInnerProps> {
-  public shouldComponentUpdate(prevProps: ContentsInnerProps) {
-    return !(
-      prevProps.selection.range &&
-      this.props.selection.range &&
-      prevProps.selection.id === this.props.selection.id &&
-      prevProps.selection.range.anchor.id === this.props.selection.range.anchor.id &&
-      prevProps.selection.range.focus.id === this.props.selection.range.focus.id &&
-      deepEqual(prevProps.node.contents, this.props.node.contents)
-    );
-  }
-
-  public render() {
-    return (
-      <React.Fragment>
-        {this.props.node.contents.map(content => {
-          const styleProps: StyleProps = {};
-          for (const mark of content.marks) {
-            switch (mark.type) {
-              case 'bold': {
-                styleProps.bold = true;
-                break;
-              }
-              case 'italic': {
-                styleProps.italic = true;
-                break;
-              }
-              case 'code': {
-                styleProps.code = true;
-                break;
-              }
-              case 'strike': {
-                styleProps.strike = true;
-                break;
-              }
-              // TODO: Support link
-            }
-          }
-          return (
-            <Wrapper key={content.id} {...styleProps}>
-              {content.text}
-            </Wrapper>
-          );
-        })}
-      </React.Fragment>
-    );
-  }
-}
+/* FYI ******************************************
+ * Chrome  : keydown - keypress        - input   - selectionchange - keyup
+ * Firefox : keydown - keypress        - input   - selectionchange - keyup
+ * Safari  : input   - selectionchange - keydown - keyup
+ * ----------------------------------------------------------------------- *
+ * keypress and keydown should not be used with contenteditable.
+ * input - selectionchange - keyup flow is clear on any browser. And when input event, textContent was updated.
+ ************************************************/
 
 interface ContentsProps {
   node: Clap.PureNode;
@@ -95,7 +24,7 @@ export class Contents extends React.Component<ContentsProps> {
 
   public context!: React.ContextType<typeof EditorContext>;
 
-  private tmp = {};
+  private selectionSnapshot: Clap.PureSelection | null = null;
 
   constructor(props: ContentsProps) {
     super(props);
@@ -107,6 +36,8 @@ export class Contents extends React.Component<ContentsProps> {
   private onInput(): void {
     const windowSelection = window.getSelection();
     const clapSelection = this.context.selection.toJSON();
+
+    this.selectionSnapshot = clapSelection;
 
     if (windowSelection.anchorNode && windowSelection.focusNode) {
       const ref = this.context.ref.items[clapSelection.id].contents;
@@ -134,7 +65,6 @@ export class Contents extends React.Component<ContentsProps> {
         // }
       }
       const contentId = currentNode.contents[startElementIndex || 0].id;
-      console.log(`${text} - ${currentNode.contents[startElementIndex || 0].text}`);
       if (text !== currentNode.contents[startElementIndex || 0].text) {
         this.context.emit(Clap.actionTypes.UPDATE_TEXT, {
           id: currentNode.id,
@@ -145,9 +75,24 @@ export class Contents extends React.Component<ContentsProps> {
     }
   }
 
-  private onKeyUp() {
-    // TODO: tmpに一連の流れを入れる
-    // TODO: tmpをクリア
+  private onKeyUp(): void {
+    if (
+      this.selectionSnapshot &&
+      !this.context.mapping.items[this.selectionSnapshot.id].contents[this.selectionSnapshot.range.anchor.id]
+    ) {
+      this.context.emit(Clap.actionTypes.UPDATE_TEXT, {
+        id: this.selectionSnapshot.id,
+        contentId: this.selectionSnapshot.range.anchor.id,
+        text: '',
+      });
+    }
+
+    const range = windowSelectionToClapSelection(this.context.document, this.context.selection, this.context.ref);
+    const clapSelection = this.context.selection.toJSON();
+    if (!deepEqual(range, clapSelection.range)) {
+      this.context.emit(Clap.actionTypes.SET_RANGE, { range });
+    }
+    this.selectionSnapshot = null;
   }
 
   public render() {
