@@ -5,7 +5,6 @@ import styled from 'styled-components';
 import * as Clap from '../index';
 import { KeyBinder } from './KeyBinder';
 import { EditorContext } from './EditorContext';
-import { DebugHelper } from './DebugHelper';
 import { ResetStyle } from './ResetStyle';
 import { createKeyBinder, KeyMap } from './keyBinds';
 import { windowSelectionToClapSelection } from './utils';
@@ -17,9 +16,9 @@ const Wrapper = styled.div`
 `;
 
 interface EditorProps {
-  document: Clap.PureNode;
+  document: Clap.DocumentNode;
+  selection: Clap.Selection;
   readonly?: boolean;
-  debug?: boolean;
 }
 
 interface EditorState {
@@ -62,21 +61,15 @@ export class Editor extends React.Component<EditorProps, EditorState> {
 
   private keyBinder: KeyBinder<Clap.Action['type'], KeyMap>;
 
-  private selection: Clap.Selection;
-
-  private document: Clap.DocumentNode;
-
   constructor(props: EditorProps) {
     super(props);
 
     this.emitter = Clap.createEmitter();
     this.keyBinder = createKeyBinder();
-    this.document = new Clap.DocumentNode(props.document);
-    this.selection = new Clap.Selection();
 
     this.state = {
-      selection: this.selection.toJSON(),
-      document: this.document.toJSON(),
+      selection: this.props.selection.toJSON(),
+      document: this.props.document.toJSON(),
     };
 
     this.emit = this.emit.bind(this);
@@ -85,14 +78,16 @@ export class Editor extends React.Component<EditorProps, EditorState> {
   }
 
   private emit(actionType: Clap.Action['type'], payload: Partial<Clap.Action['payload']> = {}) {
-    this.emitter.emit(Clap.ACTION, {
-      type: actionType,
-      payload: {
-        document: this.document,
-        selection: this.selection,
-        ...payload,
-      },
-    } as Clap.Action);
+    if (this.props.readonly !== true) {
+      this.emitter.emit(Clap.ACTION, {
+        type: actionType,
+        payload: {
+          document: this.props.document,
+          selection: this.props.selection,
+          ...payload,
+        },
+      } as Clap.Action);
+    }
   }
 
   private mapRefToDOMNode() {
@@ -103,7 +98,7 @@ export class Editor extends React.Component<EditorProps, EditorState> {
         item: this.ref.items[id].item.current,
         contents: {},
       };
-      const node = this.document.find(id);
+      const node = this.props.document.find(id);
       if (node.contents !== null) {
         for (let i = 0; i < node.contents.length; i += 1) {
           this.mapping.items[id].contents[node.contents[i].id] = this.ref.items[id].contents.current.childNodes[i];
@@ -116,28 +111,32 @@ export class Editor extends React.Component<EditorProps, EditorState> {
     this.mapRefToDOMNode();
 
     if (this.props.readonly !== true) {
-      this.selection.on(() => {
-        this.setState({
-          selection: this.selection.toJSON(),
-        });
+      window.document.addEventListener('selectionchange', () => {
+        if (this.state.selection.mode === 'insert') {
+          const range = windowSelectionToClapSelection(this.props.document, this.props.selection, this.ref);
+          const clapSelection = this.props.selection.toJSON();
+          if (!deepEqual(range, clapSelection.range)) {
+            this.emit(Clap.actionTypes.SET_RANGE, { range });
+          }
+        } else {
+          this.emit(Clap.actionTypes.SET_RANGE, { range: null });
+        }
       });
-      this.document.on(() => {
+
+      this.props.selection.on(() => {
         this.setState({
-          document: this.document.toJSON(),
+          selection: this.props.selection.toJSON(),
         });
       });
     }
 
-    window.document.addEventListener('selectionchange', () => {
-      if (this.state.selection.mode === 'insert') {
-        const range = windowSelectionToClapSelection(this.document, this.selection, this.ref);
-        const clapSelection = this.selection.toJSON();
-        if (!deepEqual(range, clapSelection.range)) {
-          this.emit(Clap.actionTypes.SET_RANGE, { range });
-        }
-      } else {
-        this.emit(Clap.actionTypes.SET_RANGE, { range: null });
+    this.props.document.on(() => {
+      if (this.props.readonly) {
+        console.log(this.props.document.toJSON());
       }
+      this.setState({
+        document: this.props.document.toJSON(),
+      });
     });
   }
 
@@ -183,7 +182,7 @@ export class Editor extends React.Component<EditorProps, EditorState> {
 
   // EventHandler
   private onFocus() {
-    const id = this.selection.id ? this.selection.id : this.document.nodes[0].id;
+    const id = this.props.selection.id ? this.props.selection.id : this.props.document.nodes[0].id;
     this.emit(Clap.actionTypes.SELECT_MODE, { id });
   }
 
@@ -239,8 +238,8 @@ export class Editor extends React.Component<EditorProps, EditorState> {
             ref: this.ref,
             mapping: this.mapping,
             emit: this.emit,
-            document: this.document,
-            selection: this.selection,
+            document: this.props.document,
+            selection: this.props.selection,
             options,
           }}
         >
@@ -251,10 +250,9 @@ export class Editor extends React.Component<EditorProps, EditorState> {
             onKeyDown={this.onKeyDown}
             onFocus={this.onFocus}
           >
-            {this.renderItems(this.document.nodes)}
+            {this.renderItems(this.props.document.nodes)}
           </Wrapper>
         </EditorContext.Provider>
-        {this.props.debug ? <DebugHelper document={this.document} selection={this.selection} /> : null}
       </>
     );
   }
