@@ -5,8 +5,13 @@ import XRegExp from 'xregexp';
 import * as Clap from '../index';
 
 interface DebugHelperProps {
-  document: Clap.Node;
+  document: Clap.DocumentNode;
   selection: Clap.Selection;
+}
+
+interface DebugHelperState {
+  document: Clap.PureNode;
+  selection: Clap.PureSelection;
 }
 
 const Wrapper = styled.div`
@@ -58,8 +63,30 @@ const Wrapper = styled.div`
   }
 `;
 
-export class DebugHelper extends React.Component<DebugHelperProps> {
-  private htmlNode(node: Clap.Node): any {
+export class DebugHelper extends React.Component<DebugHelperProps, DebugHelperState> {
+  constructor(props: DebugHelperProps) {
+    super(props);
+
+    this.state = {
+      selection: this.props.selection.toJSON(),
+      document: this.props.document.toJSON(),
+    };
+  }
+
+  public componentDidMount() {
+    this.props.selection.on(() => {
+      this.setState({
+        selection: this.props.selection.toJSON(),
+      });
+    });
+    this.props.document.on(() => {
+      this.setState({
+        document: this.props.document.toJSON(),
+      });
+    });
+  }
+
+  private htmlNode(node: Clap.PureNode): any {
     let content = JSON.stringify(node, null, 2);
     content = XRegExp.replace(
       content,
@@ -69,7 +96,7 @@ export class DebugHelper extends React.Component<DebugHelperProps> {
       `"nodes": [${node.nodes ? node.nodes.map(n => this.htmlNode(n)).join('') : ''}]`,
     );
     let classNames = ['node-block'];
-    if (node.id === this.props.selection.id) {
+    if (node.id === this.state.selection.id) {
       classNames.push('node-block__active');
     }
     return `<span class="${classNames.join(' ')}">${content}</span>`;
@@ -89,17 +116,17 @@ export class DebugHelper extends React.Component<DebugHelperProps> {
       <Wrapper>
         <code>
           <label>selection</label>
-          {JSON.stringify(this.props.selection, null, 2)}
+          {JSON.stringify(this.state.selection, null, 2)}
         </code>
         <hr />
         <code>
           <label>current node</label>
-          {this.renderCurrentNode(this.props.document.find(this.props.selection.id))}
+          {this.renderCurrentNode(this.props.document.find(this.state.selection.id))}
         </code>
         <hr />
         <code>
           <label>document</label>
-          <div dangerouslySetInnerHTML={{ __html: this.htmlNode(this.props.document) }} />
+          <div dangerouslySetInnerHTML={{ __html: this.htmlNode(this.state.document) }} />
         </code>
       </Wrapper>
     );
