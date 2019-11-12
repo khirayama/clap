@@ -8,7 +8,7 @@ const Wrapper = styled.p`
 `;
 
 interface ParagraphProps {
-  node: Clap.PureNode;
+  node: Clap.ItemNode;
 }
 
 export class Paragraph extends React.Component<ParagraphProps> {
