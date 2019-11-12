@@ -1,12 +1,12 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import deepEqual from 'fast-deep-equal';
 
 import * as Clap from '../index';
 
 interface ContentsInnerProps {
   node: Clap.PureNode;
   selection: Clap.Selection;
+  readonly: boolean;
 }
 
 interface StyleProps {
@@ -53,13 +53,15 @@ export class ContentsInner extends React.Component<ContentsInnerProps, ContentsI
   }
 
   public shouldComponentUpdate(prevProps: ContentsInnerProps) {
+    if (this.props.readonly) {
+      return true;
+    }
     const shouldNotUpdate =
       prevProps.selection.range &&
       this.props.selection.range &&
       prevProps.selection.id === this.props.selection.id &&
       prevProps.selection.range.anchor.id === this.props.selection.range.anchor.id &&
-      prevProps.selection.range.focus.id === this.props.selection.range.focus.id &&
-      deepEqual(prevProps.node.contents, this.props.node.contents);
+      prevProps.selection.range.focus.id === this.props.selection.range.focus.id;
     return !shouldNotUpdate;
   }
 
