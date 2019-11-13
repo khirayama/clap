@@ -16,10 +16,14 @@ import { windowSelectionToClapSelection } from './utils';
  ************************************************/
 
 interface ContentsProps {
+  node: Clap.ItemNode;
+}
+
+interface ContentsState {
   node: Clap.PureNode;
 }
 
-export class Contents extends React.Component<ContentsProps> {
+export class Contents extends React.Component<ContentsProps, ContentsState> {
   public static contextType = EditorContext;
 
   public context!: React.ContextType<typeof EditorContext>;
@@ -29,8 +33,20 @@ export class Contents extends React.Component<ContentsProps> {
   constructor(props: ContentsProps) {
     super(props);
 
+    this.state = {
+      node: this.props.node.toJSON(),
+    };
+
     this.onInput = this.onInput.bind(this);
     this.onKeyUp = this.onKeyUp.bind(this);
+  }
+
+  public componentDidMount() {
+    this.props.node.on(() => {
+      this.setState({
+        node: this.props.node.toJSON(),
+      });
+    });
   }
 
   private onInput(): void {
@@ -41,7 +57,7 @@ export class Contents extends React.Component<ContentsProps> {
 
     if (windowSelection.anchorNode && windowSelection.focusNode) {
       const ref = this.context.ref.items[clapSelection.id].contents;
-      const currentNode = this.props.node;
+      const currentNode = this.state.node;
       let startElementIndex: number | null = null;
       // let endElementIndex: number | null = null;
       let text = '';
@@ -102,9 +118,13 @@ export class Contents extends React.Component<ContentsProps> {
         suppressContentEditableWarning
         onInput={this.onInput}
         onKeyUp={this.onKeyUp}
-        ref={this.context.ref.items[this.props.node.id].contents}
+        ref={this.context.ref.items[this.state.node.id].contents}
       >
-        <ContentsInner node={this.props.node} selection={this.context.selection} />
+        <ContentsInner
+          node={this.state.node}
+          selection={this.context.selection}
+          readonly={this.context.options.readonly}
+        />
       </span>
     );
   }
