@@ -1,3 +1,20 @@
-export interface PureNode {}
+import { DocumentNode } from './document/DocumentNode';
+import { ParagraphNode } from './item/ParagraphNode';
+import { HorizontalRuleNode } from './item/HorizontalRuleNode';
+import { PureTextContent, TextContent } from './content/TextContent';
 
-export class DocumentNode {}
+export { ClassPool } from './ClassPool';
+export { PureNode, BaseNode } from './BaseNode';
+export { DocumentNode } from './document/DocumentNode';
+export { BaseItemNode } from './item/BaseItemNode';
+export { PureTextContent, TextContent } from './content/TextContent';
+export { ParagraphNode } from './item/ParagraphNode';
+export { HorizontalRuleNode } from './item/HorizontalRuleNode';
+
+export type PureContent = PureTextContent;
+
+export type Content = TextContent;
+
+export type ItemNode = ParagraphNode | HorizontalRuleNode;
+
+export type Node = DocumentNode | ItemNode;
