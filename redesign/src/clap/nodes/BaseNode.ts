@@ -55,9 +55,9 @@ export class BaseNode {
 
   public contents: Content[] | null = [];
 
-  public document: DocumentNode | null = [];
+  public document: DocumentNode | null = null;
 
-  public parent: Node | null = [];
+  public parent: Node | null = null;
 
   public relations: {
     prev: string | null;
