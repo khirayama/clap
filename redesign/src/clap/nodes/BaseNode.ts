@@ -1,6 +1,6 @@
 import uuid from 'uuid/v4';
 
-import { PureContent, Content, Node, ItemNode, DocumentNode } from './index';
+import { PureContent, Content, DocumentNode, ItemNode } from './index';
 import { TextContent } from './content/TextContent';
 
 export interface PureNode {
@@ -9,6 +9,13 @@ export interface PureNode {
   type: 'document' | 'paragraph' | 'horizontal-rule';
   nodes: PureNode[] | null;
   contents: PureContent[] | null;
+}
+
+export interface NodeRelation {
+  document: DocumentNode | null;
+  parent: BaseNode | null;
+  prev: BaseNode | null;
+  next: BaseNode | null;
 }
 
 /*
@@ -32,11 +39,6 @@ export interface PureNode {
  * toJSON
  *
  * find
- * document
- * parent
- * next
- * prev
- * children
  *
  * after
  *
@@ -51,58 +53,60 @@ export class BaseNode {
 
   public type: PureNode['type'];
 
-  public nodes: ItemNode[] | null = [];
+  public nodes: BaseNode[] | null = [];
 
   public contents: Content[] | null = [];
 
   public document: DocumentNode | null = null;
 
-  public parent: Node | null = null;
+  public parent: BaseNode | null = null;
 
-  public relations: {
-    prev: string | null;
-    next: string | null;
-  } = {
-    prev: null,
-    next: null,
-  };
+  public next: BaseNode | null = null;
 
-  private cache: { [key: string]: Node } = {};
+  public prev: BaseNode | null = null;
 
-  private listeners: ((node: Node) => void)[] = [];
+  private cache: { [key: string]: BaseNode } = {};
 
-  constructor(node?: Partial<PureNode>, relations?: BaseNode['relations']) {
+  private listeners: ((node: BaseNode) => void)[] = [];
+
+  constructor(node?: Partial<PureNode>, relations?: NodeRelation) {
     this.id = node ? node.id || uuid() : uuid();
     this.object = node ? node.object : 'item';
     this.type = node ? node.type : 'paragraph';
 
     if (this.isDocumentNode()) {
-      this.relations.document = this;
+      this.document = this;
     } else {
-      this.relations = Object.assign({}, this.relations, relations) || this.relations;
+      this.document = relations ? relations.document : null;
     }
-    const documentNode: DocumentNode = this.document();
+    this.parent = relations ? relations.parent : null;
+    this.next = relations ? relations.next : null;
+    this.prev = relations ? relations.prev : null;
 
     this.nodes =
       node && node.nodes
         ? node.nodes.map(
-            (n: PureNode, i: number): ItemNode => {
-              const nextNode = node.nodes[i + 1];
+            (n: PureNode, i: number): BaseNode => {
+              // TODO: Need pool to switch node
+              // const newNode: ItemNode = new (nodeClass as any)(n, relations);
               const prevNode = node.nodes[i - 1];
-              const relations = {
-                document: this.relations.document,
-                parent: this,
-              };
+              const nextNode = node.nodes[i + 1];
 
-              const nodeClass = documentNode.itemNodePool.take(n.type);
-              const node = new (nodeClass as any)(n, relations);
+              const newNode: BaseNode = new BaseNode(n, {
+                document: this.document,
+                parent: this,
+                prev: prevNode ? this.cache[prevNode.id] : null,
+                next: nextNode ? this.cache[nextNode.id] : null,
+              });
+              this.cache[newNode.id] = newNode;
+              return newNode;
             },
           )
         : [];
     this.contents =
       node && node.contents
         ? node.contents.map((content: PureContent) => {
-            // TODO: Need pool
+            // TODO: Need pool to switch content
             return new TextContent(content);
           })
         : [];
@@ -114,17 +118,16 @@ export class BaseNode {
       listener(this);
     }
     // Propagation
-    const parentNode = this.parent();
-    if (parentNode) {
-      parentNode.dispatch();
+    if (this.parent) {
+      this.parent.dispatch();
     }
   }
 
-  public on(listener: (node: Node) => void) {
+  public on(listener: (node: BaseNode) => void) {
     this.listeners.push(listener);
   }
 
-  public off(listener: (node: Node) => void) {
+  public off(listener: (node: BaseNode) => void) {
     for (let i = 0; i < this.listeners.length; i += 1) {
       if (this.listeners[i] === listener) {
         this.listeners.splice(0, 1);
@@ -145,7 +148,7 @@ export class BaseNode {
   }
 
   /*--- Query -----------------------------------------------------*/
-  public find(id: string): Node | null {
+  public find(id: string): BaseNode | null {
     if (this.id === id) {
       return this;
     } else if (this.nodes && this.nodes.length) {
@@ -169,54 +172,29 @@ export class BaseNode {
     return null;
   }
 
-  public document(): DocumentNode {
-    return cache[this.relations.document];
-  }
-
-  public parent(): Node | null {
-    return cache[this.relations.parent] || null;
-  }
-
-  public next(): Node | null {
-    return cache[this.relations.next] || null;
-  }
-
-  public prev(): Node | null {
-    return cache[this.relations.prev] || null;
-  }
-
-  public children(): Node[] | null {
-    return this.nodes;
-  }
-
   /*--- Command -----------------------------------------------------*/
-  public after(node: ItemNode): ItemNode {
-    const parentNode = this.parent();
-    const len = parentNode.nodes.length;
+  public after(node: BaseNode): BaseNode {
+    const len = this.parent.nodes.length;
     for (let i = 0; i < len; i += 1) {
-      const n = parentNode.nodes[i];
+      const n = this.parent.nodes[i];
       if (n.id === this.id) {
-        const nextNode = n.parent().find(n.relations.next);
-
-        node.relations = {
-          document: n.relations.document,
-          parent: n.relations.parent,
-          next: n.relations.next,
-          prev: n.id,
-        };
-        node.nodes = n.nodes.map((childNode: ItemNode) => {
-          childNode.relations.parent = node.id;
+        node.document = n.document;
+        node.parent = n.parent;
+        node.next = n.next;
+        node.prev = n;
+        node.nodes = n.nodes.map((childNode: BaseNode) => {
+          childNode.parent = node;
           return childNode;
         });
 
-        n.relations.next = node.id;
+        n.next = node;
         n.nodes = [];
 
-        if (nextNode) {
-          nextNode.relations.prev = node.id;
+        if (n.next) {
+          n.next.prev = node;
         }
 
-        parentNode.nodes.splice(i + 1, 0, node);
+        this.parent.nodes.splice(i + 1, 0, node);
         break;
       }
     }

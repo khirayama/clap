@@ -1,9 +1,9 @@
-import { PureNode, BaseNode } from '../BaseNode';
+import { PureNode, NodeRelation } from '../BaseNode';
 import { BaseItemNode } from './BaseItemNode';
 import { TextContent } from '../content/TextContent';
 
 export class ParagraphNode extends BaseItemNode {
-  constructor(node?: Partial<PureNode>, relations?: BaseNode['relations']) {
+  constructor(node?: Partial<PureNode>, relations?: NodeRelation) {
     super(node, relations);
 
     this.type = 'paragraph';
