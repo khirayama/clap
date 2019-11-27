@@ -65,6 +65,18 @@ export class BaseNode {
 
   public prev: BaseNode | null = null;
 
+  private relations: {
+    document: DocumentNode | null;
+    parent: BaseNode | null;
+    nextId: string | null;
+    prevId: string | null;
+  } = {
+    document: null,
+    parent: null,
+    nextId: null,
+    prevId: null,
+  };
+
   private cache: { [key: string]: BaseNode } = {};
 
   private listeners: ((node: BaseNode) => void)[] = [];
