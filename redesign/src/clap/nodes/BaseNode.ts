@@ -11,13 +11,6 @@ export interface PureNode {
   contents: PureContent[] | null;
 }
 
-export interface NodeRelation {
-  document: DocumentNode | null;
-  parent: BaseNode | null;
-  prev: BaseNode | null;
-  next: BaseNode | null;
-}
-
 /*
  * BaseNode
  * id
@@ -65,23 +58,11 @@ export class BaseNode {
 
   public prev: BaseNode | null = null;
 
-  private relations: {
-    document: DocumentNode | null;
-    parent: BaseNode | null;
-    nextId: string | null;
-    prevId: string | null;
-  } = {
-    document: null,
-    parent: null,
-    nextId: null,
-    prevId: null,
-  };
-
   private cache: { [key: string]: BaseNode } = {};
 
   private listeners: ((node: BaseNode) => void)[] = [];
 
-  constructor(node?: Partial<PureNode>, relations?: NodeRelation) {
+  constructor(node?: Partial<PureNode>) {
     this.id = node ? node.id || uuid() : uuid();
     this.object = node ? node.object : 'item';
     this.type = node ? node.type : 'paragraph';
