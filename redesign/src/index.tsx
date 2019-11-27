@@ -209,6 +209,7 @@ const sampleDocument: Clap.PureNode = {
 window.addEventListener('DOMContentLoaded', () => {
   const document = new Clap.DocumentNode(sampleDocument);
   const selection = new Clap.Selection();
+  console.log(document, selection);
 
-  ReactDOM.render(<Clap.Editor document={document} selection={selection} />, window.document.querySelector('#root'));
+  // ReactDOM.render(<Clap.Editor document={document} selection={selection} />, window.document.querySelector('#root'));
 });

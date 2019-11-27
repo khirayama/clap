@@ -1,8 +1,8 @@
-import { PureNode, BaseNode, NodeRelation } from '../BaseNode';
+import { PureNode, BaseNode } from '../BaseNode';
 
 export class BaseItemNode extends BaseNode {
-  constructor(node?: Partial<PureNode>, relations?: NodeRelation) {
-    super(node, relations);
+  constructor(node?: Partial<PureNode>) {
+    super(node);
 
     this.object = 'item';
   }

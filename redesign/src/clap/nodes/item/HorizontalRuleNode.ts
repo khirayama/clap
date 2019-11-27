@@ -1,9 +1,9 @@
-import { PureNode, NodeRelation } from '../BaseNode';
+import { PureNode } from '../BaseNode';
 import { BaseItemNode } from './BaseItemNode';
 
 export class HorizontalRuleNode extends BaseItemNode {
-  constructor(node?: Partial<PureNode>, relations?: NodeRelation) {
-    super(node, relations);
+  constructor(node?: Partial<PureNode>) {
+    super(node);
 
     this.type = 'horizontal-rule';
     this.contents = null;

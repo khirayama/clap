@@ -69,28 +69,30 @@ export class BaseNode {
 
     if (this.isDocumentNode()) {
       this.document = this;
-    } else {
-      this.document = relations ? relations.document : null;
     }
-    this.parent = relations ? relations.parent : null;
-    this.next = relations ? relations.next : null;
-    this.prev = relations ? relations.prev : null;
 
     this.nodes =
       node && node.nodes
         ? node.nodes.map(
             (n: PureNode, i: number): BaseNode => {
               // TODO: Need pool to switch node
-              // const newNode: ItemNode = new (nodeClass as any)(n, relations);
-              const prevNode = node.nodes[i - 1];
-              const nextNode = node.nodes[i + 1];
+              const prevPureNode = node.nodes[i - 1];
+              const nextPureNode = node.nodes[i + 1];
+              const prevNode = prevPureNode ? this.cache[prevPureNode.id] || null : null;
+              const nextNode = nextPureNode ? this.cache[nextPureNode.id] || null : null;
 
-              const newNode: BaseNode = new BaseNode(n, {
-                document: this.document,
-                parent: this,
-                prev: prevNode ? this.cache[prevNode.id] : null,
-                next: nextNode ? this.cache[nextNode.id] : null,
-              });
+              const newNode: BaseNode = new BaseNode(n);
+              newNode.document = this.document;
+              newNode.parent = this;
+
+              if (prevNode) {
+                newNode.prev = prevNode;
+                prevNode.next = newNode;
+              }
+              if (nextNode) {
+                newNode.next = nextNode;
+              }
+
               this.cache[newNode.id] = newNode;
               return newNode;
             },
