@@ -48,7 +48,7 @@ export class BaseNode {
 
   public nodes: BaseNode[] | null = [];
 
-  public contents: Content[] | null = [];
+  public contents: Content[] | null = [new TextContent()];
 
   public document: DocumentNode | null = null;
 
@@ -66,10 +66,6 @@ export class BaseNode {
     this.id = node ? node.id || uuid() : uuid();
     this.object = node ? node.object : 'item';
     this.type = node ? node.type : 'paragraph';
-
-    if (this.type === 'paragraph' && !this.contents.length) {
-      this.contents.push(new TextContent());
-    }
 
     if (this.isDocumentNode()) {
       this.document = this;
