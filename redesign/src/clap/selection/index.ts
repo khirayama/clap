@@ -1,1 +1,1 @@
-export class Selection {}
+export { PureSelection, Selection } from './Selection';
