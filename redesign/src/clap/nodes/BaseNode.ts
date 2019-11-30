@@ -67,6 +67,10 @@ export class BaseNode {
     this.object = node ? node.object : 'item';
     this.type = node ? node.type : 'paragraph';
 
+    if (this.type === 'paragraph' && !this.contents.length) {
+      this.contents.push(new TextContent());
+    }
+
     if (this.isDocumentNode()) {
       this.document = this;
     }
