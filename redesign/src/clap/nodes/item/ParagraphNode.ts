@@ -1,6 +1,4 @@
-import { PureNode } from '../BaseNode';
-import { BaseItemNode } from './BaseItemNode';
-import { TextContent } from '../content/TextContent';
+import { PureNode, BaseItemNode, TextContent } from '../index';
 
 export class ParagraphNode extends BaseItemNode {
   constructor(node?: Partial<PureNode>) {

@@ -1,7 +1,6 @@
 import uuid from 'uuid/v4';
 
-import { PureContent, Content, DocumentNode, ItemNode } from './index';
-import { TextContent } from './content/TextContent';
+import { PureContent, Content, DocumentNode, ItemNode, TextContent } from './index';
 
 export interface PureNode {
   id: string;

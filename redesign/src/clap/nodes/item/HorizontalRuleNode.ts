@@ -1,5 +1,4 @@
-import { PureNode } from '../BaseNode';
-import { BaseItemNode } from './BaseItemNode';
+import { PureNode, BaseItemNode } from '../index';
 
 export class HorizontalRuleNode extends BaseItemNode {
   constructor(node?: Partial<PureNode>) {
