@@ -1,5 +1,4 @@
-export { PureNode, DocumentNode } from './nodes';
+export * from './nodes';
+export * from './components';
 
 export { Selection } from './selection';
-
-export { Editor } from './components';
