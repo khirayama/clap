@@ -1,1 +1,2 @@
-export { Editor } from './Editor';
+export * from './Editor';
+export * from './Item';
