@@ -33,7 +33,7 @@ export function Editor(props: EditorProps) {
     for (const node of nodes) {
       items.push(
         <Clap.Item key={node.id} indent={indent} selection={selection} node={node}>
-          Item
+          {node.contents ? node.contents.map((content: Clap.Content) => <Clap.Content node={node} />) : null}
         </Clap.Item>,
       );
 
