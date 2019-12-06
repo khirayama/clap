@@ -57,9 +57,9 @@ export class BaseNode {
 
   public prev: BaseNode | null = null;
 
-  private cache: { [key: string]: BaseNode } = {};
-
   private listeners: ((node: BaseNode) => void)[] = [];
+
+  private cache: { [key: string]: BaseNode } = {};
 
   constructor(node?: Partial<PureNode>) {
     this.id = node ? node.id || uuid() : uuid();

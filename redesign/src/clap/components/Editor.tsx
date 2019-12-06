@@ -1,16 +1,13 @@
 import * as React from 'react';
 import styled from 'styled-components';
 
-import { DocumentNode } from '../nodes';
-import { Selection } from '../selection';
-
 import * as Clap from '../index';
 
 const Wrapper = styled.div``;
 
 interface EditorProps {
-  document: DocumentNode;
-  selection: Selection;
+  document: Clap.DocumentNode;
+  selection: Clap.Selection;
 }
 
 export function Editor(props: EditorProps) {
@@ -33,7 +30,9 @@ export function Editor(props: EditorProps) {
     for (const node of nodes) {
       items.push(
         <Clap.Item key={node.id} indent={indent} selection={selection} node={node}>
-          {node.contents ? node.contents.map((content: Clap.Content) => <Clap.Content node={node} />) : null}
+          {node.contents
+            ? node.contents.map((content: Clap.Content) => <Clap.Inline key={content.id} content={content} />)
+            : null}
         </Clap.Item>,
       );
 
