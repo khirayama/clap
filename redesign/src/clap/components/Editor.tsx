@@ -26,23 +26,11 @@ export function Editor(props: EditorProps) {
     });
   }, []);
 
-  function renderItems(nodes: Clap.PureNode[], indent: number = 0, items: JSX.Element[] = []) {
-    for (const node of nodes) {
-      items.push(
-        <Clap.Item key={node.id} indent={indent} selection={selection} node={node}>
-          {node.contents
-            ? node.contents.map((content: Clap.PureContent) => <Clap.Inline key={content.id} content={content} />)
-            : null}
-        </Clap.Item>,
-      );
-
-      if (node.nodes) {
-        items.concat(renderItems(node.nodes, indent + 1, items));
-      }
-    }
-
-    return items;
-  }
-
-  return <Wrapper>{renderItems(document.nodes)}</Wrapper>;
+  return (
+    <Wrapper>
+      {document.nodes.map(node => (
+        <Clap.Item key={node.id} selection={selection} node={node} />
+      ))}
+    </Wrapper>
+  );
 }

@@ -4,33 +4,33 @@ import styled from 'styled-components';
 import * as Clap from '../index';
 
 export interface ItemProps {
-  indent: number;
   node: Clap.PureNode;
   selection: Clap.PureSelection;
-  children: React.ReactNode;
 }
 
 export interface ItemWrapperProps {
-  indent: number;
   isSelected: boolean;
 }
 
 const Wrapper = styled.div`
-  padding: 0 0 0 ${(props: ItemWrapperProps) => `${props.indent * 10}px`};
   background: ${(props: ItemWrapperProps) => {
     return props.isSelected ? 'rgba(45, 170, 219, 0.3)' : 'transparent';
   }};
+
+  & & {
+    padding: 0 0 0 10px;
+  }
 `;
 
 export function Item(props: ItemProps) {
-  const node = props.node;
-
   return (
-    <Wrapper
-      indent={props.indent}
-      isSelected={props.selection.ids.indexOf(node.id) !== -1 && props.selection.mode === 'select'}
-    >
-      {props.children}
+    <Wrapper isSelected={props.selection.ids.indexOf(props.node.id) !== -1 && props.selection.mode === 'select'}>
+      {props.node.contents
+        ? props.node.contents.map((content: Clap.PureContent) => <Clap.Inline key={content.id} content={content} />)
+        : null}
+      {props.node.nodes.map(node => (
+        <Item key={node.id} node={node} selection={props.selection} />
+      ))}
     </Wrapper>
   );
 }
