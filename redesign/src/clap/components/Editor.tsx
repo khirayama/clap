@@ -31,7 +31,7 @@ export function Editor(props: EditorProps) {
       items.push(
         <Clap.Item key={node.id} indent={indent} selection={selection} node={node}>
           {node.contents
-            ? node.contents.map((content: Clap.Content) => <Clap.Inline key={content.id} content={content} />)
+            ? node.contents.map((content: Clap.PureContent) => <Clap.Inline key={content.id} content={content} />)
             : null}
         </Clap.Item>,
       );
