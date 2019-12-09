@@ -34,6 +34,13 @@ export class Selection {
     },
   };
 
+  constructor(selection?: Partial<PureSelection>) {
+    this.isInputing = selection ? selection.isInputing : this.isInputing;
+    this.mode = selection ? selection.mode : this.mode;
+    this.ids = selection ? selection.ids : this.ids;
+    this.range = selection ? { ...this.range, ...selection.range } : this.range;
+  }
+
   public dispatch() {
     for (const listener of this.listeners) {
       listener(this);
