@@ -13,21 +13,25 @@ export interface ItemWrapperProps {
 }
 
 const Wrapper = styled.div`
-  background: ${(props: ItemWrapperProps) => {
-    return props.isSelected ? 'rgba(45, 170, 219, 0.3)' : 'transparent';
-  }};
-
   & & {
     padding: 0 0 0 10px;
   }
 `;
 
+const InlineWrapper = styled.div`
+  background: ${(props: ItemWrapperProps) => {
+    return props.isSelected ? 'rgba(45, 170, 219, 0.3)' : 'transparent';
+  }};
+`;
+
 export function Item(props: ItemProps) {
+  const isSelected = props.selection.ids.indexOf(props.node.id) !== -1 && props.selection.mode === 'select';
+
   return (
-    <Wrapper isSelected={props.selection.ids.indexOf(props.node.id) !== -1 && props.selection.mode === 'select'}>
-      {props.node.contents
-        ? props.node.contents.map((content: Clap.PureContent) => <Clap.Inline key={content.id} content={content} />)
-        : null}
+    <Wrapper>
+      <InlineWrapper isSelected={isSelected}>
+        <Clap.Inline contents={props.node.contents} selection={props.selection} />
+      </InlineWrapper>
       {props.node.nodes.map(node => (
         <Item key={node.id} node={node} selection={props.selection} />
       ))}
