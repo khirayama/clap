@@ -41,9 +41,9 @@ export interface PureNode {
 export class BaseNode {
   public id: PureNode['id'];
 
-  public object: PureNode['object'];
+  public object: PureNode['object'] = 'item';
 
-  public type: PureNode['type'];
+  public type: PureNode['type'] = 'paragraph';
 
   public nodes: BaseNode[] | null = [];
 
@@ -63,8 +63,8 @@ export class BaseNode {
 
   constructor(node?: Partial<PureNode>) {
     this.id = node ? node.id || uuid() : uuid();
-    this.object = node ? node.object : 'item';
-    this.type = node ? node.type : 'paragraph';
+    this.object = node ? node.object : this.object;
+    this.type = node ? node.type : this.type;
 
     if (this.isDocumentNode()) {
       this.document = this;
