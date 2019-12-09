@@ -206,9 +206,27 @@ const sampleDocument: Clap.PureNode = {
   ],
 };
 
+const targetNode = sampleDocument.nodes[0].nodes[0].nodes[0];
+console.log(targetNode);
+const sampleSelection: Clap.PureSelection = {
+  isInputing: false,
+  mode: 'select',
+  ids: [targetNode.id],
+  range: {
+    anchor: {
+      id: targetNode.contents[0].id,
+      offset: 0,
+    },
+    focus: {
+      id: targetNode.contents[0].id,
+      offset: 0,
+    },
+  },
+};
+
 window.addEventListener('DOMContentLoaded', () => {
   const document = new Clap.DocumentNode(sampleDocument);
-  const selection = new Clap.Selection();
+  const selection = new Clap.Selection(sampleSelection);
 
   ReactDOM.render(<Clap.Editor document={document} selection={selection} />, window.document.querySelector('#root'));
 });
