@@ -19,9 +19,7 @@ const Wrapper = styled.div`
 `;
 
 const InlineWrapper = styled.div`
-  background: ${(props: ItemWrapperProps) => {
-    return props.isSelected ? 'rgba(45, 170, 219, 0.3)' : 'transparent';
-  }};
+  background: ${(props: ItemWrapperProps) => (props.isSelected ? 'rgba(45, 170, 219, 0.3)' : 'transparent')};
 `;
 
 export function Item(props: ItemProps) {
