@@ -8,8 +8,37 @@ export interface InlineProps {
   contents: Clap.PureContent[];
 }
 
+export interface WrapperProps {
+  isInRange: boolean;
+  hasCaret: boolean;
+}
+
 const Wrapper = styled.span`
-  ${(props: { isInRange: boolean }) => (props.isInRange ? 'background: red' : '')};
+  position: relative;
+  ${(props: WrapperProps) => (props.isInRange ? 'background: red' : '')};
+
+  ${(props: WrapperProps) =>
+    props.hasCaret
+      ? `
+    &:before {
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: inline-block;
+      content: '';
+      width: 1px;
+      height: 100%;
+      background: #333;
+
+      @keyframes blink {
+        50% {
+          opacity: 0;
+        }
+      }
+      animation: blink 1000ms step-end infinite;
+    }
+  `
+      : ''};
 `;
 
 export function Inline(props: InlineProps) {
@@ -32,8 +61,11 @@ export function Inline(props: InlineProps) {
             isStarted = !isStarted;
           }
           return (
-            <Wrapper key={`${content.id}-${i}`} isInRange={isStarted}>
-              {isClosed && anchor.id === content.id && anchor.offset === i ? '|' : null}
+            <Wrapper
+              key={`${content.id}-${i}`}
+              isInRange={isStarted}
+              hasCaret={isClosed && anchor.id === content.id && anchor.offset === i}
+            >
               {chara}
             </Wrapper>
           );
