@@ -15,7 +15,7 @@ export interface WrapperProps {
 
 const Wrapper = styled.span`
   position: relative;
-  ${(props: WrapperProps) => (props.isInRange ? 'background: red' : '')};
+  ${(props: WrapperProps) => (props.isInRange ? 'background: #accef7;' : '')}
 
   ${(props: WrapperProps) =>
     props.hasCaret
