@@ -27,10 +27,13 @@ export function Editor(props: EditorProps) {
   }, []);
 
   return (
-    <Wrapper>
-      {document.nodes.map(node => (
-        <Clap.Item key={node.id} selection={selection} node={node} />
-      ))}
-    </Wrapper>
+    <>
+      <Wrapper>
+        {document.nodes.map(node => (
+          <Clap.Item key={node.id} selection={selection} node={node} />
+        ))}
+      </Wrapper>
+      <Clap.Pencil document={props.document} selection={props.selection} />
+    </>
   );
 }
