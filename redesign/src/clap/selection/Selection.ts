@@ -1,5 +1,7 @@
 export interface PureSelection {
   isComposing: boolean;
+  isCollasped: boolean;
+  compositionText: string;
   mode: 'normal' | 'select' | 'insert';
   ids: string[];
   range: {
@@ -18,6 +20,8 @@ export class Selection {
   private listeners: ((selection: Selection) => void)[] = [];
 
   public isComposing: PureSelection['isComposing'] = false;
+
+  public compositionText: string = '';
 
   public mode: PureSelection['mode'] = 'normal';
 
@@ -60,9 +64,19 @@ export class Selection {
     }
   }
 
+  public isCollasped(): boolean {
+    return (
+      this.ids.length === 1 &&
+      this.range.anchor.id === this.range.focus.id &&
+      this.range.anchor.offset === this.range.focus.offset
+    );
+  }
+
   public toJSON(): PureSelection {
     return {
       isComposing: this.isComposing,
+      isCollasped: this.isCollasped(),
+      compositionText: this.compositionText,
       mode: this.mode,
       ids: this.ids,
       range: this.range,
