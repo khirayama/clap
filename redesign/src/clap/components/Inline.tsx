@@ -45,7 +45,6 @@ export function Inline(props: InlineProps) {
   const contents = props.contents;
   const anchor = props.selection.range.anchor;
   const focus = props.selection.range.focus;
-  let isClosed = anchor.id === focus.id && anchor.offset === focus.offset;
   let isStarted = false;
   // TODO: selectionを分割するのがよい。aとかを分割したくないから
 
@@ -55,7 +54,7 @@ export function Inline(props: InlineProps) {
         // TODO: Check Japanese Chara
         return content.text.split('').map((chara, i) => {
           if (
-            !isClosed &&
+            !props.selection.isCollasped &&
             ((anchor.id === content.id && anchor.offset === i) || (focus.id === content.id && focus.offset === i))
           ) {
             isStarted = !isStarted;
@@ -64,8 +63,9 @@ export function Inline(props: InlineProps) {
             <Wrapper
               key={`${content.id}-${i}`}
               isInRange={isStarted}
-              hasCaret={isClosed && anchor.id === content.id && anchor.offset === i}
+              hasCaret={props.selection.isCollasped && anchor.id === content.id && anchor.offset === i}
             >
+              {anchor.id === content.id && anchor.offset === i ? <span>{props.selection.compositionText}</span> : null}
               {chara}
             </Wrapper>
           );
