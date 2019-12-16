@@ -209,7 +209,9 @@ const sampleDocument: Clap.PureNode = {
 const targetNode = sampleDocument.nodes[0].nodes[0].nodes[0];
 console.log(targetNode);
 const sampleSelection: Clap.PureSelection = {
-  isInputing: false,
+  isComposing: false,
+  isCollasped: true,
+  compositionText: '',
   mode: 'select',
   ids: [targetNode.id],
   range: {
