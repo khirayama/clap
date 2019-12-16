@@ -51,23 +51,23 @@ export function Inline(props: InlineProps) {
   return (
     <>
       {contents.map(content => {
-        // TODO: Check Japanese Chara
+        // TODO: Check Japanese Chara length
         return content.text.split('').map((chara, i) => {
+          const hasCaret = props.selection.isCollasped && anchor.id === content.id && anchor.offset === i;
           if (
             !props.selection.isCollasped &&
             ((anchor.id === content.id && anchor.offset === i) || (focus.id === content.id && focus.offset === i))
           ) {
             isStarted = !isStarted;
           }
+
           return (
-            <Wrapper
-              key={`${content.id}-${i}`}
-              isInRange={isStarted}
-              hasCaret={props.selection.isCollasped && anchor.id === content.id && anchor.offset === i}
-            >
+            <span key={`${content.id}-${i}`}>
               {anchor.id === content.id && anchor.offset === i ? <span>{props.selection.compositionText}</span> : null}
-              {chara}
-            </Wrapper>
+              <Wrapper isInRange={isStarted} hasCaret={hasCaret}>
+                {chara}
+              </Wrapper>
+            </span>
           );
         });
       })}
