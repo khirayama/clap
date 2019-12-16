@@ -168,7 +168,7 @@ export class Pencil extends React.Component<PencilProps, PencilState> {
     this.applyView(value);
   }
 
-  private applyView(value: string) {
+  private applyView(value: string, retain: number = 0) {
     const document = this.props.document;
     const selection = this.props.selection;
 
@@ -177,7 +177,7 @@ export class Pencil extends React.Component<PencilProps, PencilState> {
       const content = node.findContent(selection.range.anchor.id);
       const textArray = content.text.split('');
       if (!selection.isComposing) {
-        textArray.splice(selection.range.anchor.offset, 0, value);
+        textArray.splice(selection.range.anchor.offset, retain, value);
         selection.range.anchor.offset = selection.range.anchor.offset + value.length;
         selection.range.focus.offset = selection.range.focus.offset + value.length;
         content.text = textArray.join('');
