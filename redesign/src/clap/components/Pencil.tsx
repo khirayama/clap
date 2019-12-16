@@ -141,29 +141,53 @@ export class Pencil extends React.Component<PencilProps, PencilState> {
 
   private onChange(event: React.FormEvent<HTMLInputElement>): void {
     console.log(`${event.type} - ${event.currentTarget.value} - ${undefined}`);
+    const selection = this.props.selection;
+
     const value = event.currentTarget.value;
-    if (this.tmp.isComposing) {
+    if (selection.isComposing) {
       this.setState({ value });
     } else {
       this.setState({ value: '' });
-      this.applyView(value);
     }
+    this.applyView(value);
   }
 
   private onCompositionStart() {
-    this.tmp.isComposing = true;
+    const selection = this.props.selection;
+    selection.isComposing = true;
   }
 
   private onCompositionEnd(event: React.CompositionEvent<HTMLInputElement>) {
+    const selection = this.props.selection;
+    selection.isComposing = false;
+    selection.compositionText = '';
+
     console.log(`${event.type} - ${event.currentTarget.value} - ${undefined}`);
     const value = event.currentTarget.value;
-    this.tmp.isComposing = false;
     this.setState({ value: '' });
     this.applyView(value);
   }
 
   private applyView(value: string) {
-    console.log(`APPLY: ${value}`);
+    const document = this.props.document;
+    const selection = this.props.selection;
+
+    if (selection.isCollasped()) {
+      const node = document.find(selection.ids[0]);
+      const content = node.findContent(selection.range.anchor.id);
+      const textArray = content.text.split('');
+      if (!selection.isComposing) {
+        textArray.splice(selection.range.anchor.offset, 0, value);
+        selection.range.anchor.offset = selection.range.anchor.offset + value.length;
+        selection.range.focus.offset = selection.range.focus.offset + value.length;
+        content.text = textArray.join('');
+        selection.dispatch();
+        node.dispatch();
+      } else {
+        selection.compositionText = value;
+        selection.dispatch();
+      }
+    }
   }
 
   // Confirm Phase
