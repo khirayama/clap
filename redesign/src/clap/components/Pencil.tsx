@@ -189,6 +189,4 @@ export class Pencil extends React.Component<PencilProps, PencilState> {
       }
     }
   }
-
-  // Confirm Phase
 }
