@@ -96,12 +96,14 @@ retain 3
 delete 4
 
 insert content
+add mark
 insert text 'm a '
 
 add mark
 retain 8
 
 insert content
+add mark
 insert text ' engine'
 
 delete text 7
@@ -112,6 +114,7 @@ retain 2
 delete 5
 
 insert content
+add mark
 insert text 'am a '
 
 add mark
@@ -128,17 +131,69 @@ retain 2
 delete 5
 
 insert content
+add mark
 insert text 'am a '
 
 add mark
 retain 8
 
 insert content
+add mark
 insert text ' engine'
 
 delete text 7
 retain 2
 
+// Case 3
+start   : I am a *software* engineer
+user1   : I **am a *software* engine**er
+user2   : I am a good *software* engineer
+expected: I **am a good *software* engine**er
+
+// user1 changeset
+retain 2
+delete text 5
+
+insert content
+add mark
+insert text 'am a '
+
+add mark
+retain 8
+
+insert content
+add mark
+insert text ' engine'
+
+delete text 7
+retain 2
+
+// user2 changeset
+retain 7
+insert text 'good '
+
+retain 8
+
+retain 9
+
+// expected changeset
+retain 2
+delete text 5
+
+insert content
+add mark
+insert text 'am a '
+insert text 'good '
+
+add mark
+retain 8
+
+insert content
+add mark
+insert text ' engine'
+
+delete text 7
+retain 2
  ************************************************/
 
 /* Item Mutations */
