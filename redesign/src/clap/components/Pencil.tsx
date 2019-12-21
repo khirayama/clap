@@ -98,6 +98,8 @@ export class Pencil extends React.Component<PencilProps, PencilState> {
     isComposing: false,
   };
 
+  private operator: Clap.ClientOperator;
+
   constructor(props: PencilProps) {
     super(props);
 
@@ -105,6 +107,7 @@ export class Pencil extends React.Component<PencilProps, PencilState> {
       value: '',
     };
 
+    this.operator = new Clap.ClientOperator(props.document, props.selection);
     this.noop = this.noop.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
     this.onCompositionStart = this.onCompositionStart.bind(this);
@@ -168,25 +171,31 @@ export class Pencil extends React.Component<PencilProps, PencilState> {
     this.applyView(value);
   }
 
-  private applyView(value: string, retain: number = 0) {
+  private applyView(value: string) {
     const document = this.props.document;
     const selection = this.props.selection;
 
     if (selection.isCollasped()) {
       const node = document.find(selection.ids[0]);
-      const content = node.findContent(selection.range.anchor.id);
-      const textArray = content.text.split('');
-      if (!selection.isComposing) {
-        textArray.splice(selection.range.anchor.offset, retain, value);
-        selection.range.anchor.offset = selection.range.anchor.offset + value.length;
-        selection.range.focus.offset = selection.range.focus.offset + value.length;
-        content.text = textArray.join('');
-        selection.dispatch();
-        node.dispatch();
-      } else {
-        selection.compositionText = value;
-        selection.dispatch();
-      }
+      // const content = node.findContent(selection.range.anchor.id);
+
+      const changeset = new Clap.Changeset();
+      const mutation = changeset.computeMutation(document);
+      changeset.mutation = mutation;
+      this.operator.emit(changeset);
+
+      // const textArray = content.text.split('');
+      // if (!selection.isComposing) {
+      //   textArray.splice(selection.range.anchor.offset, retain, value);
+      //   selection.range.anchor.offset = selection.range.anchor.offset + value.length;
+      //   selection.range.focus.offset = selection.range.focus.offset + value.length;
+      //   content.text = textArray.join('');
+      //   selection.dispatch();
+      //   node.dispatch();
+      // } else {
+      //   selection.compositionText = value;
+      //   selection.dispatch();
+      // }
     }
   }
 }
