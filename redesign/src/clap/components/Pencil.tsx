@@ -177,11 +177,15 @@ export class Pencil extends React.Component<PencilProps, PencilState> {
 
     if (selection.isCollasped()) {
       const node = document.find(selection.ids[0]);
-      // const content = node.findContent(selection.range.anchor.id);
+      const content = node.findContent(selection.range.anchor.id);
 
-      const changeset = new Clap.Changeset();
-      const mutation = changeset.computeMutation(document);
-      changeset.mutation = mutation;
+      const changeset = new Clap.Changeset(document);
+      const itemMutation = changeset.findItemMutation(node.id);
+      const contentMutation = itemMutation.contentMutations.filter(cm => cm.id === content.id)[0] || null;
+      contentMutation.textMutations.unshift({
+        type: 'insert',
+        value,
+      });
       this.operator.emit(changeset);
 
       // const textArray = content.text.split('');
