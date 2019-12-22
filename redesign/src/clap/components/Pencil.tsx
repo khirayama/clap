@@ -127,7 +127,7 @@ export class Pencil extends React.Component<PencilProps, PencilState> {
           onChange={this.onChange}
           onKeyPress={this.noop}
           onCompositionEnd={this.onCompositionEnd}
-          onKeyUp={this.onKeyDown}
+          onKeyUp={this.noop}
         />
       </Wrapper>
     );
@@ -143,7 +143,6 @@ export class Pencil extends React.Component<PencilProps, PencilState> {
   }
 
   private onChange(event: React.FormEvent<HTMLInputElement>): void {
-    console.log(`${event.type} - ${event.currentTarget.value} - ${undefined}`);
     const selection = this.props.selection;
 
     const value = event.currentTarget.value;
@@ -165,7 +164,6 @@ export class Pencil extends React.Component<PencilProps, PencilState> {
     selection.isComposing = false;
     selection.compositionText = '';
 
-    console.log(`${event.type} - ${event.currentTarget.value} - ${undefined}`);
     const value = event.currentTarget.value;
     this.setState({ value: '' });
     this.applyView(value);

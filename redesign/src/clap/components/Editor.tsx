@@ -15,13 +15,10 @@ export function Editor(props: EditorProps) {
   const [selection, setSelection] = React.useState(props.selection.toJSON());
 
   React.useEffect(() => {
-    console.log('mount');
     props.document.on(() => {
-      console.log('change document');
       setDocument(props.document.toJSON());
     });
     props.selection.on(() => {
-      console.log('change selection');
       setSelection(props.selection.toJSON());
     });
   }, []);
