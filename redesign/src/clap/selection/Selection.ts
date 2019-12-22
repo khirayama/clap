@@ -1,8 +1,10 @@
 export interface PureSelection {
+  // independent - update following values in Pencil
+  mode: 'normal' | 'select' | 'insert';
+  compositionText: string;
   isComposing: boolean;
   isCollasped: boolean;
-  compositionText: string;
-  mode: 'normal' | 'select' | 'insert';
+  // dependent - update following values in OT
   ids: string[];
   range: {
     anchor: {
