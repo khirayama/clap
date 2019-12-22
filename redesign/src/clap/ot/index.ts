@@ -400,11 +400,11 @@ export class ClientOperator {
       this.applyItemMutation(im);
     });
     itemMutation.contentMutations.forEach(contentMutation => {
-      this.applyContentMutation(contentMutation);
+      this.applyContentMutation(contentMutation, itemMutation.id);
     });
   }
 
-  private applyContentMutation(contentMutation: ContentMutation) {
+  private applyContentMutation(contentMutation: ContentMutation, itemId: string | null) {
     switch (contentMutation.type) {
       case 'retain': {
         // noop
@@ -412,11 +412,11 @@ export class ClientOperator {
       }
     }
     contentMutation.textMutations.forEach(textMutation => {
-      this.applyTextMutation(textMutation);
+      this.applyTextMutation(textMutation, itemId, contentMutation.id);
     });
   }
 
-  private applyTextMutation(textMutation: TextMutation) {
+  private applyTextMutation(textMutation: TextMutation, itemId: string | null, contentId: string | null) {
     const document = this.document;
     const selection = this.selection;
 
@@ -426,8 +426,8 @@ export class ClientOperator {
         break;
       }
       case 'insert': {
-        const node = document.find(selection.ids[0]);
-        const content = node.findContent(selection.range.anchor.id);
+        const node = document.find(itemId);
+        const content = node.findContent(contentId);
         const value = textMutation.value;
 
         // Update document
