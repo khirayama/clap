@@ -290,7 +290,6 @@ export class Changeset {
   }
 
   public findItemMutation(id: string, mutation: ItemMutation = this.mutation): ItemMutation | null {
-    console.log(id, mutation.id);
     if (mutation.id === id) {
       return mutation;
     } else if (mutation.itemMutations) {
