@@ -201,7 +201,7 @@ retain 2
 
 /* Item Mutations */
 type BaseItemMutation = {
-  id: string;
+  id: string | null;
   type: string;
   itemMutations: ItemMutation[];
   contentMutations: ContentMutation[];
@@ -216,7 +216,7 @@ type ItemMutation = RetainItemMutation;
 
 /* Content Mutations */
 type BaseContentMutation = {
-  id: string;
+  id: string | null;
   type: 'retain' | 'insert' | 'delete' | 'addmark' | 'removemark';
   textMutations: TextMutation[];
 };
@@ -305,7 +305,7 @@ export class Changeset {
 
   public computeMutation(node: Clap.DocumentNode | Clap.ItemNode): ItemMutation {
     const retainItemMutation: RetainItemMutation = {
-      id: '',
+      id: null,
       type: 'retain',
       offset: 1,
       itemMutations: [],
@@ -313,7 +313,7 @@ export class Changeset {
     };
 
     const retainContentMutation: RetainContentMutation = {
-      id: '',
+      id: null,
       type: 'retain',
       offset: 1,
       textMutations: [],
