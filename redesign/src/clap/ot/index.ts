@@ -255,7 +255,6 @@ type ContentMutation =
 
 /* Text Mutations */
 type BaseTextMutation = {
-  id: string;
   type: 'retain' | 'insert' | 'delete';
 };
 
@@ -322,7 +321,6 @@ export class Changeset {
     };
 
     const retainTextMutation: RetainTextMutation = {
-      id: '',
       type: 'retain',
       offset: 1,
     };
@@ -364,9 +362,7 @@ export class ClientOperator {
   }
 
   public emit(changeset: Changeset) {
-    console.log('emit');
-    console.log(changeset);
-    // this.apply(changeset);
+    this.apply(changeset);
     // if (this.changeset) {
     //   this.buffer = this.transform(changeset);
     // } else {
@@ -392,6 +388,7 @@ export class ClientOperator {
 
   private apply(changeset: Changeset) {
     console.log(changeset);
+    // update document and selection
   }
 
   private send(changeset: Changeset) {
