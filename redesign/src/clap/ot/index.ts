@@ -28,7 +28,9 @@ import * as Clap from '../index';
 // OTは、結局、「今の状態」に「どういう操作をするか」
 // そして、その「操作」を「どう合成変換するか」が問題なんやな。
 // なので、Mutationの構造は、今のtree構造にマッチする
-// かつ、処理はシーケンシャルである
+// かつ、処理はシーケンシャルである。すなわちカーソル移動をさせるイメージ。
+// なので、よくあるOTライブラリはfunction chainしてるわけだ。
+// TODO: 設計し直し。配列じゃなくfunction chainで。
 Item Mutations
 - retain
 - insert item
