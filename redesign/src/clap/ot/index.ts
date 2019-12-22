@@ -1,4 +1,4 @@
-// import uuid from 'uuid/v4';
+import uuid from 'uuid/v4';
 
 import * as Clap from '../index';
 
@@ -39,12 +39,15 @@ Item Mutations
 
 Content Mutations
 - retain
-- insert text
 - insert content
-- delete text
 - delete content
 - add mark
 - remove mark
+
+Text Mutations
+- retain
+- insert text
+- delete text
 
 // Case 1
 start   : I am a *software* engineer
@@ -197,65 +200,113 @@ retain 2
  ************************************************/
 
 /* Item Mutations */
-type RetainItemMutation = {
+type BaseItemMutation = {
   id: string;
-  type: 'retain';
-  offset: number;
+  type: string;
   itemMutations: ItemMutation[];
   contentMutations: ContentMutation[];
+};
+
+type RetainItemMutation = BaseItemMutation & {
+  type: 'retain';
+  offset: number;
 };
 
 type ItemMutation = RetainItemMutation;
 
 /* Content Mutations */
-type RetainCharContentMutation = {
+type BaseContentMutation = {
   id: string;
+  type: 'retain' | 'insert' | 'delete' | 'addmark' | 'removemark';
+  textMutations: TextMutation[];
+};
+
+type RetainContentMutation = BaseContentMutation & {
   type: 'retain';
   offset: number;
 };
 
-type InsertCharContentMutation = {
-  id: string;
+type InsertContentMutation = BaseContentMutation & {
   type: 'insert';
   value: string;
 };
 
-type DeleteCharContentMutation = {
-  id: string;
+type DeleteContentMutation = BaseContentMutation & {
   type: 'delete';
   count: number;
 };
 
-type InsertContentStartContentMutation = {
-  id: string;
-  type: 'insertcontentstart';
+type AddMarkContentMutation = BaseContentMutation & {
+  type: 'addmark';
   marks: Clap.TextContent['marks'];
 };
 
-type InsertContentEndContentMutation = {
-  id: string;
-  type: 'insertcontentend';
+type RemoveMarkContentMutation = BaseContentMutation & {
+  type: 'removemark';
   marks: Clap.TextContent['marks'];
 };
 
 type ContentMutation =
-  | RetainCharContentMutation
-  | InsertCharContentMutation
-  | DeleteCharContentMutation
-  | InsertContentStartContentMutation
-  | InsertContentEndContentMutation;
+  | RetainContentMutation
+  | InsertContentMutation
+  | DeleteContentMutation
+  | AddMarkContentMutation
+  | RemoveMarkContentMutation;
+
+/* Text Mutations */
+type BaseTextMutation = {
+  id: string;
+  type: 'retain' | 'insert' | 'delete';
+};
+
+type RetainTextMutation = BaseTextMutation & {
+  type: 'retain';
+  offset: number;
+};
+
+type InsertTextMutation = BaseTextMutation & {
+  type: 'insert';
+  value: string;
+};
+
+type DeleteTextMutation = BaseTextMutation & {
+  type: 'delete';
+  count: number;
+};
+
+type TextMutation = RetainTextMutation | InsertTextMutation | DeleteTextMutation;
 
 export class Changeset {
   public id: string;
 
   public mutation: ItemMutation;
 
+  constructor(node: Clap.DocumentNode | Clap.ItemNode) {
+    this.id = uuid();
+    this.mutation = this.computeMutation(node);
+  }
+
   public transform(changeset: Changeset): Changeset {
     return /* Merget this and changeset */ changeset;
   }
 
-  public computeMutation(document: Clap.DocumentNode): ItemMutation {
-    const retainItemMutation: Clap.Changeset['mutation'] = {
+  public findItemMutation(id: string, mutation: ItemMutation = this.mutation): ItemMutation | null {
+    console.log(id, mutation.id);
+    if (mutation.id === id) {
+      return mutation;
+    } else if (mutation.itemMutations) {
+      for (const itemMutation of mutation.itemMutations) {
+        const result = this.findItemMutation(id, itemMutation);
+        if (result) {
+          return result;
+        }
+      }
+    }
+    return null;
+  }
+
+  public computeMutation(node: Clap.DocumentNode | Clap.ItemNode): ItemMutation {
+    const retainItemMutation: RetainItemMutation = {
       id: '',
       type: 'retain',
       offset: 1,
@@ -263,31 +314,34 @@ export class Changeset {
       contentMutations: [],
     };
 
-    const mutation = { id: document.id, ...retainItemMutation };
+    const retainContentMutation: RetainContentMutation = {
+      id: '',
+      type: 'retain',
+      offset: 1,
+      textMutations: [],
+    };
 
-    mutation.itemMutations = document.nodes.map(node => {
-      const itemMutation = { id: node.id, ...retainItemMutation };
+    const retainTextMutation: RetainTextMutation = {
+      id: '',
+      type: 'retain',
+      offset: 1,
+    };
 
-      node.contents.forEach(content => {
-        itemMutation.contentMutations.push({
-          id: content.id,
-          type: 'insertcontentstart',
-          marks: content.marks,
-        });
-        itemMutation.contentMutations.push({
-          id: content.id,
-          type: 'retain',
-          offset: content.text.length,
-        });
-        itemMutation.contentMutations.push({
-          id: content.id,
-          type: 'insertcontentend',
-          marks: content.marks,
-        });
+    const mutation = { ...retainItemMutation, id: node.id };
+
+    if (node.contents) {
+      mutation.contentMutations = node.contents.map(content => {
+        const contentMutation = { ...retainContentMutation, id: content.id };
+        const textMutation = { ...retainTextMutation };
+        textMutation.offset = content.text.length;
+
+        contentMutation.textMutations = [textMutation];
+
+        return contentMutation;
       });
+    }
 
-      return itemMutation;
-    });
+    mutation.itemMutations = node.nodes.map(n => this.computeMutation(n));
 
     return mutation;
   }
