@@ -413,18 +413,24 @@ export class ClientOperator {
         break;
       }
     }
+    let offset = 0;
     contentMutation.textMutations.forEach(textMutation => {
-      this.applyTextMutation(textMutation, itemId, contentMutation.id);
+      this.applyTextMutation(textMutation, itemId, contentMutation.id, offset);
     });
   }
 
-  private applyTextMutation(textMutation: TextMutation, itemId: string | null, contentId: string | null) {
+  private applyTextMutation(
+    textMutation: TextMutation,
+    itemId: string | null,
+    contentId: string | null,
+    offset: number,
+  ): number {
     const document = this.document;
     const selection = this.selection;
 
     switch (textMutation.type) {
       case 'retain': {
-        // noop
+        offset += textMutation.offset;
         break;
       }
       case 'insert': {
@@ -434,18 +440,29 @@ export class ClientOperator {
 
         // Update document
         const textArray = content.text.split('');
-        textArray.splice(selection.range.anchor.offset, 0, value);
+        textArray.splice(offset, 0, value);
         content.text = textArray.join('');
+        offset += content.text.length;
+        node.dispatch();
 
         // Update selection
-        selection.range.anchor.offset = selection.range.anchor.offset + value.length;
-        selection.range.focus.offset = selection.range.focus.offset + value.length;
-
-        selection.dispatch();
-        node.dispatch();
+        // TODO: If current user's selection match item id and content id, update selection range
+        if (
+          selection.ids.length === 1 &&
+          selection.ids[0] === itemId &&
+          selection.isCollasped &&
+          selection.range.anchor.id === contentId
+        ) {
+          // TODO: insertでも、他ユーザの挿入位置次第では、この通りじゃない？
+          selection.range.anchor.offset = selection.range.anchor.offset + value.length;
+          selection.range.focus.offset = selection.range.focus.offset + value.length;
+          selection.dispatch();
+        }
         break;
       }
     }
+
+    return offset;
   }
 
   private send(changeset: Changeset) {
