@@ -386,8 +386,64 @@ export class ClientOperator {
   }
 
   private apply(changeset: Changeset) {
-    console.log(changeset);
-    // update document and selection
+    this.applyItemMutation(changeset.mutation);
+  }
+
+  private applyItemMutation(itemMutation: ItemMutation) {
+    switch (itemMutation.type) {
+      case 'retain': {
+        // noop
+        break;
+      }
+    }
+    itemMutation.itemMutations.forEach(im => {
+      this.applyItemMutation(im);
+    });
+    itemMutation.contentMutations.forEach(contentMutation => {
+      this.applyContentMutation(contentMutation);
+    });
+  }
+
+  private applyContentMutation(contentMutation: ContentMutation) {
+    switch (contentMutation.type) {
+      case 'retain': {
+        // noop
+        break;
+      }
+    }
+    contentMutation.textMutations.forEach(textMutation => {
+      this.applyTextMutation(textMutation);
+    });
+  }
+
+  private applyTextMutation(textMutation: TextMutation) {
+    const document = this.document;
+    const selection = this.selection;
+
+    switch (textMutation.type) {
+      case 'retain': {
+        // noop
+        break;
+      }
+      case 'insert': {
+        const node = document.find(selection.ids[0]);
+        const content = node.findContent(selection.range.anchor.id);
+        const value = textMutation.value;
+
+        // Update document
+        const textArray = content.text.split('');
+        textArray.splice(selection.range.anchor.offset, 0, value);
+        content.text = textArray.join('');
+
+        // Update selection
+        selection.range.anchor.offset = selection.range.anchor.offset + value.length;
+        selection.range.focus.offset = selection.range.focus.offset + value.length;
+
+        selection.dispatch();
+        node.dispatch();
+        break;
+      }
+    }
   }
 
   private send(changeset: Changeset) {
