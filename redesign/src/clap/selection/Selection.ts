@@ -3,6 +3,7 @@ export interface PureSelection {
   mode: 'normal' | 'select' | 'insert';
   compositionText: string;
   // TODO: compositionについてもrangeがいるな
+  // 嘘。Google Docs形式で。変換候補を右上に表示してる。割り切ってた
   isComposing: boolean;
   isCollasped: boolean;
   // dependent - update following values in OT
