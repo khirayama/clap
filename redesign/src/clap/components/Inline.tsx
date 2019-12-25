@@ -41,6 +41,10 @@ const Wrapper = styled.span`
       : ''};
 `;
 
+const CompositionWrapper = styled.span`
+  text-decoration: underline;
+`;
+
 export function Inline(props: InlineProps) {
   const contents = props.contents;
   const anchor = props.selection.range.anchor;
@@ -63,7 +67,9 @@ export function Inline(props: InlineProps) {
 
           return (
             <span key={`${content.id}-${i}`}>
-              {anchor.id === content.id && anchor.offset === i ? <span>{props.selection.compositionText}</span> : null}
+              {anchor.id === content.id && anchor.offset === i ? (
+                <CompositionWrapper>{props.selection.compositionText}</CompositionWrapper>
+              ) : null}
               <Wrapper isInRange={isStarted} hasCaret={hasCaret}>
                 {chara}
               </Wrapper>
