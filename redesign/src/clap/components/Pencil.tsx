@@ -18,6 +18,11 @@ interface PencilState {
   value: string;
 }
 
+const keyCodes = {
+  DELETE: 8,
+  ENTER: 13,
+};
+
 /* FYI ******************************************
  * Inputting `a`
  *
@@ -140,6 +145,10 @@ export class Pencil extends React.Component<PencilProps, PencilState> {
   private onKeyDown(event: React.KeyboardEvent<HTMLInputElement>): void {
     // TODO: keyCode controll in KeyDown
     console.log(`${event.type} - ${event.currentTarget.value} - ${event.keyCode}`);
+    const keyCode = event.keyCode;
+    if (keyCode === keyCodes.DELETE) {
+      this.deleteText();
+    }
   }
 
   private onChange(event: React.FormEvent<HTMLInputElement>): void {
