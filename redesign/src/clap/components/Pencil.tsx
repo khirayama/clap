@@ -21,6 +21,10 @@ interface PencilState {
 const keyCodes = {
   DELETE: 8,
   ENTER: 13,
+  LEFT: 37,
+  TOP: 38,
+  RIGHT: 39,
+  DOWN: 40,
 };
 
 /* FYI ******************************************
