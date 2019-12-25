@@ -209,62 +209,52 @@ export class ClientOperator {
   }
 
   private applyContentMutation(contentMutation: ContentMutation, itemId: string | null) {
+    const document = this.document;
+    const selection = this.selection;
+
     switch (contentMutation.type) {
       case 'retain': {
         // noop
         break;
       }
     }
-    let offset = 0;
+
+    let cursor = 0;
     contentMutation.textMutations.forEach(textMutation => {
-      this.applyTextMutation(textMutation, itemId, contentMutation.id, offset);
-    });
-  }
-
-  private applyTextMutation(
-    textMutation: TextMutation,
-    itemId: string | null,
-    contentId: string | null,
-    offset: number,
-  ): number {
-    const document = this.document;
-    const selection = this.selection;
-
-    switch (textMutation.type) {
-      case 'retain': {
-        offset += textMutation.offset;
-        break;
-      }
-      case 'insert': {
-        const node = document.find(itemId);
-        const content = node.findContent(contentId);
-        const value = textMutation.value;
-
-        // Update document
-        const textArray = content.text.split('');
-        textArray.splice(offset, 0, value);
-        content.text = textArray.join('');
-        offset += content.text.length;
-        node.dispatch();
-
-        // Update selection
-        // TODO: If current user's selection match item id and content id, update selection range
-        if (
-          selection.ids.length === 1 &&
-          selection.ids[0] === itemId &&
-          selection.isCollasped &&
-          selection.range.anchor.id === contentId
-        ) {
-          // TODO: insertでも、他ユーザの挿入位置次第では、この通りじゃない？
-          selection.range.anchor.offset = selection.range.anchor.offset + value.length;
-          selection.range.focus.offset = selection.range.focus.offset + value.length;
-          selection.dispatch();
+      switch (textMutation.type) {
+        case 'retain': {
+          cursor += textMutation.offset;
+          break;
         }
-        break;
-      }
-    }
+        case 'insert': {
+          const node = document.find(itemId);
+          const content = node.findContent(contentMutation.id);
+          const value = textMutation.value;
 
-    return offset;
+          // Update document
+          const textArray = content.text.split('');
+          textArray.splice(cursor, 0, value);
+          content.text = textArray.join('');
+          cursor += content.text.length;
+          node.dispatch();
+
+          // Update selection
+          // TODO: If current user's selection match item id and content id, update selection range
+          if (
+            selection.ids.length === 1 &&
+            selection.ids[0] === itemId &&
+            selection.isCollasped &&
+            selection.range.anchor.id === contentMutation.id
+          ) {
+            // TODO: insertでも、他ユーザの挿入位置次第では、この通りじゃない？
+            selection.range.anchor.offset = selection.range.anchor.offset + value.length;
+            selection.range.focus.offset = selection.range.focus.offset + value.length;
+            selection.dispatch();
+          }
+          break;
+        }
+      }
+    });
   }
 
   private send(changeset: Changeset) {
