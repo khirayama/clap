@@ -59,7 +59,10 @@ export class BaseNode {
 
   private listeners: ((node: BaseNode) => void)[] = [];
 
-  private cache: { [key: string]: BaseNode } = {};
+  private cache: { nodes: { [key: string]: BaseNode }; contents: { [key: string]: TextContent } } = {
+    nodes: {},
+    contents: {},
+  };
 
   constructor(node?: Partial<PureNode>) {
     this.id = node ? node.id || uuid() : uuid();
@@ -77,8 +80,8 @@ export class BaseNode {
               // TODO: Need pool to switch node
               const prevPureNode = node.nodes[i - 1];
               const nextPureNode = node.nodes[i + 1];
-              const prevNode = prevPureNode ? this.cache[prevPureNode.id] || null : null;
-              const nextNode = nextPureNode ? this.cache[nextPureNode.id] || null : null;
+              const prevNode = prevPureNode ? this.cache.nodes[prevPureNode.id] || null : null;
+              const nextNode = nextPureNode ? this.cache.nodes[nextPureNode.id] || null : null;
 
               const newNode: BaseNode = new BaseNode(n);
               newNode.document = this.document;
@@ -92,16 +95,33 @@ export class BaseNode {
                 newNode.next = nextNode;
               }
 
-              this.cache[newNode.id] = newNode;
+              this.cache.nodes[newNode.id] = newNode;
               return newNode;
             },
           )
         : [];
     this.contents =
       node && node.contents
-        ? node.contents.map((content: PureContent) => {
+        ? node.contents.map((content: PureContent, i: number) => {
             // TODO: Need pool to switch content
-            return new TextContent(content);
+            const prevPureContent = node.contents[i - 1];
+            const nextPureContent = node.contents[i + 1];
+            const prevContent = prevPureContent ? this.cache.contents[prevPureContent.id] || null : null;
+            const nextContent = nextPureContent ? this.cache.contents[nextPureContent.id] || null : null;
+
+            const textContent = new TextContent(content);
+            textContent.parent = this;
+
+            if (prevContent) {
+              textContent.prev = prevContent;
+              prevContent.next = textContent;
+            }
+            if (nextContent) {
+              textContent.next = nextContent;
+            }
+
+            this.cache.contents[content.id] = textContent;
+            return textContent;
           })
         : [];
   }

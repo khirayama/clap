@@ -1,5 +1,7 @@
 import uuid from 'uuid/v4';
 
+import * as Clap from '../../';
+
 type Mark = Decoration | Link;
 
 interface Decoration {
@@ -27,6 +29,12 @@ export class TextContent {
   public text: PureTextContent['text'] = '';
 
   public marks: PureTextContent['marks'] = [];
+
+  public parent: Clap.BaseNode | null = null;
+
+  public next: TextContent | null = null;
+
+  public prev: TextContent | null = null;
 
   constructor(text?: Partial<PureTextContent>) {
     this.id = text ? text.id || uuid() : uuid();
