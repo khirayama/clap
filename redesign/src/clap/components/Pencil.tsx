@@ -320,6 +320,7 @@ export class Pencil extends React.Component<PencilProps, PencilState> {
     // (2) Move to next content start when pressing on content end
     // (3) Move one offset right
     // (4) Transition to collaspe to right edge when expanded
+    const document = this.props.document;
     const selection = this.props.selection;
     if (selection.isComposing) {
       // (1) Nothing to do when composing
@@ -327,7 +328,10 @@ export class Pencil extends React.Component<PencilProps, PencilState> {
       this.noop();
     } else {
       if (selection.isCollasped()) {
-        if (selection.range.anchor.offset === 0) {
+        const node = document.find(selection.ids[0]);
+        const anchor = selection.range.anchor;
+        const content = node.findContent(anchor.id);
+        if (selection.range.anchor.offset === content.text.length - 1) {
           // TODO: (2) Move to next content start when pressing on content end
         } else {
           // (3) Move one offset right
