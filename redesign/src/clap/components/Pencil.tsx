@@ -157,15 +157,16 @@ export class Pencil extends React.Component<PencilProps, PencilState> {
 
     switch (keyCode) {
       case keyCodes.DELETE: {
-        this.deleteText();
+        // TODO: shiftなどの分岐は、case文の中で処理する。onDeleteKeyWithShiftみたいな感じ。
+        this.onDeleteKey();
         break;
       }
       case keyCodes.LEFT: {
-        this.moveLeft();
+        this.onLeftKey();
         break;
       }
       case keyCodes.RIGHT: {
-        this.moveRight();
+        this.onRightKey();
         break;
       }
     }
@@ -236,19 +237,26 @@ export class Pencil extends React.Component<PencilProps, PencilState> {
     }
   }
 
-  private deleteText() {
+  private onDeleteKey() {
+    // Considered cases.
+    // (1) Nothing to do when composing
+    // (2) Delete a char when collasped range
+    // (3) Outdent item when in head of line
+    // (4) Delete chars when expanded range
     const document = this.props.document;
     const selection = this.props.selection;
 
-    if (selection.isCollasped()) {
+    if (selection.isComposing) {
+      // (1) Nothing to do when composing
+      // FYI: Depends on navite input element behavior
+      this.noop();
+    } else {
       const node = document.find(selection.ids[0]);
       const anchor = selection.range.anchor;
       const content = node.findContent(anchor.id);
 
-      if (selection.isComposing) {
-        // FYI: Depends on navite input element behavior
-        this.noop();
-      } else {
+      if (selection.isCollasped()) {
+        // (2) Delete a char when collasped range
         const changeset = new Clap.Changeset(document);
         const itemMutation = changeset.findItemMutation(node.id);
         const contentMutation = itemMutation.contentMutations.filter(cm => cm.id === content.id)[0] || null;
@@ -269,45 +277,67 @@ export class Pencil extends React.Component<PencilProps, PencilState> {
             });
           }
         } else {
-          // TODO: Delete indent
+          // TODO: (3) Outdent item when in head of line
         }
         console.log(contentMutation.textMutations);
         this.operator.emit(changeset);
+      } else {
+        // TODO: (4) Delete chars when expanded range
       }
     }
   }
 
-  private moveLeft() {
+  private onLeftKey() {
+    // Considered cases.
+    // (1) Nothing to do when composing
+    // (2) Move to prev content end when pressing on content start
+    // (3) Move one offset left
+    // (4) Transition to collaspe to left edge when expanded
     const selection = this.props.selection;
-    if (selection.isCollasped()) {
-      if (selection.isComposing) {
-        // FYI: Depends on navite input element behavior
-        this.noop();
-      } else {
-        // TODO: Contentを跨ぐケースを考える
-        selection.range.anchor.offset -= 1;
-        selection.range.focus.offset -= 1;
-        selection.dispatch();
-      }
+    if (selection.isComposing) {
+      // (1) Nothing to do when composing
+      // FYI: Depends on navite input element behavior
+      this.noop();
     } else {
-      // TODO: Update range
+      if (selection.isCollasped()) {
+        if (selection.range.anchor.offset === 0) {
+          // TODO: (2) Move to prev content end when pressing on content start
+        } else {
+          // (3) Move one offset left
+          selection.range.anchor.offset -= 1;
+          selection.range.focus.offset -= 1;
+        }
+        selection.dispatch();
+      } else {
+        // TODO: (4) Transition to collaspe to left edge when expanded
+      }
     }
   }
 
-  private moveRight() {
+  private onRightKey() {
+    // Considered cases.
+    // (1) Nothing to do when composing
+    // (2) Move to next content start when pressing on content end
+    // (3) Move one offset right
+    // (4) Transition to collaspe to right edge when expanded
     const selection = this.props.selection;
-    if (selection.isCollasped()) {
-      if (selection.isComposing) {
-        // FYI: Depends on navite input element behavior
-        this.noop();
-      } else {
-        // TODO: Contentを跨ぐケースを考える
-        selection.range.anchor.offset += 1;
-        selection.range.focus.offset += 1;
-        selection.dispatch();
-      }
+    if (selection.isComposing) {
+      // (1) Nothing to do when composing
+      // FYI: Depends on navite input element behavior
+      this.noop();
     } else {
-      // TODO: Update range
+      if (selection.isCollasped()) {
+        if (selection.range.anchor.offset === 0) {
+          // TODO: (2) Move to next content start when pressing on content end
+        } else {
+          // (3) Move one offset right
+          selection.range.anchor.offset += 1;
+          selection.range.focus.offset += 1;
+        }
+        selection.dispatch();
+      } else {
+        // TODO: (4) Transition to collaspe to right edge when expanded
+      }
     }
   }
 }
