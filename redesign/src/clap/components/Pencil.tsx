@@ -147,11 +147,27 @@ export class Pencil extends React.Component<PencilProps, PencilState> {
   }
 
   private onKeyDown(event: React.KeyboardEvent<HTMLInputElement>): void {
-    // TODO: keyCode controll in KeyDown
     console.log(`${event.type} - ${event.currentTarget.value} - ${event.keyCode}`);
     const keyCode = event.keyCode;
-    if (keyCode === keyCodes.DELETE) {
-      this.deleteText();
+    const metaKey = event.metaKey; // Command
+    const ctrlKey = event.ctrlKey; // Ctrl
+    const shiftKey = event.shiftKey; // Shift
+    const altKey = event.altKey; // Option
+    console.log(keyCode, metaKey, ctrlKey, shiftKey, altKey);
+
+    switch (keyCode) {
+      case keyCodes.DELETE: {
+        this.deleteText();
+        break;
+      }
+      case keyCodes.LEFT: {
+        this.moveLeft();
+        break;
+      }
+      case keyCodes.RIGHT: {
+        this.moveRight();
+        break;
+      }
     }
   }
 
@@ -258,6 +274,40 @@ export class Pencil extends React.Component<PencilProps, PencilState> {
         console.log(contentMutation.textMutations);
         this.operator.emit(changeset);
       }
+    }
+  }
+
+  private moveLeft() {
+    const selection = this.props.selection;
+    if (selection.isCollasped()) {
+      if (selection.isComposing) {
+        // FYI: Depends on navite input element behavior
+        this.noop();
+      } else {
+        // TODO: Contentを跨ぐケースを考える
+        selection.range.anchor.offset -= 1;
+        selection.range.focus.offset -= 1;
+        selection.dispatch();
+      }
+    } else {
+      // TODO: Update range
+    }
+  }
+
+  private moveRight() {
+    const selection = this.props.selection;
+    if (selection.isCollasped()) {
+      if (selection.isComposing) {
+        // FYI: Depends on navite input element behavior
+        this.noop();
+      } else {
+        // TODO: Contentを跨ぐケースを考える
+        selection.range.anchor.offset += 1;
+        selection.range.focus.offset += 1;
+        selection.dispatch();
+      }
+    } else {
+      // TODO: Update range
     }
   }
 }
