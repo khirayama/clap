@@ -253,6 +253,33 @@ export class ClientOperator {
           }
           break;
         }
+        case 'delete': {
+          const node = document.find(itemId);
+          const content = node.findContent(contentMutation.id);
+          const count = textMutation.count;
+
+          // Update document
+          const textArray = content.text.split('');
+          textArray.splice(cursor, count);
+          content.text = textArray.join('');
+          cursor += content.text.length;
+          node.dispatch();
+
+          // Update selection
+          // TODO: If current user's selection match item id and content id, update selection range
+          if (
+            selection.ids.length === 1 &&
+            selection.ids[0] === itemId &&
+            selection.isCollasped &&
+            selection.range.anchor.id === contentMutation.id
+          ) {
+            // TODO: insertでも、他ユーザの挿入位置次第では、この通りじゃない？
+            selection.range.anchor.offset = selection.range.anchor.offset - count;
+            selection.range.focus.offset = selection.range.focus.offset - count;
+            selection.dispatch();
+          }
+          break;
+        }
       }
     });
   }
