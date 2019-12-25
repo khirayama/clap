@@ -2,6 +2,7 @@ export interface PureSelection {
   // independent - update following values in Pencil
   mode: 'normal' | 'select' | 'insert';
   compositionText: string;
+  // TODO: compositionについてもrangeがいるな
   isComposing: boolean;
   isCollasped: boolean;
   // dependent - update following values in OT
