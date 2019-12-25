@@ -202,10 +202,12 @@ export class Pencil extends React.Component<PencilProps, PencilState> {
           type: 'insert',
           value,
         });
-        contentMutation.textMutations.push({
-          type: 'retain',
-          offset: content.text.length - anchor.offset,
-        });
+        if (content.text.length - anchor.offset !== 0) {
+          contentMutation.textMutations.push({
+            type: 'retain',
+            offset: content.text.length - anchor.offset,
+          });
+        }
         this.operator.emit(changeset);
       } else {
         selection.compositionText = value;
