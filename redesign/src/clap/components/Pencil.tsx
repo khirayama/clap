@@ -151,7 +151,7 @@ export class Pencil extends React.Component<PencilProps, PencilState> {
     } else {
       this.setState({ value: '' });
     }
-    this.applyView(value);
+    this.insertText(value);
   }
 
   private onCompositionStart() {
@@ -166,10 +166,10 @@ export class Pencil extends React.Component<PencilProps, PencilState> {
 
     const value = event.currentTarget.value;
     this.setState({ value: '' });
-    this.applyView(value);
+    this.insertText(value);
   }
 
-  private applyView(value: string) {
+  private insertText(value: string) {
     const document = this.props.document;
     const selection = this.props.selection;
 
