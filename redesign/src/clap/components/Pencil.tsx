@@ -215,4 +215,44 @@ export class Pencil extends React.Component<PencilProps, PencilState> {
       }
     }
   }
+
+  private deleteText() {
+    const document = this.props.document;
+    const selection = this.props.selection;
+
+    if (selection.isCollasped()) {
+      const node = document.find(selection.ids[0]);
+      const anchor = selection.range.anchor;
+      const content = node.findContent(anchor.id);
+
+      if (!selection.isComposing) {
+        const changeset = new Clap.Changeset(document);
+        const itemMutation = changeset.findItemMutation(node.id);
+        const contentMutation = itemMutation.contentMutations.filter(cm => cm.id === content.id)[0] || null;
+        contentMutation.textMutations = [];
+        if (anchor.offset !== 0) {
+          contentMutation.textMutations.push({
+            type: 'retain',
+            offset: anchor.offset - 1,
+          });
+          contentMutation.textMutations.push({
+            type: 'delete',
+            count: 1,
+          });
+          if (content.text.length - anchor.offset !== 0) {
+            contentMutation.textMutations.push({
+              type: 'retain',
+              offset: content.text.length - anchor.offset,
+            });
+          }
+        } else {
+          // TODO: Delete indent
+        }
+        console.log(contentMutation.textMutations);
+        this.operator.emit(changeset);
+      } else {
+        this.noop();
+      }
+    }
+  }
 }
