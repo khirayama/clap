@@ -217,11 +217,11 @@ const sampleSelection: Clap.PureSelection = {
   range: {
     anchor: {
       id: targetNode.contents[0].id,
-      offset: 0,
+      offset: 2,
     },
     focus: {
       id: targetNode.contents[0].id,
-      offset: 0,
+      offset: 2,
     },
   },
 };
