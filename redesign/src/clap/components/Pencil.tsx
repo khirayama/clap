@@ -187,7 +187,10 @@ export class Pencil extends React.Component<PencilProps, PencilState> {
       const anchor = selection.range.anchor;
       const content = node.findContent(anchor.id);
 
-      if (!selection.isComposing) {
+      if (selection.isComposing) {
+        selection.compositionText = value;
+        selection.dispatch();
+      } else {
         const changeset = new Clap.Changeset(document);
         const itemMutation = changeset.findItemMutation(node.id);
         const contentMutation = itemMutation.contentMutations.filter(cm => cm.id === content.id)[0] || null;
@@ -209,9 +212,6 @@ export class Pencil extends React.Component<PencilProps, PencilState> {
           });
         }
         this.operator.emit(changeset);
-      } else {
-        selection.compositionText = value;
-        selection.dispatch();
       }
     }
   }
@@ -225,7 +225,10 @@ export class Pencil extends React.Component<PencilProps, PencilState> {
       const anchor = selection.range.anchor;
       const content = node.findContent(anchor.id);
 
-      if (!selection.isComposing) {
+      if (selection.isComposing) {
+        // FYI: Depends on navite input element behavior
+        this.noop();
+      } else {
         const changeset = new Clap.Changeset(document);
         const itemMutation = changeset.findItemMutation(node.id);
         const contentMutation = itemMutation.contentMutations.filter(cm => cm.id === content.id)[0] || null;
@@ -250,8 +253,6 @@ export class Pencil extends React.Component<PencilProps, PencilState> {
         }
         console.log(contentMutation.textMutations);
         this.operator.emit(changeset);
-      } else {
-        this.noop();
       }
     }
   }
