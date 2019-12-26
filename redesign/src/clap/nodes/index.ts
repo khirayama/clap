@@ -16,6 +16,8 @@ export { ParagraphNode } from './item/ParagraphNode';
 export { HorizontalRuleNode } from './item/HorizontalRuleNode';
 // content
 export { PureTextContent, TextContent } from './content/TextContent';
+// utils
+export { Exproler } from './Exproler';
 
 export type PureContent = PureTextContent;
 
