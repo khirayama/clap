@@ -101,7 +101,7 @@ export class BaseNode {
           )
         : [];
     this.contents =
-      node && node.contents
+      node && node.contents !== null
         ? node.contents.map((content: PureContent, i: number) => {
             // TODO: Need pool to switch content
             const prevPureContent = node.contents[i - 1];
@@ -123,6 +123,8 @@ export class BaseNode {
             this.cache.contents[content.id] = textContent;
             return textContent;
           })
+        : node && node.contents === null
+        ? null
         : [];
   }
 
