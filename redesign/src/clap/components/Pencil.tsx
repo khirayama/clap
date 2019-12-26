@@ -168,8 +168,9 @@ export class Pencil extends React.Component<PencilProps, PencilState> {
     // Considered cases.
     // (1) Nothing to do when composing
     // (2) Delete a char when collasped range
-    // (3) Outdent item when in head of line
-    // (4) Delete chars when expanded range
+    // (3) Delete content when text length is one
+    // (4) Outdent item when in head of line
+    // (5) Delete chars when expanded range
     const document = this.props.document;
     const selection = this.props.selection;
 
@@ -183,33 +184,39 @@ export class Pencil extends React.Component<PencilProps, PencilState> {
       const content = node.findContent(anchor.id);
 
       if (selection.isCollasped()) {
-        // (2) Delete a char when collasped range
         const changeset = new Clap.Changeset(document);
         const itemMutation = changeset.findItemMutation(node.id);
         const contentMutation = itemMutation.contentMutations.filter(cm => cm.id === content.id)[0] || null;
         contentMutation.textMutations = [];
         if (anchor.offset !== 0) {
-          contentMutation.textMutations.push({
-            type: 'retain',
-            offset: anchor.offset - 1,
-          });
-          contentMutation.textMutations.push({
-            type: 'delete',
-            count: 1,
-          });
-          if (content.text.length - anchor.offset !== 0) {
+          if (content.text.length === 1) {
+            // TODO: (3) Delete content when text length is one
+            console.log('TODO: (3) Delete content when text length is one');
+          } else {
+            // (2) Delete a char when collasped range
             contentMutation.textMutations.push({
               type: 'retain',
-              offset: content.text.length - anchor.offset,
+              offset: anchor.offset - 1,
             });
+            contentMutation.textMutations.push({
+              type: 'delete',
+              count: 1,
+            });
+            if (content.text.length - anchor.offset !== 0) {
+              contentMutation.textMutations.push({
+                type: 'retain',
+                offset: content.text.length - anchor.offset,
+              });
+            }
           }
         } else {
-          // TODO: (3) Outdent item when in head of line
+          // TODO: (4) Outdent item when in head of line
+          console.log('TODO: (4) Outdent item when in head of line');
         }
-        console.log(contentMutation.textMutations);
         this.operator.emit(changeset);
       } else {
-        // TODO: (4) Delete chars when expanded range
+        // TODO: (5) Delete chars when expanded range
+        console.log('TODO: (5) Delete chars when expanded range');
       }
     }
   }
@@ -218,35 +225,9 @@ export class Pencil extends React.Component<PencilProps, PencilState> {
     // Considered cases.
     // (1) Nothing to do when composing
     // (2) Move to prev content end when pressing on content start
-    // (3) Move one offset left
-    // (4) Transition to collaspe to left edge when expanded
-    const selection = this.props.selection;
-    if (selection.isComposing) {
-      // (1) Nothing to do when composing
-      // FYI: Depends on navite input element behavior
-      this.noop();
-    } else {
-      if (selection.isCollasped()) {
-        if (selection.range.anchor.offset === 0) {
-          // TODO: (2) Move to prev content end when pressing on content start
-        } else {
-          // (3) Move one offset left
-          selection.range.anchor.offset -= 1;
-          selection.range.focus.offset -= 1;
-        }
-        selection.dispatch();
-      } else {
-        // TODO: (4) Transition to collaspe to left edge when expanded
-      }
-    }
-  }
-
-  private onRightKey() {
-    // Considered cases.
-    // (1) Nothing to do when composing
-    // (2) Move to next content start when pressing on content end
-    // (3) Move one offset right
-    // (4) Transition to collaspe to right edge when expanded
+    // (3) Move to prev content end of prev item when pressing on content start
+    // (4) Move one offset left
+    // (5) Transition to collaspe to left edge when expanded
     const document = this.props.document;
     const selection = this.props.selection;
     if (selection.isComposing) {
@@ -258,16 +239,88 @@ export class Pencil extends React.Component<PencilProps, PencilState> {
         const node = document.find(selection.ids[0]);
         const anchor = selection.range.anchor;
         const content = node.findContent(anchor.id);
-        if (selection.range.anchor.offset === content.text.length - 1) {
-          // TODO: (2) Move to next content start when pressing on content end
+        if (selection.range.anchor.offset === 1 && content.prev) {
+          // (2) Move to prev content end when pressing on content start
+          selection.range.anchor.id = content.prev.id;
+          selection.range.anchor.offset = content.prev.text.length;
+          selection.range.focus.id = content.prev.id;
+          selection.range.focus.offset = content.prev.text.length;
+        } else if (selection.range.anchor.offset === 0) {
+          // (3) Move to prev content end when pressing on content start
+          let upperNode = Clap.Exproler.findUpperNode(node);
+          while (upperNode && upperNode.contents === null) {
+            upperNode = Clap.Exproler.findUpperNode(upperNode);
+          }
+          if (upperNode) {
+            const nextContent = upperNode.contents[upperNode.contents.length - 1];
+            selection.ids = [upperNode.id];
+            selection.range.anchor.id = nextContent.id;
+            selection.range.anchor.offset = nextContent.text.length;
+            selection.range.focus.id = nextContent.id;
+            selection.range.focus.offset = nextContent.text.length;
+          }
         } else {
-          // (3) Move one offset right
+          // (4) Move one offset left
+          selection.range.anchor.offset = selection.range.anchor.offset === 0 ? 0 : selection.range.anchor.offset - 1;
+          selection.range.focus.offset = selection.range.focus.offset === 0 ? 0 : selection.range.focus.offset - 1;
+        }
+        selection.dispatch();
+      } else {
+        // TODO: (5) Transition to collaspe to left edge when expanded
+        console.log('TODO: (5) Transition to collaspe to left edge when expanded');
+      }
+    }
+  }
+
+  private onRightKey() {
+    // Considered cases.
+    // (1) Nothing to do when composing
+    // (2) Move to next content start when pressing on content end
+    // (3) Move to next content start of next item when pressing on content end
+    // (4) Move one offset right
+    // (5) Transition to collaspe to right edge when expanded
+    const document = this.props.document;
+    const selection = this.props.selection;
+    if (selection.isComposing) {
+      // (1) Nothing to do when composing
+      // FYI: Depends on navite input element behavior
+      this.noop();
+    } else {
+      if (selection.isCollasped()) {
+        const node = document.find(selection.ids[0]);
+        const anchor = selection.range.anchor;
+        const content = node.findContent(anchor.id);
+        if (selection.range.anchor.offset === content.text.length) {
+          if (content.next) {
+            // (2) Move to next content start when pressing on content end
+            selection.range.anchor.id = content.next.id;
+            selection.range.anchor.offset = 1;
+            selection.range.focus.id = content.next.id;
+            selection.range.focus.offset = 1;
+          } else {
+            // (3) Move to next content start of next item when pressing on content end
+            let downnerNode = Clap.Exproler.findDownnerNode(node);
+            while (downnerNode && downnerNode.contents === null) {
+              downnerNode = Clap.Exproler.findDownnerNode(downnerNode);
+            }
+            if (downnerNode) {
+              const nextContent = downnerNode.contents[0];
+              selection.ids = [downnerNode.id];
+              selection.range.anchor.id = nextContent.id;
+              selection.range.anchor.offset = 0;
+              selection.range.focus.id = nextContent.id;
+              selection.range.focus.offset = 0;
+            }
+          }
+        } else {
+          // (4) Move one offset right
           selection.range.anchor.offset += 1;
           selection.range.focus.offset += 1;
         }
         selection.dispatch();
       } else {
-        // TODO: (4) Transition to collaspe to right edge when expanded
+        // TODO: (5) Transition to collaspe to right edge when expanded
+        console.log('(5) Transition to collaspe to right edge when expanded');
       }
     }
   }
