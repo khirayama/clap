@@ -10,35 +10,26 @@ export interface InlineProps {
 
 export interface WrapperProps {
   isInRange: boolean;
-  hasCaret: boolean;
 }
+
+const Caret = styled.span`
+  position: absolute;
+  display: inline-block;
+  width: 1px;
+  height: 100%;
+  background: #333;
+
+  @keyframes blink {
+    50% {
+      opacity: 0;
+    }
+  }
+  animation: blink 1000ms step-end infinite;
+`;
 
 const Wrapper = styled.span`
   position: relative;
   ${(props: WrapperProps) => (props.isInRange ? 'background: #accef7;' : '')}
-
-  ${(props: WrapperProps) =>
-    props.hasCaret
-      ? `
-    &:before {
-      position: absolute;
-      top: 0;
-      left: 0;
-      display: inline-block;
-      content: '';
-      width: 1px;
-      height: 100%;
-      background: #333;
-
-      @keyframes blink {
-        50% {
-          opacity: 0;
-        }
-      }
-      animation: blink 1000ms step-end infinite;
-    }
-  `
-      : ''};
 `;
 
 const CompositionWrapper = styled.span`
@@ -52,31 +43,37 @@ export function Inline(props: InlineProps) {
   let isStarted = false;
   // TODO: selectionを分割するのがよい。aとかを分割したくないから
 
-  return (
+  return contents ? (
     <>
       {contents.map(content => {
         // TODO: Check Japanese Chara length
         return content.text.split('').map((chara, i) => {
-          const hasCaret = props.selection.isCollasped && anchor.id === content.id && anchor.offset === i;
+          const hasCaret = props.selection.isCollasped && anchor.id === content.id;
           if (
             !props.selection.isCollasped &&
             ((anchor.id === content.id && anchor.offset === i) || (focus.id === content.id && focus.offset === i))
           ) {
             isStarted = !isStarted;
           }
-
+          // FYI: &#8203; is zero-width-space. It is for preventing not to display `space`.
           return (
             <span key={`${content.id}-${i}`}>
-              {anchor.id === content.id && anchor.offset === i ? (
-                <CompositionWrapper>{props.selection.compositionText}</CompositionWrapper>
-              ) : null}
-              <Wrapper isInRange={isStarted} hasCaret={hasCaret}>
-                {chara}
+              <Wrapper isInRange={isStarted}>
+                {anchor.id === content.id && anchor.offset === i ? (
+                  <CompositionWrapper>{props.selection.compositionText}</CompositionWrapper>
+                ) : null}
+                {hasCaret && anchor.offset === i ? <Caret /> : null}
+                &#8203;{chara}&#8203;
+                {anchor.id === content.id &&
+                (anchor.offset === content.text.length && content.text.length === i + 1) ? (
+                  <CompositionWrapper>{props.selection.compositionText}</CompositionWrapper>
+                ) : null}
+                {hasCaret && anchor.offset === content.text.length && content.text.length === i + 1 ? <Caret /> : null}
               </Wrapper>
             </span>
           );
         });
       })}
     </>
-  );
+  ) : null;
 }
