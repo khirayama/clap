@@ -2,7 +2,6 @@ import uuid from 'uuid/v4';
 
 import * as Clap from '../index';
 
-// TODO: 設計し直し。配列じゃなくfunction chainで。
 /* Item Mutations */
 type BaseItemMutation = {
   id: string | null;
