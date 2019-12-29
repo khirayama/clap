@@ -49,7 +49,7 @@ type RemoveMarkContentMutation = BaseContentMutation & {
   marks: Clap.TextContent['marks'];
 };
 
-type ContentMutation =
+export type ContentMutation =
   | RetainContentMutation
   | InsertContentMutation
   | DeleteContentMutation
