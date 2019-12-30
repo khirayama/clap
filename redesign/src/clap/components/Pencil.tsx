@@ -192,6 +192,21 @@ export class Pencil extends React.Component<PencilProps, PencilState> {
           if (content.text.length === 1) {
             // TODO: (3) Delete content when text length is one
             console.log('TODO: (3) Delete content when text length is one');
+            const contentMutations: Clap.ContentMutation[] = [
+              {
+                id: null,
+                type: 'delete',
+                count: 1,
+                textMutations: [],
+              },
+              {
+                id: null,
+                type: 'retain',
+                offset: itemMutation.contentMutations.length - 1,
+                textMutations: [],
+              },
+            ];
+            itemMutation.contentMutations = contentMutations;
           } else {
             // (2) Delete a char when collasped range
             contentMutation.textMutations.push({
