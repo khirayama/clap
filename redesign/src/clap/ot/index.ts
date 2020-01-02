@@ -106,7 +106,7 @@ export class Changeset {
     return null;
   }
 
-  public computeMutation(node: Clap.DocumentNode | Clap.ItemNode): ItemMutation {
+  public computeMutation(node: Clap.DocumentNode | Clap.ItemNode, itemId: string, contentId?: string): ItemMutation {
     const retainItemMutation: RetainItemMutation = {
       id: null,
       type: 'retain',
