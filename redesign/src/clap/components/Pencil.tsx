@@ -194,13 +194,11 @@ export class Pencil extends React.Component<PencilProps, PencilState> {
             console.log('TODO: (3) Delete content when text length is one');
             const contentMutations: Clap.ContentMutation[] = [
               {
-                id: null,
                 type: 'delete',
                 count: 1,
                 textMutations: [],
               },
               {
-                id: null,
                 type: 'retain',
                 offset: itemMutation.contentMutations.length - 1,
                 textMutations: [],
