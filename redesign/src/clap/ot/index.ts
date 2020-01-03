@@ -81,9 +81,9 @@ export class Changeset {
 
   public mutation: ItemMutation;
 
-  constructor(node: Clap.DocumentNode | Clap.ItemNode) {
+  constructor(node: Clap.DocumentNode | Clap.ItemNode, itemId: string, contentId?: string) {
     this.id = uuid();
-    this.mutation = this.computeMutation(node);
+    this.mutation = this.computeMutation(node, itemId, contentId);
   }
 
   public transform(changeset: Changeset): Changeset {
@@ -114,7 +114,6 @@ export class Changeset {
     };
 
     const retainContentMutation: RetainContentMutation = {
-      id: null,
       type: 'retain',
       offset: 1,
       textMutations: [],
@@ -125,11 +124,11 @@ export class Changeset {
       offset: 1,
     };
 
-    const mutation = { ...retainItemMutation, id: node.id };
+    const mutation = { ...retainItemMutation };
 
     if (node.contents) {
       mutation.contentMutations = node.contents.map(content => {
-        const contentMutation = { ...retainContentMutation, id: content.id };
+        const contentMutation = { ...retainContentMutation };
         const textMutation = { ...retainTextMutation };
         textMutation.offset = content.text.length;
 
