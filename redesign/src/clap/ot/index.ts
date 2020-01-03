@@ -4,7 +4,6 @@ import * as Clap from '../index';
 
 /* Item Mutations */
 type BaseItemMutation = {
-  id: string | null;
   type: string;
   itemMutations: ItemMutation[];
   contentMutations: ContentMutation[];
@@ -19,7 +18,6 @@ type ItemMutation = RetainItemMutation;
 
 /* Content Mutations */
 type BaseContentMutation = {
-  id: string | null;
   type: 'retain' | 'insert' | 'delete' | 'addmark' | 'removemark';
   textMutations: TextMutation[];
 };
