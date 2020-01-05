@@ -140,25 +140,25 @@ export class Pencil extends React.Component<PencilProps, PencilState> {
         selection.dispatch();
       } else {
         const changeset = new Clap.Changeset(document);
-        const itemMutation = changeset.findItemMutation(node.id);
-        const contentMutation = itemMutation.contentMutations.filter(cm => cm.id === content.id)[0] || null;
-        contentMutation.textMutations = [];
+        const textMutations: Clap.TextMutation[] = [];
         if (anchor.offset !== 0) {
-          contentMutation.textMutations.push({
+          textMutations.push({
             type: 'retain',
             offset: anchor.offset,
           });
         }
-        contentMutation.textMutations.push({
+        textMutations.push({
           type: 'insert',
           value,
         });
         if (content.text.length - anchor.offset !== 0) {
-          contentMutation.textMutations.push({
+          textMutations.push({
             type: 'retain',
             offset: content.text.length - anchor.offset,
           });
         }
+        changeset.mutation = changeset.computeTextMutation(content.id, textMutations);
+        console.log(changeset.mutation);
         this.operator.emit(changeset);
       }
     }

@@ -4,7 +4,6 @@ import * as Clap from '../index';
 
 /* Item Mutations */
 type BaseItemMutation = {
-  type: string;
   itemMutations: ItemMutation[];
   contentMutations: ContentMutation[];
 };
@@ -18,7 +17,6 @@ type ItemMutation = RetainItemMutation;
 
 /* Content Mutations */
 type BaseContentMutation = {
-  type: 'retain' | 'insert' | 'delete' | 'addmark' | 'removemark';
   textMutations: TextMutation[];
 };
 
@@ -55,91 +53,102 @@ export type ContentMutation =
   | RemoveMarkContentMutation;
 
 /* Text Mutations */
-type BaseTextMutation = {
-  type: 'retain' | 'insert' | 'delete';
-};
-
-type RetainTextMutation = BaseTextMutation & {
+type RetainTextMutation = {
   type: 'retain';
   offset: number;
 };
 
-type InsertTextMutation = BaseTextMutation & {
+type InsertTextMutation = {
   type: 'insert';
   value: string;
 };
 
-type DeleteTextMutation = BaseTextMutation & {
+type DeleteTextMutation = {
   type: 'delete';
   count: number;
 };
 
-type TextMutation = RetainTextMutation | InsertTextMutation | DeleteTextMutation;
+export type TextMutation = RetainTextMutation | InsertTextMutation | DeleteTextMutation;
+
+const retainItemMutation: RetainItemMutation = {
+  type: 'retain',
+  offset: 1,
+  itemMutations: [],
+  contentMutations: [],
+};
+
+const retainContentMutation: RetainContentMutation = {
+  type: 'retain',
+  offset: 1,
+  textMutations: [],
+};
+
+const retainTextMutation: RetainTextMutation = {
+  type: 'retain',
+  offset: 1,
+};
 
 export class Changeset {
   public id: string;
 
   public mutation: ItemMutation;
 
-  constructor(node: Clap.DocumentNode | Clap.ItemNode, itemId: string, contentId?: string) {
+  private document: Clap.DocumentNode;
+
+  constructor(document: Clap.DocumentNode) {
     this.id = uuid();
-    this.mutation = this.computeMutation(node, itemId, contentId);
+    this.mutation = {
+      type: 'retain',
+      offset: 1,
+      itemMutations: [],
+      contentMutations: [],
+    };
+    this.document = document;
   }
 
   public transform(changeset: Changeset): Changeset {
     return /* Merget this and changeset */ changeset;
   }
 
-  public findItemMutation(id: string, mutation: ItemMutation = this.mutation): ItemMutation | null {
-    if (mutation.id === id) {
-      return mutation;
-    } else if (mutation.itemMutations) {
-      for (const itemMutation of mutation.itemMutations) {
-        const result = this.findItemMutation(id, itemMutation);
-        if (result) {
-          return result;
-        }
-      }
-    }
-    return null;
+  // public computeItemMutation(node: Clap.DocumentNode, itemId: string): ItemMutation {}
+  // public computeContentMutation(node: Clap.DocumentNode, itemId: string, contentId: string): ItemMutation {}
+
+  public computeTextMutation(contentId: string, textMutations: TextMutation[]): ItemMutation {
+    const mutation = this.computeFullTextMutation(contentId, textMutations, this.document);
+    return this.compressMutation(mutation);
   }
 
-  public computeMutation(node: Clap.DocumentNode | Clap.ItemNode, itemId: string, contentId?: string): ItemMutation {
-    const retainItemMutation: RetainItemMutation = {
-      id: null,
-      type: 'retain',
-      offset: 1,
-      itemMutations: [],
-      contentMutations: [],
-    };
-
-    const retainContentMutation: RetainContentMutation = {
-      type: 'retain',
-      offset: 1,
-      textMutations: [],
-    };
-
-    const retainTextMutation: RetainTextMutation = {
-      type: 'retain',
-      offset: 1,
-    };
-
+  private computeFullTextMutation(
+    contentId: string,
+    textMutations: TextMutation[],
+    node: Clap.DocumentNode | Clap.ItemNode,
+  ): ItemMutation {
+    // 深さ優先探索して、何もなければ、itemがremain
     const mutation = { ...retainItemMutation };
 
     if (node.contents) {
       mutation.contentMutations = node.contents.map(content => {
         const contentMutation = { ...retainContentMutation };
-        const textMutation = { ...retainTextMutation };
-        textMutation.offset = content.text.length;
+        if (content.id === contentId) {
+          contentMutation.textMutations = textMutations;
+        } else {
+          const textMutation = { ...retainTextMutation };
+          textMutation.offset = content.text.length;
 
-        contentMutation.textMutations = [textMutation];
+          contentMutation.textMutations = [textMutation];
+        }
 
         return contentMutation;
       });
     }
 
-    mutation.itemMutations = node.nodes.map(n => this.computeMutation(n));
+    mutation.itemMutations = node.nodes.map(n => this.computeFullTextMutation(contentId, textMutations, n));
 
+    return mutation;
+  }
+
+  private compressMutation(mutation: ItemMutation) {
+    // TODO: Put together retain mutations
     return mutation;
   }
 }
@@ -186,6 +195,11 @@ export class ClientOperator {
   }
 
   private apply(changeset: Changeset) {
+    const cursor = {
+      item: this.document.id,
+      content: null,
+      text: null,
+    };
     this.applyItemMutation(changeset.mutation);
   }
 
@@ -215,69 +229,67 @@ export class ClientOperator {
       }
     }
 
-    let cursor = 0;
-    contentMutation.textMutations.forEach(textMutation => {
-      switch (textMutation.type) {
-        case 'retain': {
-          cursor += textMutation.offset;
-          break;
-        }
-        case 'insert': {
-          const node = document.find(itemId);
-          const content = node.findContent(contentMutation.id);
-          const value = textMutation.value;
+    const textContext = { cursor: 0 };
+    for (const textMutation of contentMutation.textMutations) {
+      this.applyTextMutation(textMutation, textContext);
+    }
+  }
 
-          // Update document
-          const textArray = content.text.split('');
-          textArray.splice(cursor, 0, value);
-          content.text = textArray.join('');
-          cursor += content.text.length;
-          node.dispatch();
+  private applyTextMutation(textMutation: TextMutation, content: { cursor: number }) {
+    const document = this.document;
+    const selection = this.selection;
 
-          // Update selection
-          // TODO: If current user's selection match item id and content id, update selection range
-          if (
-            selection.ids.length === 1 &&
-            selection.ids[0] === itemId &&
-            selection.isCollasped &&
-            selection.range.anchor.id === contentMutation.id
-          ) {
-            // TODO: insertでも、他ユーザの挿入位置次第では、この通りじゃない？
-            selection.range.anchor.offset = selection.range.anchor.offset + value.length;
-            selection.range.focus.offset = selection.range.focus.offset + value.length;
-            selection.dispatch();
-          }
-          break;
-        }
-        case 'delete': {
-          const node = document.find(itemId);
-          const content = node.findContent(contentMutation.id);
-          const count = textMutation.count;
-
-          // Update document
-          const textArray = content.text.split('');
-          textArray.splice(cursor, count);
-          content.text = textArray.join('');
-          cursor += content.text.length;
-          node.dispatch();
-
-          // Update selection
-          // TODO: If current user's selection match item id and content id, update selection range
-          if (
-            selection.ids.length === 1 &&
-            selection.ids[0] === itemId &&
-            selection.isCollasped &&
-            selection.range.anchor.id === contentMutation.id
-          ) {
-            // TODO: insertでも、他ユーザの挿入位置次第では、この通りじゃない？
-            selection.range.anchor.offset = selection.range.anchor.offset - count;
-            selection.range.focus.offset = selection.range.focus.offset - count;
-            selection.dispatch();
-          }
-          break;
-        }
+    switch (textMutation.type) {
+      case 'retain': {
+        content.cursor += textMutation.offset;
+        break;
       }
-    });
+
+      case 'insert': {
+        const node = document.find(itemId);
+        const content = node.findContent(contentMutation.id);
+        const value = textMutation.value;
+
+        // Update document
+        const textArray = content.text.split('');
+        textArray.splice(context.cursor, 0, value);
+        content.text = textArray.join('');
+        context.cursor += content.text.length;
+        node.dispatch();
+
+        // Update selection
+        // TODO: If current user's selection match item id and content id, update selection range
+        if (selection.ids.length === 1 && selection.ids[0] === itemId && selection.isCollasped) {
+          // TODO: insertでも、他ユーザの挿入位置次第では、この通りじゃない？
+          selection.range.anchor.offset = selection.range.anchor.offset + value.length;
+          selection.range.focus.offset = selection.range.focus.offset + value.length;
+          selection.dispatch();
+        }
+        break;
+      }
+      case 'delete': {
+        const node = document.find(itemId);
+        const content = node.findContent(contentMutation.id);
+        const count = textMutation.count;
+
+        // Update document
+        const textArray = content.text.split('');
+        textArray.splice(context.cursor, count);
+        content.text = textArray.join('');
+        context.cursor += content.text.length;
+        node.dispatch();
+
+        // Update selection
+        // TODO: If current user's selection match item id and content id, update selection range
+        if (selection.ids.length === 1 && selection.ids[0] === itemId && selection.isCollasped) {
+          // TODO: insertでも、他ユーザの挿入位置次第では、この通りじゃない？
+          selection.range.anchor.offset = selection.range.anchor.offset - count;
+          selection.range.focus.offset = selection.range.focus.offset - count;
+          selection.dispatch();
+        }
+        break;
+      }
+    }
   }
 
   private send(changeset: Changeset) {
