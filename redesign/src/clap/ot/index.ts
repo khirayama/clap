@@ -195,10 +195,14 @@ export class ClientOperator {
   }
 
   private apply(changeset: Changeset) {
-    const cursor = {
-      item: this.document.id,
-      content: null,
-      text: null,
+    const cursor: {
+      item: number;
+      content: number;
+      text: number;
+    } = {
+      item: 0,
+      content: 0,
+      text: 0,
     };
     this.applyItemMutation(changeset.mutation);
   }
