@@ -88,6 +88,12 @@ const retainTextMutation: RetainTextMutation = {
   offset: 1,
 };
 
+type ChangesetCursor = {
+  item: number;
+  content: number;
+  text: number;
+};
+
 export class Changeset {
   public id: string;
 
@@ -195,19 +201,15 @@ export class ClientOperator {
   }
 
   private apply(changeset: Changeset) {
-    const cursor: {
-      item: number;
-      content: number;
-      text: number;
-    } = {
+    const cursor: ChangesetCursor = {
       item: 0,
       content: 0,
       text: 0,
     };
-    this.applyItemMutation(changeset.mutation);
+    this.applyItemMutation(changeset.mutation, cursor);
   }
 
-  private applyItemMutation(itemMutation: ItemMutation) {
+  private applyItemMutation(itemMutation: ItemMutation, cursor: ChangesetCursor) {
     switch (itemMutation.type) {
       case 'retain': {
         // noop
