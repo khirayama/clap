@@ -125,63 +125,83 @@ export class Pencil extends React.Component<PencilProps, PencilState> {
     const selection = this.props.selection;
 
     if (selection.isCollasped()) {
-      const node = document.find(selection.ids[0]);
-      const anchor = selection.range.anchor;
-      const content = node.findContent(anchor.id);
-
       if (selection.isComposing) {
         selection.compositionText = value;
         selection.dispatch();
       } else {
+        const anchor = selection.range.anchor;
         const changeset = new Clap.Changeset(document);
-        const textMutations: Clap.TextMutation[] = [];
-        if (anchor.offset !== 0) {
-          textMutations.push({
-            type: 'retain',
-            offset: anchor.offset,
-          });
-        }
-        textMutations.push({
-          type: 'insert',
-          value,
-        });
-        if (content.text.length - anchor.offset !== 0) {
-          textMutations.push({
-            type: 'retain',
-            offset: content.text.length - anchor.offset,
-          });
-        }
 
-        changeset.mutations = [
-          {
-            type: 'retain',
-            offset: 3,
-            contentMutations: [],
-          },
-          {
-            type: 'retain',
-            offset: 1,
-            contentMutations: [
-              {
+        let node = document;
+        let cursor = {
+          item: -1,
+          content: -1,
+        };
+        while (node) {
+          if (node.id === selection.ids[0]) {
+            // Item
+            const itemMutation: Clap.ItemMutation = {
+              type: 'retain',
+              offset: 1,
+              contentMutations: [],
+            };
+
+            for (const content of node.contents) {
+              if (content.id === anchor.id) {
+                const textMutations: Clap.TextMutation[] = [];
+                if (anchor.offset !== 0) {
+                  textMutations.push({
+                    type: 'retain',
+                    offset: anchor.offset,
+                  });
+                }
+                textMutations.push({
+                  type: 'insert',
+                  value,
+                });
+                if (content.text.length - anchor.offset !== 0) {
+                  textMutations.push({
+                    type: 'retain',
+                    offset: content.text.length - anchor.offset,
+                  });
+                }
+                itemMutation.contentMutations.push({
+                  type: 'retain',
+                  offset: 1,
+                  textMutations,
+                });
+                cursor.content += 1;
+              } else {
+                const contentMutation = itemMutation.contentMutations[cursor.content] || null;
+                if (contentMutation && contentMutation.type === 'retain') {
+                  contentMutation.offset += 1;
+                } else {
+                  itemMutation.contentMutations.push({
+                    type: 'retain',
+                    offset: 1,
+                    textMutations: [],
+                  });
+                  cursor.content += 1;
+                }
+              }
+            }
+            changeset.mutations.push(itemMutation);
+            cursor.item += 1;
+          } else {
+            const itemMutation = changeset.mutations[cursor.item] || null;
+            if (itemMutation && itemMutation.type === 'retain') {
+              changeset.mutations[cursor.item].offset += 1;
+            } else {
+              changeset.mutations.push({
                 type: 'retain',
                 offset: 1,
-                textMutations,
-              },
-              {
-                type: 'retain',
-                offset: 2,
-                textMutations: [],
-              },
-            ],
-          },
-          {
-            type: 'retain',
-            offset: 8,
-            contentMutations: [],
-          },
-        ];
-        // changeset.mutation = changeset.computeTextMutation(content.id, textMutations);
-        console.log(changeset.mutations);
+                contentMutations: [],
+              });
+              cursor.item += 1;
+            }
+          }
+          node = Clap.Exproler.findDownnerNode(node);
+        }
         this.operator.emit(changeset);
       }
     }
