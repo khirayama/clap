@@ -12,7 +12,7 @@ type RetainItemMutation = BaseItemMutation & {
   offset: number;
 };
 
-type ItemMutation = RetainItemMutation;
+export type ItemMutation = RetainItemMutation;
 
 /* Content Mutations */
 type BaseContentMutation = {
