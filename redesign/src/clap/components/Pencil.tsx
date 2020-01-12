@@ -27,6 +27,22 @@ const keyCodes = {
   DOWN: 40,
 };
 
+/*
+ * Pencil
+ * private oprator
+ * public render()
+ * private noop()
+ * private onKeyDown()
+ * private onChange()
+ * private onCompositionStart()
+ * private onCompositionEnd()
+ * private onDeleteKey()
+ * private onLeftKey()
+ * private onRightKey()
+ * private insertText()
+ * private generateInsertTextChangeset()
+ */
+
 export class Pencil extends React.Component<PencilProps, PencilState> {
   private operator: Clap.ClientOperator;
 
@@ -118,93 +134,6 @@ export class Pencil extends React.Component<PencilProps, PencilState> {
     const value = event.currentTarget.value;
     this.setState({ value: '' });
     this.insertText(value);
-  }
-
-  private insertText(value: string) {
-    const document = this.props.document;
-    const selection = this.props.selection;
-
-    if (selection.isCollasped()) {
-      if (selection.isComposing) {
-        selection.compositionText = value;
-        selection.dispatch();
-      } else {
-        const anchor = selection.range.anchor;
-        const changeset = new Clap.Changeset(document);
-
-        let node = document;
-        let cursor = {
-          item: -1,
-          content: -1,
-        };
-        while (node) {
-          if (node.id === selection.ids[0]) {
-            // Item
-            const itemMutation: Clap.ItemMutation = {
-              type: 'retain',
-              offset: 1,
-              contentMutations: [],
-            };
-
-            for (const content of node.contents) {
-              if (content.id === anchor.id) {
-                const textMutations: Clap.TextMutation[] = [];
-                if (anchor.offset !== 0) {
-                  textMutations.push({
-                    type: 'retain',
-                    offset: anchor.offset,
-                  });
-                }
-                textMutations.push({
-                  type: 'insert',
-                  value,
-                });
-                if (content.text.length - anchor.offset !== 0) {
-                  textMutations.push({
-                    type: 'retain',
-                    offset: content.text.length - anchor.offset,
-                  });
-                }
-                itemMutation.contentMutations.push({
-                  type: 'retain',
-                  offset: 1,
-                  textMutations,
-                });
-                cursor.content += 1;
-              } else {
-                const contentMutation = itemMutation.contentMutations[cursor.content] || null;
-                if (contentMutation && contentMutation.type === 'retain') {
-                  contentMutation.offset += 1;
-                } else {
-                  itemMutation.contentMutations.push({
-                    type: 'retain',
-                    offset: 1,
-                    textMutations: [],
-                  });
-                  cursor.content += 1;
-                }
-              }
-            }
-            changeset.mutations.push(itemMutation);
-            cursor.item += 1;
-          } else {
-            const itemMutation = changeset.mutations[cursor.item] || null;
-            if (itemMutation && itemMutation.type === 'retain') {
-              changeset.mutations[cursor.item].offset += 1;
-            } else {
-              changeset.mutations.push({
-                type: 'retain',
-                offset: 1,
-                contentMutations: [],
-              });
-              cursor.item += 1;
-            }
-          }
-          node = Clap.Exproler.findDownnerNode(node);
-        }
-        this.operator.emit(changeset);
-      }
-    }
   }
 
   private onDeleteKey() {
@@ -379,5 +308,99 @@ export class Pencil extends React.Component<PencilProps, PencilState> {
         console.log('(5) Transition to collaspe to right edge when expanded');
       }
     }
+  }
+
+  private insertText(value: string) {
+    const selection = this.props.selection;
+
+    if (selection.isCollasped()) {
+      if (selection.isComposing) {
+        selection.compositionText = value;
+        selection.dispatch();
+      } else {
+        const changeset = this.generateInsertTextChangeset(value);
+        this.operator.emit(changeset);
+      }
+    }
+  }
+
+  private generateInsertTextChangeset(value: string): Clap.Changeset {
+    const document = this.props.document;
+    const selection = this.props.selection;
+
+    const anchor = selection.range.anchor;
+    const changeset = new Clap.Changeset(document);
+
+    let node = document;
+    let cursor = {
+      item: -1,
+      content: -1,
+    };
+    while (node) {
+      if (node.id === selection.ids[0]) {
+        // Item
+        const itemMutation: Clap.ItemMutation = {
+          type: 'retain',
+          offset: 1,
+          contentMutations: [],
+        };
+
+        for (const content of node.contents) {
+          if (content.id === anchor.id) {
+            const textMutations: Clap.TextMutation[] = [];
+            if (anchor.offset !== 0) {
+              textMutations.push({
+                type: 'retain',
+                offset: anchor.offset,
+              });
+            }
+            textMutations.push({
+              type: 'insert',
+              value,
+            });
+            if (content.text.length - anchor.offset !== 0) {
+              textMutations.push({
+                type: 'retain',
+                offset: content.text.length - anchor.offset,
+              });
+            }
+            itemMutation.contentMutations.push({
+              type: 'retain',
+              offset: 1,
+              textMutations,
+            });
+            cursor.content += 1;
+          } else {
+            const contentMutation = itemMutation.contentMutations[cursor.content] || null;
+            if (contentMutation && contentMutation.type === 'retain') {
+              contentMutation.offset += 1;
+            } else {
+              itemMutation.contentMutations.push({
+                type: 'retain',
+                offset: 1,
+                textMutations: [],
+              });
+              cursor.content += 1;
+            }
+          }
+        }
+        changeset.mutations.push(itemMutation);
+        cursor.item += 1;
+      } else {
+        const itemMutation = changeset.mutations[cursor.item] || null;
+        if (itemMutation && itemMutation.type === 'retain') {
+          changeset.mutations[cursor.item].offset += 1;
+        } else {
+          changeset.mutations.push({
+            type: 'retain',
+            offset: 1,
+            contentMutations: [],
+          });
+          cursor.item += 1;
+        }
+      }
+      node = Clap.Exproler.findDownnerNode(node);
+    }
+    return changeset;
   }
 }
