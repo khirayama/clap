@@ -139,7 +139,8 @@ export class Pencil extends React.Component<PencilProps, PencilState> {
 
   private onDeleteKey() {
     // (1) Nothing to do when composing
-    // (2) Delete chars when expanded range
+    // (2) Delete chars when collasped range
+    // (3) Delete chars when expanded range
     const selection = this.props.selection;
 
     if (selection.isComposing) {
@@ -148,17 +149,17 @@ export class Pencil extends React.Component<PencilProps, PencilState> {
       this.noop();
     } else {
       if (selection.isCollasped()) {
+        // (2) Delete chars when collasped range
         const changeset = this.computeDeleteTextChangeset();
         this.operator.emit(changeset);
       } else {
-        // TODO: (2) Delete chars when expanded range
-        console.log('TODO: (2) Delete chars when expanded range');
+        // TODO: (3) Delete chars when expanded range
+        console.log('TODO: (3) Delete chars when expanded range');
       }
     }
   }
 
   private onLeftKey() {
-    // Considered cases.
     // (1) Nothing to do when composing
     // (2) Move to prev content end when pressing on content start
     // (3) Move to prev content end of prev item when pressing on content start
@@ -209,7 +210,6 @@ export class Pencil extends React.Component<PencilProps, PencilState> {
   }
 
   private onRightKey() {
-    // Considered cases.
     // (1) Nothing to do when composing
     // (2) Move to next content start when pressing on content end
     // (3) Move to next content start of next item when pressing on content end
