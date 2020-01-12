@@ -151,8 +151,37 @@ export class Pencil extends React.Component<PencilProps, PencilState> {
             offset: content.text.length - anchor.offset,
           });
         }
-        changeset.mutation = changeset.computeTextMutation(content.id, textMutations);
-        console.log(changeset.mutation);
+
+        changeset.mutations = [
+          {
+            type: 'retain',
+            offset: 3,
+            contentMutations: [],
+          },
+          {
+            type: 'retain',
+            offset: 1,
+            contentMutations: [
+              {
+                type: 'retain',
+                offset: 1,
+                textMutations,
+              },
+              {
+                type: 'retain',
+                offset: 2,
+                textMutations: [],
+              },
+            ],
+          },
+          {
+            type: 'retain',
+            offset: 8,
+            contentMutations: [],
+          },
+        ];
+        // changeset.mutation = changeset.computeTextMutation(content.id, textMutations);
+        console.log(changeset.mutations);
         this.operator.emit(changeset);
       }
     }
