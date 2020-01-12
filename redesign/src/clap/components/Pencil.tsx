@@ -41,6 +41,7 @@ const keyCodes = {
  * private onRightKey()
  * private insertText()
  * private computeInsertTextChangeset()
+ * private computeDeleteTextChangeset()
  */
 
 export class Pencil extends React.Component<PencilProps, PencilState> {
@@ -137,13 +138,8 @@ export class Pencil extends React.Component<PencilProps, PencilState> {
   }
 
   private onDeleteKey() {
-    // Considered cases.
     // (1) Nothing to do when composing
-    // (2) Delete a char when collasped range
-    // (3) Delete content when text length is one
-    // (4) Outdent item when in head of line
-    // (5) Delete chars when expanded range
-    const document = this.props.document;
+    // (2) Delete chars when expanded range
     const selection = this.props.selection;
 
     if (selection.isComposing) {
@@ -151,57 +147,12 @@ export class Pencil extends React.Component<PencilProps, PencilState> {
       // FYI: Depends on navite input element behavior
       this.noop();
     } else {
-      const node = document.find(selection.ids[0]);
-      const anchor = selection.range.anchor;
-      const content = node.findContent(anchor.id);
-
       if (selection.isCollasped()) {
-        const changeset = new Clap.Changeset(document);
-        const itemMutation = changeset.findItemMutation(node.id);
-        const contentMutation = itemMutation.contentMutations.filter(cm => cm.id === content.id)[0] || null;
-        contentMutation.textMutations = [];
-        if (anchor.offset !== 0) {
-          if (content.text.length === 1) {
-            // TODO: (3) Delete content when text length is one
-            console.log('TODO: (3) Delete content when text length is one');
-            const contentMutations: Clap.ContentMutation[] = [
-              {
-                type: 'delete',
-                count: 1,
-                textMutations: [],
-              },
-              {
-                type: 'retain',
-                offset: itemMutation.contentMutations.length - 1,
-                textMutations: [],
-              },
-            ];
-            itemMutation.contentMutations = contentMutations;
-          } else {
-            // (2) Delete a char when collasped range
-            contentMutation.textMutations.push({
-              type: 'retain',
-              offset: anchor.offset - 1,
-            });
-            contentMutation.textMutations.push({
-              type: 'delete',
-              count: 1,
-            });
-            if (content.text.length - anchor.offset !== 0) {
-              contentMutation.textMutations.push({
-                type: 'retain',
-                offset: content.text.length - anchor.offset,
-              });
-            }
-          }
-        } else {
-          // TODO: (4) Outdent item when in head of line
-          console.log('TODO: (4) Outdent item when in head of line');
-        }
+        const changeset = this.computeDeleteTextChangeset();
         this.operator.emit(changeset);
       } else {
-        // TODO: (5) Delete chars when expanded range
-        console.log('TODO: (5) Delete chars when expanded range');
+        // TODO: (2) Delete chars when expanded range
+        console.log('TODO: (2) Delete chars when expanded range');
       }
     }
   }
@@ -338,7 +289,6 @@ export class Pencil extends React.Component<PencilProps, PencilState> {
     };
     while (node) {
       if (node.id === selection.ids[0]) {
-        // Item
         const itemMutation: Clap.ItemMutation = {
           type: 'retain',
           offset: 1,
@@ -363,6 +313,110 @@ export class Pencil extends React.Component<PencilProps, PencilState> {
                 type: 'retain',
                 offset: content.text.length - anchor.offset,
               });
+            }
+            itemMutation.contentMutations.push({
+              type: 'retain',
+              offset: 1,
+              textMutations,
+            });
+            cursor.content += 1;
+          } else {
+            const contentMutation = itemMutation.contentMutations[cursor.content] || null;
+            if (contentMutation && contentMutation.type === 'retain') {
+              contentMutation.offset += 1;
+            } else {
+              itemMutation.contentMutations.push({
+                type: 'retain',
+                offset: 1,
+                textMutations: [],
+              });
+              cursor.content += 1;
+            }
+          }
+        }
+        changeset.mutations.push(itemMutation);
+        cursor.item += 1;
+      } else {
+        const itemMutation = changeset.mutations[cursor.item] || null;
+        if (itemMutation && itemMutation.type === 'retain') {
+          changeset.mutations[cursor.item].offset += 1;
+        } else {
+          changeset.mutations.push({
+            type: 'retain',
+            offset: 1,
+            contentMutations: [],
+          });
+          cursor.item += 1;
+        }
+      }
+      node = Clap.Exproler.findDownnerNode(node);
+    }
+    return changeset;
+  }
+
+  private computeDeleteTextChangeset(): Clap.Changeset {
+    // (1) Delete a char when collasped range
+    // (2) Delete content when text length is one
+    // (3) Outdent item when in head of line
+    const document = this.props.document;
+    const selection = this.props.selection;
+
+    const anchor = selection.range.anchor;
+    const changeset = new Clap.Changeset(document);
+
+    let node = document;
+    let cursor = {
+      item: -1,
+      content: -1,
+    };
+    while (node) {
+      if (node.id === selection.ids[0]) {
+        const itemMutation: Clap.ItemMutation = {
+          type: 'retain',
+          offset: 1,
+          contentMutations: [],
+        };
+
+        for (const content of node.contents) {
+          if (content.id === anchor.id) {
+            const textMutations: Clap.TextMutation[] = [];
+            if (anchor.offset !== 0) {
+              if (content.text.length !== 1) {
+                // (1) Delete a char when collasped range
+                textMutations.push({
+                  type: 'retain',
+                  offset: anchor.offset - 1,
+                });
+                textMutations.push({
+                  type: 'delete',
+                  count: 1,
+                });
+                if (content.text.length - anchor.offset !== 0) {
+                  textMutations.push({
+                    type: 'retain',
+                    offset: content.text.length - anchor.offset,
+                  });
+                }
+              } else {
+                // TODO: (2) Delete content when text length is one
+                console.log('TODO: (3) Delete content when text length is one');
+                const contentMutations: Clap.ContentMutation[] = [
+                  {
+                    type: 'delete',
+                    count: 1,
+                    textMutations: [],
+                  },
+                  {
+                    type: 'retain',
+                    offset: itemMutation.contentMutations.length - 1,
+                    textMutations: [],
+                  },
+                ];
+                itemMutation.contentMutations = contentMutations;
+              }
+            } else {
+              // TODO: (3) Outdent item when in head of line
+              console.log('TODO: (3) Outdent item when in head of line');
             }
             itemMutation.contentMutations.push({
               type: 'retain',
