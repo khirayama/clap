@@ -4,7 +4,6 @@ import * as Clap from '../index';
 
 /* Item Mutations */
 type BaseItemMutation = {
-  itemMutations: ItemMutation[];
   contentMutations: ContentMutation[];
 };
 
@@ -73,7 +72,6 @@ export type TextMutation = RetainTextMutation | InsertTextMutation | DeleteTextM
 const retainItemMutation: RetainItemMutation = {
   type: 'retain',
   offset: 1,
-  itemMutations: [],
   contentMutations: [],
 };
 
@@ -89,7 +87,7 @@ const retainTextMutation: RetainTextMutation = {
 };
 
 type ChangesetCursor = {
-  item: number;
+  item: string; // FYI: Only item is not array.
   content: number;
   text: number;
 };
@@ -97,18 +95,12 @@ type ChangesetCursor = {
 export class Changeset {
   public id: string;
 
-  public mutation: ItemMutation;
+  public mutations: ItemMutation[] = [];
 
   private document: Clap.DocumentNode;
 
   constructor(document: Clap.DocumentNode) {
     this.id = uuid();
-    this.mutation = {
-      type: 'retain',
-      offset: 1,
-      itemMutations: [],
-      contentMutations: [],
-    };
     this.document = document;
   }
 
@@ -147,8 +139,6 @@ export class Changeset {
         return contentMutation;
       });
     }
-
-    mutation.itemMutations = node.nodes.map(n => this.computeFullTextMutation(contentId, textMutations, n));
 
     return mutation;
   }
@@ -202,70 +192,77 @@ export class ClientOperator {
 
   private apply(changeset: Changeset) {
     const cursor: ChangesetCursor = {
-      item: 0,
+      item: this.document.id,
       content: 0,
       text: 0,
     };
-    this.applyItemMutation(changeset.mutation, cursor);
+    for (const itemMutation of changeset.mutations) {
+      this.applyItemMutation(itemMutation, cursor);
+    }
   }
 
   private applyItemMutation(itemMutation: ItemMutation, cursor: ChangesetCursor) {
+    cursor.content = 0;
+    cursor.text = 0;
+
+    for (const contentMutation of itemMutation.contentMutations) {
+      this.applyContentMutation(contentMutation, cursor);
+    }
+
     switch (itemMutation.type) {
       case 'retain': {
-        // noop
+        for (let i = 0; i < itemMutation.offset; i += 1) {
+          const currentNode = this.document.find(cursor.item);
+          const downerNode = Clap.Exproler.findDownnerNode(currentNode);
+          if (downerNode) {
+            cursor.item = downerNode.id;
+          }
+        }
         break;
       }
     }
-    itemMutation.itemMutations.forEach(im => {
-      this.applyItemMutation(im);
-    });
-    itemMutation.contentMutations.forEach(contentMutation => {
-      this.applyContentMutation(contentMutation, itemMutation.id);
-    });
   }
 
-  private applyContentMutation(contentMutation: ContentMutation, itemId: string | null) {
-    const document = this.document;
-    const selection = this.selection;
+  private applyContentMutation(contentMutation: ContentMutation, cursor: ChangesetCursor) {
+    cursor.text = 0;
+
+    for (const textMutation of contentMutation.textMutations) {
+      this.applyTextMutation(textMutation, cursor);
+    }
 
     switch (contentMutation.type) {
       case 'retain': {
-        // noop
+        cursor.content += contentMutation.offset;
         break;
       }
     }
-
-    const textContext = { cursor: 0 };
-    for (const textMutation of contentMutation.textMutations) {
-      this.applyTextMutation(textMutation, textContext);
-    }
   }
 
-  private applyTextMutation(textMutation: TextMutation, content: { cursor: number }) {
+  private applyTextMutation(textMutation: TextMutation, cursor: ChangesetCursor) {
     const document = this.document;
     const selection = this.selection;
 
     switch (textMutation.type) {
       case 'retain': {
-        content.cursor += textMutation.offset;
+        cursor.text += textMutation.offset;
         break;
       }
 
       case 'insert': {
-        const node = document.find(itemId);
-        const content = node.findContent(contentMutation.id);
+        const node = document.find(cursor.item);
+        const content = node.contents[cursor.content];
         const value = textMutation.value;
 
         // Update document
-        const textArray = content.text.split('');
-        textArray.splice(context.cursor, 0, value);
+        const textArray = Array.from(content.text);
+        textArray.splice(cursor.text, 0, value);
         content.text = textArray.join('');
-        context.cursor += content.text.length;
+        cursor.text += textArray.length;
         node.dispatch();
 
         // Update selection
         // TODO: If current user's selection match item id and content id, update selection range
-        if (selection.ids.length === 1 && selection.ids[0] === itemId && selection.isCollasped) {
+        if (selection.ids.length === 1 && selection.ids[0] === cursor.item && selection.isCollasped) {
           // TODO: insertでも、他ユーザの挿入位置次第では、この通りじゃない？
           selection.range.anchor.offset = selection.range.anchor.offset + value.length;
           selection.range.focus.offset = selection.range.focus.offset + value.length;
@@ -274,20 +271,20 @@ export class ClientOperator {
         break;
       }
       case 'delete': {
-        const node = document.find(itemId);
-        const content = node.findContent(contentMutation.id);
+        const node = document.find(cursor.item);
+        const content = node.contents[cursor.content];
         const count = textMutation.count;
 
         // Update document
-        const textArray = content.text.split('');
-        textArray.splice(context.cursor, count);
+        const textArray = Array.from(content.text);
+        textArray.splice(cursor.text, count);
         content.text = textArray.join('');
-        context.cursor += content.text.length;
+        cursor.text += textArray.length;
         node.dispatch();
 
         // Update selection
         // TODO: If current user's selection match item id and content id, update selection range
-        if (selection.ids.length === 1 && selection.ids[0] === itemId && selection.isCollasped) {
+        if (selection.ids.length === 1 && selection.ids[0] === cursor.item && selection.isCollasped) {
           // TODO: insertでも、他ユーザの挿入位置次第では、この通りじゃない？
           selection.range.anchor.offset = selection.range.anchor.offset - count;
           selection.range.focus.offset = selection.range.focus.offset - count;
