@@ -28,12 +28,6 @@ const keyCodes = {
 };
 
 export class Pencil extends React.Component<PencilProps, PencilState> {
-  private tmp: {
-    isComposing: boolean;
-  } = {
-    isComposing: false,
-  };
-
   private operator: Clap.ClientOperator;
 
   constructor(props: PencilProps) {
