@@ -40,7 +40,7 @@ const keyCodes = {
  * private onLeftKey()
  * private onRightKey()
  * private insertText()
- * private generateInsertTextChangeset()
+ * private computeInsertTextChangeset()
  */
 
 export class Pencil extends React.Component<PencilProps, PencilState> {
@@ -318,13 +318,13 @@ export class Pencil extends React.Component<PencilProps, PencilState> {
         selection.compositionText = value;
         selection.dispatch();
       } else {
-        const changeset = this.generateInsertTextChangeset(value);
+        const changeset = this.computeInsertTextChangeset(value);
         this.operator.emit(changeset);
       }
     }
   }
 
-  private generateInsertTextChangeset(value: string): Clap.Changeset {
+  private computeInsertTextChangeset(value: string): Clap.Changeset {
     const document = this.props.document;
     const selection = this.props.selection;
 
