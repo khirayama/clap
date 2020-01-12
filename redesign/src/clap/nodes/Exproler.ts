@@ -1,7 +1,7 @@
 import * as Clap from '../index';
 
 export const Exproler = {
-  findUpperNode: (currentNode: Clap.BaseNode): Clap.BaseNode | null => {
+  findUpperNode: (currentNode: Clap.BaseNode): Clap.Node | null => {
     let targetNode = null;
     if (currentNode.prev) {
       targetNode = currentNode.prev;
