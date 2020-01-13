@@ -47,7 +47,7 @@ export function Inline(props: InlineProps) {
     <>
       {contents.map(content => {
         // TODO: Check Japanese Chara length
-        return Array.from(content.text).map((chara, i) => {
+        return content.text.length ? Array.from(content.text).map((chara, i) => {
           const hasCaret = props.selection.isCollasped && anchor.id === content.id;
           if (
             !props.selection.isCollasped &&
@@ -72,7 +72,7 @@ export function Inline(props: InlineProps) {
               </Wrapper>
             </span>
           );
-        });
+        }) : <span key={`${content.id}-0`}><Wrapper>&#8203;</Wrapper></span>;
       })}
     </>
   ) : null;
