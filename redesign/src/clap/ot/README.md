@@ -35,24 +35,24 @@ OTは、結局、「今の状態」に「どういう操作をするか」
 なので、よくあるOTライブラリはfunction chainしてるわけだ。
 
 Item Mutations
-- retain
-- insert item
-  pick item
-  put item
-- delete item
-- update type
+- [x] retain
+- [ ] insert item
+- [ ] pick item
+- [ ] put item
+- [ ] delete item
+- [ ] update type
 
 Content Mutations
-- retain
-- insert content
-- delete content
-- add mark
-- remove mark
+- [ ] retain
+- [ ] insert content
+- [ ] delete content
+- [ ] add mark
+- [ ] remove mark
 
 Text Mutations
-- retain
-- insert text
-- delete text
+- [x] retain
+- [x] insert text
+- [x] delete text
 
 
 ## Simulation
