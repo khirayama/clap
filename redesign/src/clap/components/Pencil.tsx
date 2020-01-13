@@ -357,7 +357,8 @@ export class Pencil extends React.Component<PencilProps, PencilState> {
   private computeDeleteTextChangeset(): Clap.Changeset {
     // (1) Delete a char when collasped range
     // (2) Delete content when text length is one
-    // (3) Outdent item when in head of line
+    // (3) Delete content when text length is one and content length is one
+    // (4) Outdent item when in head of line
     const document = this.props.document;
     const selection = this.props.selection;
 
@@ -398,25 +399,43 @@ export class Pencil extends React.Component<PencilProps, PencilState> {
                   });
                 }
               } else {
-                // TODO: (2) Delete content when text length is one
-                console.log('TODO: (2) Delete content when text length is one');
-                const contentMutations: Clap.ContentMutation[] = [
-                  {
-                    type: 'delete',
-                    count: 1,
-                    textMutations: [],
-                  },
-                  {
-                    type: 'retain',
-                    offset: itemMutation.contentMutations.length - 1,
-                    textMutations: [],
-                  },
-                ];
-                itemMutation.contentMutations = contentMutations;
+                if (node.contents.length !== 1) {
+                  // TODO: (2) Delete content when text length is one and content length is not one
+                  console.log('TODO: (2) Delete content when text length is one and content length is not one');
+                  const contentMutations: Clap.ContentMutation[] = [
+                    {
+                      type: 'delete',
+                      count: 1,
+                      textMutations: [],
+                    },
+                    {
+                      type: 'retain',
+                      offset: itemMutation.contentMutations.length - 1,
+                      textMutations: [],
+                    },
+                  ];
+                  itemMutation.contentMutations = contentMutations;
+                } else {
+                  // TODO: (3) Delete content when text length is one and content length is one
+                  console.log('TODO: (3) Delete content when text length is one and content length is one');
+                  const contentMutations: Clap.ContentMutation[] = [
+                    {
+                      type: 'delete',
+                      count: 1,
+                      textMutations: [],
+                    },
+                    {
+                      type: 'retain',
+                      offset: itemMutation.contentMutations.length - 1,
+                      textMutations: [],
+                    },
+                  ];
+                  itemMutation.contentMutations = contentMutations;
+                }
               }
             } else {
-              // TODO: (3) Outdent item when in head of line
-              console.log('TODO: (3) Outdent item when in head of line');
+              // TODO: (4) Outdent item when in head of line
+              console.log('TODO: (4) Outdent item when in head of line');
             }
             itemMutation.contentMutations.push({
               type: 'retain',
