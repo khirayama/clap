@@ -1,5 +1,6 @@
 export interface PureSelection {
   // independent - update following values in Pencil
+  // // TODO: modeは削除. rangeがnullのときがselect
   mode: 'normal' | 'select' | 'insert';
   compositionText: string;
   // TODO: compositionについてもrangeがいるな
