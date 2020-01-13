@@ -280,7 +280,7 @@ export class Pencil extends React.Component<PencilProps, PencilState> {
     const selection = this.props.selection;
 
     const anchor = selection.range.anchor;
-    const changeset = new Clap.Changeset(document);
+    const changeset = new Clap.Changeset();
 
     let node = document;
     let cursor = {
@@ -362,7 +362,7 @@ export class Pencil extends React.Component<PencilProps, PencilState> {
     const selection = this.props.selection;
 
     const anchor = selection.range.anchor;
-    const changeset = new Clap.Changeset(document);
+    const changeset = new Clap.Changeset();
 
     let node = document;
     let cursor = {
