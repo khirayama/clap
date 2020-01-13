@@ -69,23 +69,6 @@ type DeleteTextMutation = {
 
 export type TextMutation = RetainTextMutation | InsertTextMutation | DeleteTextMutation;
 
-const retainItemMutation: RetainItemMutation = {
-  type: 'retain',
-  offset: 1,
-  contentMutations: [],
-};
-
-const retainContentMutation: RetainContentMutation = {
-  type: 'retain',
-  offset: 1,
-  textMutations: [],
-};
-
-const retainTextMutation: RetainTextMutation = {
-  type: 'retain',
-  offset: 1,
-};
-
 type ChangesetCursor = {
   item: string; // FYI: Only item is not array.
   content: number;
