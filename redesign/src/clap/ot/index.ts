@@ -97,55 +97,12 @@ export class Changeset {
 
   public mutations: ItemMutation[] = [];
 
-  private document: Clap.DocumentNode;
-
-  constructor(document: Clap.DocumentNode) {
+  constructor() {
     this.id = uuid();
-    this.document = document;
   }
 
   public transform(changeset: Changeset): Changeset {
     return /* Merget this and changeset */ changeset;
-  }
-
-  // public computeItemMutation(node: Clap.DocumentNode, itemId: string): ItemMutation {}
-  // public computeContentMutation(node: Clap.DocumentNode, itemId: string, contentId: string): ItemMutation {}
-
-  public computeTextMutation(contentId: string, textMutations: TextMutation[]): ItemMutation {
-    const mutation = this.computeFullTextMutation(contentId, textMutations, this.document);
-    return this.compressMutation(mutation);
-  }
-
-  private computeFullTextMutation(
-    contentId: string,
-    textMutations: TextMutation[],
-    node: Clap.DocumentNode | Clap.ItemNode,
-  ): ItemMutation {
-    // 深さ優先探索して、何もなければ、itemがremain
-    const mutation = { ...retainItemMutation };
-
-    if (node.contents) {
-      mutation.contentMutations = node.contents.map(content => {
-        const contentMutation = { ...retainContentMutation };
-        if (content.id === contentId) {
-          contentMutation.textMutations = textMutations;
-        } else {
-          const textMutation = { ...retainTextMutation };
-          textMutation.offset = content.text.length;
-
-          contentMutation.textMutations = [textMutation];
-        }
-
-        return contentMutation;
-      });
-    }
-
-    return mutation;
-  }
-
-  private compressMutation(mutation: ItemMutation) {
-    // TODO: Put together retain mutations
-    return mutation;
   }
 }
 
