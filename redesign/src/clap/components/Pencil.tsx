@@ -416,8 +416,7 @@ export class Pencil extends React.Component<PencilProps, PencilState> {
                   ];
                   itemMutation.contentMutations = contentMutations;
                 } else {
-                  // TODO: (3) Delete content when text length is one and content length is one
-                  console.log('TODO: (3) Delete content when text length is one and content length is one');
+                  // (3) Delete content when text length is one and content length is one
                   const contentMutations: Clap.ContentMutation[] = [
                     {
                       type: 'retain',
