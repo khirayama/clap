@@ -43,7 +43,7 @@ Item Mutations
 - [ ] update type
 
 Content Mutations
-- [ ] retain
+- [x] retain
 - [ ] insert content
 - [ ] delete content
 - [ ] add mark
