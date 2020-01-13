@@ -399,7 +399,7 @@ export class Pencil extends React.Component<PencilProps, PencilState> {
                 }
               } else {
                 // TODO: (2) Delete content when text length is one
-                console.log('TODO: (3) Delete content when text length is one');
+                console.log('TODO: (2) Delete content when text length is one');
                 const contentMutations: Clap.ContentMutation[] = [
                   {
                     type: 'delete',
