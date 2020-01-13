@@ -46,33 +46,44 @@ export function Inline(props: InlineProps) {
   return contents ? (
     <>
       {contents.map(content => {
-        // TODO: Check Japanese Chara length
-        return content.text.length ? Array.from(content.text).map((chara, i) => {
-          const hasCaret = props.selection.isCollasped && anchor.id === content.id;
-          if (
-            !props.selection.isCollasped &&
-            ((anchor.id === content.id && anchor.offset === i) || (focus.id === content.id && focus.offset === i))
-          ) {
-            isStarted = !isStarted;
-          }
-          // FYI: &#8203; is zero-width-space. It is for preventing not to display `space`.
-          return (
-            <span key={`${content.id}-${i}`}>
-              <Wrapper isInRange={isStarted}>
-                {anchor.id === content.id && anchor.offset === i ? (
-                  <CompositionWrapper>{props.selection.compositionText}</CompositionWrapper>
-                ) : null}
-                {hasCaret && anchor.offset === i ? <Caret /> : null}
-                &#8203;{chara}&#8203;
-                {anchor.id === content.id &&
-                (anchor.offset === content.text.length && content.text.length === i + 1) ? (
-                  <CompositionWrapper>{props.selection.compositionText}</CompositionWrapper>
-                ) : null}
-                {hasCaret && anchor.offset === content.text.length && content.text.length === i + 1 ? <Caret /> : null}
-              </Wrapper>
-            </span>
-          );
-        }) : <span key={`${content.id}-0`}><Wrapper>&#8203;</Wrapper></span>;
+        const hasCaret = props.selection.isCollasped && anchor.id === content.id;
+        return content.text.length ? (
+          Array.from(content.text).map((chara, i) => {
+            if (
+              !props.selection.isCollasped &&
+              ((anchor.id === content.id && anchor.offset === i) || (focus.id === content.id && focus.offset === i))
+            ) {
+              isStarted = !isStarted;
+            }
+            // FYI: &#8203; is zero-width-space. It is for preventing not to display `space`.
+            return (
+              <span key={`${content.id}-${i}`}>
+                <Wrapper isInRange={isStarted}>
+                  {anchor.id === content.id && anchor.offset === i ? (
+                    <CompositionWrapper>{props.selection.compositionText}</CompositionWrapper>
+                  ) : null}
+                  {hasCaret && anchor.offset === i ? <Caret /> : null}
+                  &#8203;{chara}&#8203;
+                  {anchor.id === content.id &&
+                  anchor.offset === content.text.length &&
+                  content.text.length === i + 1 ? (
+                    <CompositionWrapper>{props.selection.compositionText}</CompositionWrapper>
+                  ) : null}
+                  {hasCaret && anchor.offset === content.text.length && content.text.length === i + 1 ? (
+                    <Caret />
+                  ) : null}
+                </Wrapper>
+              </span>
+            );
+          })
+        ) : (
+          <span key={`${content.id}-0`}>
+            <Wrapper isInRange={false}>
+              {hasCaret && anchor.offset === 0 ? <Caret /> : null}
+              &#8203;
+            </Wrapper>
+          </span>
+        );
       })}
     </>
   ) : null;
