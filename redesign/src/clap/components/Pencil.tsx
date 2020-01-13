@@ -2,6 +2,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 
 import * as Clap from '../index';
+import { Changeset } from '../ot';
 
 const Wrapper = styled.div`
   position: fixed;
@@ -365,6 +366,8 @@ export class Pencil extends React.Component<PencilProps, PencilState> {
     const anchor = selection.range.anchor;
     const changeset = new Clap.Changeset();
 
+    console.log(this.generateChangeset());
+
     let node = document;
     let cursor = {
       item: -1,
@@ -402,6 +405,30 @@ export class Pencil extends React.Component<PencilProps, PencilState> {
                 if (node.contents.length !== 1) {
                   // TODO: (2) Delete content when text length is one and content length is not one
                   console.log('TODO: (2) Delete content when text length is one and content length is not one');
+                  console.log(cursor);
+                  for (let content of node.contents) {
+                    if (content.id === anchor.id) {
+                      console.log('delete', content);
+                      itemMutation.contentMutations.push({
+                        type: 'delete',
+                        count: 1,
+                        textMutations: [],
+                      });
+                      cursor.content += 1;
+                    } else {
+                      const contentMutation = itemMutation.contentMutations[cursor.content] || null;
+                      if (contentMutation && contentMutation.type === 'retain') {
+                        contentMutation.offset += 1;
+                      } else {
+                        itemMutation.contentMutations.push({
+                          type: 'retain',
+                          offset: 1,
+                          textMutations: [],
+                        });
+                        cursor.content += 1;
+                      }
+                    }
+                  }
                   const contentMutations: Clap.ContentMutation[] = [
                     {
                       type: 'delete',
@@ -417,19 +444,17 @@ export class Pencil extends React.Component<PencilProps, PencilState> {
                   itemMutation.contentMutations = contentMutations;
                 } else {
                   // (3) Delete content when text length is one and content length is one
-                  const contentMutations: Clap.ContentMutation[] = [
-                    {
-                      type: 'retain',
-                      offset: 1,
-                      textMutations: [
-                        {
-                          type: 'delete',
-                          count: 1,
-                        },
-                      ],
-                    },
-                  ];
-                  itemMutation.contentMutations = contentMutations;
+                  itemMutation.contentMutations.push({
+                    type: 'retain',
+                    offset: 1,
+                    textMutations: [
+                      {
+                        type: 'delete',
+                        count: 1,
+                      },
+                    ],
+                  });
+                  cursor.content += 1;
                 }
               }
             } else {
@@ -473,6 +498,81 @@ export class Pencil extends React.Component<PencilProps, PencilState> {
       }
       node = Clap.Exproler.findDownnerNode(node);
     }
+    console.log(changeset.mutations);
     return changeset;
+  }
+
+  private generateChangeset(): { changeset: Changeset; cursor: { item: number; content: number } } {
+    const cursor = {
+      item: -1,
+      content: -1,
+    };
+    const targetCursor = {
+      item: -1,
+      content: -1,
+    };
+
+    const document = this.props.document;
+    const selection = this.props.selection;
+
+    const anchor = selection.range.anchor;
+    const changeset = new Clap.Changeset();
+
+    let node = document;
+    while (node) {
+      if (node.id === selection.ids[0]) {
+        const itemMutation: Clap.ItemMutation = {
+          type: 'retain',
+          offset: 1,
+          contentMutations: [],
+        };
+        /* Content Start*/
+        for (const content of node.contents) {
+          if (content.id === anchor.id) {
+            itemMutation.contentMutations.push({
+              type: 'retain',
+              offset: 1,
+              textMutations: [],
+            });
+            cursor.content += 1;
+            targetCursor.content = cursor.content;
+          } else {
+            const contentMutation = itemMutation.contentMutations[cursor.content] || null;
+            if (contentMutation && contentMutation.type === 'retain' && cursor.content !== targetCursor.content) {
+              contentMutation.offset += 1;
+            } else {
+              itemMutation.contentMutations.push({
+                type: 'retain',
+                offset: 1,
+                textMutations: [],
+              });
+              cursor.content += 1;
+            }
+          }
+        }
+        /* Content End*/
+        changeset.mutations.push(itemMutation);
+        cursor.item += 1;
+        targetCursor.item = cursor.item;
+      } else {
+        const itemMutation = changeset.mutations[cursor.item] || null;
+        if (itemMutation && itemMutation.type === 'retain' && itemMutation.contentMutations.length === 0) {
+          changeset.mutations[cursor.item].offset += 1;
+        } else {
+          changeset.mutations.push({
+            type: 'retain',
+            offset: 1,
+            contentMutations: [],
+          });
+          cursor.item += 1;
+        }
+      }
+      node = Clap.Exproler.findDownnerNode(node);
+    }
+
+    return {
+      changeset,
+      cursor: targetCursor,
+    };
   }
 }
