@@ -277,81 +277,112 @@ export class Pencil extends React.Component<PencilProps, PencilState> {
   }
 
   private computeInsertTextChangeset(value: string): Clap.Changeset {
+    // const document = this.props.document;
+    // const selection = this.props.selection;
+    //
+    // const anchor = selection.range.anchor;
+    // const changeset = new Clap.Changeset();
+    //
+    // let node = document;
+    // let cursor = {
+    //   item: -1,
+    //   content: -1,
+    // };
+    //
+    // while (node) {
+    //   if (node.id === selection.ids[0]) {
+    //     const itemMutation: Clap.ItemMutation = {
+    //       type: 'retain',
+    //       offset: 1,
+    //       contentMutations: [],
+    //     };
+    //
+    //     for (const content of node.contents) {
+    //       if (content.id === anchor.id) {
+    //         const textMutations: Clap.TextMutation[] = [];
+    //         if (anchor.offset !== 0) {
+    //           textMutations.push({
+    //             type: 'retain',
+    //             offset: anchor.offset,
+    //           });
+    //         }
+    //         textMutations.push({
+    //           type: 'insert',
+    //           value,
+    //         });
+    //         if (content.text.length - anchor.offset !== 0) {
+    //           textMutations.push({
+    //             type: 'retain',
+    //             offset: content.text.length - anchor.offset,
+    //           });
+    //         }
+    //         itemMutation.contentMutations.push({
+    //           type: 'retain',
+    //           offset: 1,
+    //           textMutations,
+    //         });
+    //         cursor.content += 1;
+    //       } else {
+    //         const contentMutation = itemMutation.contentMutations[cursor.content] || null;
+    //         if (contentMutation && contentMutation.type === 'retain') {
+    //           contentMutation.offset += 1;
+    //         } else {
+    //           itemMutation.contentMutations.push({
+    //             type: 'retain',
+    //             offset: 1,
+    //             textMutations: [],
+    //           });
+    //           cursor.content += 1;
+    //         }
+    //       }
+    //     }
+    //     changeset.mutations.push(itemMutation);
+    //     cursor.item += 1;
+    //   } else {
+    //     const itemMutation = changeset.mutations[cursor.item] || null;
+    //     if (itemMutation && itemMutation.type === 'retain') {
+    //       changeset.mutations[cursor.item].offset += 1;
+    //     } else {
+    //       changeset.mutations.push({
+    //         type: 'retain',
+    //         offset: 1,
+    //         contentMutations: [],
+    //       });
+    //       cursor.item += 1;
+    //     }
+    //   }
+    //   node = Clap.Exproler.findDownnerNode(node);
+    // }
+
     const document = this.props.document;
     const selection = this.props.selection;
 
     const anchor = selection.range.anchor;
-    const changeset = new Clap.Changeset();
 
-    let node = document;
-    let cursor = {
-      item: -1,
-      content: -1,
-    };
-    while (node) {
-      if (node.id === selection.ids[0]) {
-        const itemMutation: Clap.ItemMutation = {
-          type: 'retain',
-          offset: 1,
-          contentMutations: [],
-        };
+    const result = this.generateChangesetAndCursor();
+    const targetCursor = result.cursor;
+    const changeset = result.changeset;
+    const content = document.find(selection.ids[0]).findContent(anchor.id);
 
-        for (const content of node.contents) {
-          if (content.id === anchor.id) {
-            const textMutations: Clap.TextMutation[] = [];
-            if (anchor.offset !== 0) {
-              textMutations.push({
-                type: 'retain',
-                offset: anchor.offset,
-              });
-            }
-            textMutations.push({
-              type: 'insert',
-              value,
-            });
-            if (content.text.length - anchor.offset !== 0) {
-              textMutations.push({
-                type: 'retain',
-                offset: content.text.length - anchor.offset,
-              });
-            }
-            itemMutation.contentMutations.push({
-              type: 'retain',
-              offset: 1,
-              textMutations,
-            });
-            cursor.content += 1;
-          } else {
-            const contentMutation = itemMutation.contentMutations[cursor.content] || null;
-            if (contentMutation && contentMutation.type === 'retain') {
-              contentMutation.offset += 1;
-            } else {
-              itemMutation.contentMutations.push({
-                type: 'retain',
-                offset: 1,
-                textMutations: [],
-              });
-              cursor.content += 1;
-            }
-          }
-        }
-        changeset.mutations.push(itemMutation);
-        cursor.item += 1;
-      } else {
-        const itemMutation = changeset.mutations[cursor.item] || null;
-        if (itemMutation && itemMutation.type === 'retain') {
-          changeset.mutations[cursor.item].offset += 1;
-        } else {
-          changeset.mutations.push({
-            type: 'retain',
-            offset: 1,
-            contentMutations: [],
-          });
-          cursor.item += 1;
-        }
-      }
-      node = Clap.Exproler.findDownnerNode(node);
+    const textMutations: Clap.TextMutation[] = [];
+    if (anchor.offset !== 0) {
+      textMutations.push({
+        type: 'retain',
+        offset: anchor.offset,
+      });
     }
+    textMutations.push({
+      type: 'insert',
+      value,
+    });
+    if (content.text.length - anchor.offset !== 0) {
+      textMutations.push({
+        type: 'retain',
+        offset: content.text.length - anchor.offset,
+      });
+    }
+    changeset.mutations[targetCursor.item].contentMutations[targetCursor.content].textMutations = textMutations;
+
     return changeset;
   }
 
@@ -365,8 +396,6 @@ export class Pencil extends React.Component<PencilProps, PencilState> {
 
     const anchor = selection.range.anchor;
     const changeset = new Clap.Changeset();
-
-    console.log(this.generateChangeset());
 
     let node = document;
     let cursor = {
@@ -502,7 +531,7 @@ export class Pencil extends React.Component<PencilProps, PencilState> {
     return changeset;
   }
 
-  private generateChangeset(): { changeset: Changeset; cursor: { item: number; content: number } } {
+  private generateChangesetAndCursor(): { changeset: Changeset; cursor: { item: number; content: number } } {
     const cursor = {
       item: -1,
       content: -1,
