@@ -48,6 +48,7 @@ export function Inline(props: InlineProps) {
       {contents.map(content => {
         const hasCaret = props.selection.isCollasped && anchor.id === content.id;
         return content.text.length ? (
+          // TODO: Use https://github.com/orling/grapheme-splitter
           Array.from(content.text).map((chara, i) => {
             if (
               !props.selection.isCollasped &&

@@ -194,6 +194,7 @@ export class ClientOperator {
         const value = textMutation.value;
 
         // Update document
+        // TODO: Use https://github.com/orling/grapheme-splitter
         const textArray = Array.from(content.text);
         textArray.splice(cursor.text, 0, value);
         content.text = textArray.join('');
@@ -216,6 +217,7 @@ export class ClientOperator {
         const count = textMutation.count;
 
         // Update document
+        // TODO: Use https://github.com/orling/grapheme-splitter
         const textArray = Array.from(content.text);
         textArray.splice(cursor.text, count);
         content.text = textArray.join('');
