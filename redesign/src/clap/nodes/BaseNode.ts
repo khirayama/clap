@@ -38,7 +38,7 @@ export interface PureNode {
  * isItemNode
  */
 
-export class BaseNode {
+export abstract class BaseNode {
   public id: PureNode['id'];
 
   public object: PureNode['object'] = 'item';
