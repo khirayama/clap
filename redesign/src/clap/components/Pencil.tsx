@@ -434,6 +434,7 @@ export class Pencil extends React.Component<PencilProps, PencilState> {
                 if (node.contents.length !== 1) {
                   // TODO: (2) Delete content when text length is one and content length is not one
                   console.log('TODO: (2) Delete content when text length is one and content length is not one');
+                  // TODO: ここやってるんだけど、その前に、deletekeyの中でもgenerateChangesetAndCursorを使うようにするのが先っぽい
                   console.log(cursor);
                   for (let content of node.contents) {
                     if (content.id === anchor.id) {
