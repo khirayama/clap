@@ -1,4 +1,4 @@
-import uuid from 'uuid/v4';
+import uuid from 'uuid';
 
 import { PureContent, Content, DocumentNode, ItemNode, TextContent, ParagraphNode } from './index';
 
@@ -65,7 +65,7 @@ export abstract class BaseNode {
   };
 
   constructor(node?: Partial<PureNode>) {
-    this.id = node ? node.id || uuid() : uuid();
+    this.id = node ? node.id || uuid.v4() : uuid.v4();
     this.object = node ? node.object : this.object;
     this.type = node ? node.type : this.type;
 
