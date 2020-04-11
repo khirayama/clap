@@ -1,6 +1,6 @@
 import uuid from 'uuid/v4';
 
-import { PureContent, Content, DocumentNode, ItemNode, TextContent } from './index';
+import { PureContent, Content, DocumentNode, ItemNode, TextContent, ParagraphNode } from './index';
 
 export interface PureNode {
   id: string;
@@ -83,7 +83,7 @@ export abstract class BaseNode {
               const prevNode = prevPureNode ? this.cache.nodes[prevPureNode.id] || null : null;
               const nextNode = nextPureNode ? this.cache.nodes[nextPureNode.id] || null : null;
 
-              const newNode: BaseNode = new BaseNode(n);
+              const newNode: BaseNode = new ParagraphNode(n);
               newNode.document = this.document;
               newNode.parent = this;
 
@@ -158,8 +158,8 @@ export abstract class BaseNode {
       id: this.id,
       object: this.object,
       type: this.type,
-      contents: this.contents ? this.contents.map(content => content.toJSON()) : null,
-      nodes: this.nodes ? this.nodes.map(node => node.toJSON()) : null,
+      contents: this.contents ? this.contents.map((content) => content.toJSON()) : null,
+      nodes: this.nodes ? this.nodes.map((node) => node.toJSON()) : null,
     };
   }
 
@@ -230,7 +230,7 @@ export abstract class BaseNode {
             node.contents[0].text = text;
             node.contents[0].marks = [];
           } else {
-            node.contents = node.contents.filter(tmp => content.id !== tmp.id);
+            node.contents = node.contents.filter((tmp) => content.id !== tmp.id);
           }
         }
       }
