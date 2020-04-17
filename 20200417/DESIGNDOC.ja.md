@@ -8,19 +8,25 @@
 
 ### High Level Structure
 
+#### Data Structures
+
 - Node
   - DocumentNode
   - ItemNode
-    - TextItemNode
-      - ParagraphNode
-    - NontextItemNode
-      - HorizontalNode
-  - InlineNode
-    - TextNode
-    - LinkNode
+    - ParagraphNode
+    - HorizontalRuleNode
+- Inline
+  - InlineText
+  - InlineLink
+- nodeMap
+- inlineMap
 - Selection
+
+### Algorithm
+
 - Traversal
 - Transformation
+- OperationalTransformation
 
 ### Core Classes
 
