@@ -33,3 +33,37 @@ test('.mode() - when ids is not empty array and range is not null, return "inser
 
   t.is(selection.mode(), 'insert');
 });
+
+test('.isCollasped() - when ids length is 1 and range is not null, return "insert".', (t) => {
+  const selection = new Selection();
+  selection.ids = [''];
+  selection.range = {
+    anchor: {
+      id: '',
+      offset: 0,
+    },
+    focus: {
+      id: '',
+      offset: 0,
+    },
+  };
+
+  t.true(selection.isCollasped());
+});
+
+test('.isCollasped() - when ids length is not 1 and range is not null, return "insert".', (t) => {
+  const selection = new Selection();
+  selection.ids = [];
+  selection.range = {
+    anchor: {
+      id: '',
+      offset: 0,
+    },
+    focus: {
+      id: '',
+      offset: 0,
+    },
+  };
+
+  t.false(selection.isCollasped());
+});
