@@ -8,25 +8,21 @@
 
 ### High Level Structure
 
-#### Data Structures
-
 - Node
   - DocumentNode
   - ItemNode
     - ParagraphNode
     - HorizontalRuleNode
+- nodeMap: nodeをtypeからclassを引けるMap
 - Inline
   - InlineText
   - InlineLink
-- nodeMap
-- inlineMap
+- inlineMap: inlineをtypeからclassを引けるMap
 - Selection
-
-### Algorithm
-
-- Traversal
-- Transformation
-- OperationalTransformation
+- Traversal: NodeやInlineを探す。
+- Transformation: Nodeの構造を変更する。OperationalTransformationからのみ使用できる。
+- OperationalTransformation: Transformationを使用するための操作方法生成。Selectionから生成する。
+- Editor
 
 ### Core Classes
 
