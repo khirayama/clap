@@ -27,3 +27,20 @@
 ### Core Classes
 
 ### Flows
+
+### Progress
+
+- [x] Node
+- [x] DocumentNode
+- [x] ParagraphNode
+- [x] HorizontalRuleNode
+- [x] nodeMap
+- [x] Inline
+- [x] InlineText
+- [ ] InlineLink
+- [x] inlineMap
+- [x] Selection
+- [ ] Traversal
+- [ ] Transformation
+- [ ] OperationalTransformation
+- [ ] Editor
