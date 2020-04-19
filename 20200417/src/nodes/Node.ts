@@ -1,39 +1,7 @@
 import uuid from 'uuid';
 
-type InlineType = ReturnType<Inline['toJSON']>;
-
-abstract class Inline {
-  public id: string;
-
-  public type: 'text' | 'link' = 'text';
-
-  public parent: DocumentNode | ItemNode | null = null;
-
-  public next: Inline | null = null;
-
-  public prev: Inline | null = null;
-
-  constructor(inline?: Partial<InlineType>) {
-    this.id = uuid.v4();
-    this.type = inline ? inline.type || this.type : this.type;
-  }
-
-  public toJSON() {
-    return {
-      id: this.id,
-      type: this.type,
-    };
-  }
-}
-
-class InlineText extends Inline {}
-
-class InlineLink extends Inline {}
-
-const inlineMap = {
-  text: InlineText,
-  link: InlineLink,
-};
+import { ItemNode, DocumentNode, nodeMap } from './index';
+import { Inline, InlineText, inlineMap } from '../inlines/index';
 
 /**
  * Node
@@ -54,7 +22,7 @@ const inlineMap = {
  * public isItemNode()
  * public toJSON()
  */
-type NodeType = ReturnType<Node['toJSON']>;
+export type NodeType = ReturnType<Node['toJSON']>;
 
 export abstract class Node {
   private listeners: ((node: Node) => void)[] = [];
@@ -63,7 +31,7 @@ export abstract class Node {
 
   public object: 'document' | 'item' = 'item';
 
-  public type: 'paragraph' = 'paragraph';
+  public type: 'paragraph' | 'horizontalrule' | null = 'paragraph';
 
   public inline: Inline[] | null = [new InlineText()];
 
@@ -91,19 +59,21 @@ export abstract class Node {
       for (let i = 0; i < node.nodes.length; i += 1) {
         const n = node.nodes[i];
 
-        const NodeClass = nodeMap[n.type];
-        const childNode: Node = new NodeClass(n);
+        if (n.type) {
+          const NodeClass = nodeMap[n.type];
+          const childNode: Node = new NodeClass(n);
 
-        childNode.document = this.document;
-        childNode.parent = this;
+          childNode.document = this.document;
+          childNode.parent = this;
 
-        const prevNode = this.nodes[i - 1] || null;
-        if (prevNode) {
-          childNode.prev = prevNode;
-          prevNode.next = childNode;
+          const prevNode = this.nodes[i - 1] || null;
+          if (prevNode) {
+            childNode.prev = prevNode;
+            prevNode.next = childNode;
+          }
+
+          this.nodes.push(childNode);
         }
-
-        this.nodes.push(childNode);
       }
     } else {
       this.nodes = null;
@@ -179,14 +149,3 @@ export abstract class Node {
     };
   }
 }
-
-class DocumentNode extends Node {}
-
-type ItemNode = ParagraphNode;
-
-class ParagraphNode extends Node {}
-
-const nodeMap = {
-  document: DocumentNode,
-  paragraph: ParagraphNode,
-};
