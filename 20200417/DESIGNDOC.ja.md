@@ -44,3 +44,11 @@
 - [ ] Transformation
 - [ ] OperationalTransformation
 - [ ] Editor
+
+### Ref
+
+- [automerge/automerge: A JSON-like data structure (a CRDT) that can be modified concurrently by different users, and merged again automatically.](https://github.com/automerge/automerge)
+- [Real Differences between OT and CRDT for Co-Editors](https://arxiv.org/pdf/1810.02137.pdf)
+- [Lessons learned from creating a rich-text editor with real-time collaboration](https://ckeditor.com/blog/Lessons-learned-from-creating-a-rich-text-editor-with-real-time-collaboration/)
+- [テキストエディタの共同編集機能はどのように実装されているのか - GIGAZINE](https://gigazine.net/news/20181022-text-editor-real-time-collaboration/)
+- [Building real-time collaboration applications: OT vs CRDT](https://www.tiny.cloud/blog/real-time-collaboration-ot-vs-crdt/)
