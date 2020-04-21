@@ -107,12 +107,37 @@ doc1 = Automerge.change(doc1, 'Fix typo and add style', (doc) => {
   doc.doc.nodes[1].inline[0].text.splice(2, 1);
 });
 doc2 = Automerge.change(doc2, 'Update new document title', (doc: any) => {
-  doc.doc.meta.title.splice(0, 0, ...'New'.split(''));
+  doc.doc.meta.title.splice(0, 0, ...'New '.split(''));
   doc.doc.nodes.splice(0, 1);
 });
 // console.log(JSON.stringify(doc1, null, 2));
-// console.log(JSON.stringify(doc2, null, 2));
-
-let finalDoc = Automerge.merge(doc1, doc2);
 // console.log('--- final doc ---');
 // console.log(JSON.stringify(finalDoc, null, 2));
+// const savedDoc = Automerge.save(finalDoc);
+// const loadedDoc = Automerge.load(savedDoc);
+// console.log(savedDoc);
+// console.log(JSON.stringify(loadedDoc, null, 2));
+
+// class SampleDocument {
+//   public id: string;
+//
+//   constructor() {
+//     this.id = uuid();
+//   }
+//
+//   public toJSON() {
+//     return {
+//       id: this.id,
+//     };
+//   }
+// }
+//
+// const userId = uuid();
+// let doc = Automerge.from(new SampleDocument(), userId);
+// doc = Automerge.change(doc, 'Update', (dc: ReturnType<SampleDocument['toJSON']>) => {
+//   console.log(dc === doc, dc === dc, doc === doc);
+// });
+// const serializedDoc = Automerge.save(doc);
+// const loadedDoc = Automerge.load(serializedDoc, userId);
+// console.log(Object.keys(loadedDoc));
+// // const traverser = new Traverser(loadedDoc);
