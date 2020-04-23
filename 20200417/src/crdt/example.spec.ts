@@ -1,6 +1,6 @@
 import test from 'ava';
 
-import './sample-with-automerge';
+import './example';
 
 test('Run', (t) => {
   t.pass();
