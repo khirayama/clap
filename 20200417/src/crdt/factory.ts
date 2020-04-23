@@ -1,7 +1,19 @@
 import { v4 as uuid } from 'uuid';
 import { DocumentNode, ParagraphNode, InlineText } from './node';
+import { Selection } from './selection';
 
 export const factory = {
+  selection: {
+    createSelection: (): Selection => {
+      return {
+        isComposing: false,
+        compositionText: '',
+        ids: [],
+        range: null,
+      };
+    },
+  },
+
   node: {
     createDocumentNode: (): DocumentNode => {
       const doc: DocumentNode = {
@@ -21,6 +33,7 @@ export const factory = {
       doc.document = doc.id;
       return doc;
     },
+
     createParagraphNode: (): ParagraphNode => {
       return {
         id: uuid(),
