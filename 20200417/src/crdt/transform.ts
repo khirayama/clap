@@ -27,15 +27,62 @@ export const transform = {
       inline.text.splice(index, 0, ...chars);
     },
   },
-  // Transform using Selection and Node
+  // Transform using userId, Selection and Node
   util: {
-    insertText: (selection: Selection, document: DocumentNode, chars: string[]): void => {
-      const inline = traversal.inline.findCurrentInline(selection, document);
+    insertText: (
+      userId: string,
+      users: { [userId: string]: Selection },
+      document: DocumentNode,
+      chars: string[],
+    ): void => {
+      const selection: Selection = users[userId];
 
-      if (inline && selection.range) {
-        transform.inline.insert(inline, selection.range.anchor.offset.value, chars);
-        selection.range.anchor.offset.increment(chars.length);
-        selection.range.focus.offset.increment(chars.length);
+      if (selection.range === null || !utils.isCollasped(selection)) return;
+
+      const node = traversal.node.findCurrentNode(selection, document);
+
+      if (node === null || node.inline === null) return;
+
+      const inline = traversal.inline.find(node, selection.range.anchor.id);
+
+      if (inline === null) return;
+
+      transform.inline.insert(inline, selection.range.anchor.offset.value, chars);
+
+      const userIds = Object.keys(users);
+      const selectionSnapshot = JSON.parse(JSON.stringify(selection));
+      for (const uid of userIds) {
+        const slctn = users[uid];
+        if (slctn && slctn.range && utils.isCollasped(slctn) && slctn.ids[0] === node.id) {
+          // キャレット位置が、共同編集者と同じ場合、編集者のキャレット位置のみ移動させる。
+          if (uid === userId) {
+            if (
+              slctn.range.anchor.id === selectionSnapshot.range.anchor.id &&
+              slctn.range.anchor.offset.value >= selectionSnapshot.range.anchor.offset
+            ) {
+              slctn.range.anchor.offset.increment(chars.length);
+            }
+            if (
+              slctn.range.focus.id === selectionSnapshot.range.focus.id &&
+              slctn.range.focus.offset.value >= selectionSnapshot.range.focus.offset
+            ) {
+              slctn.range.focus.offset.increment(chars.length);
+            }
+          } else {
+            if (
+              slctn.range.anchor.id === selectionSnapshot.range.anchor.id &&
+              slctn.range.anchor.offset.value > selectionSnapshot.range.anchor.offset
+            ) {
+              slctn.range.anchor.offset.increment(chars.length);
+            }
+            if (
+              slctn.range.focus.id === selectionSnapshot.range.focus.id &&
+              slctn.range.focus.offset.value > selectionSnapshot.range.focus.offset
+            ) {
+              slctn.range.focus.offset.increment(chars.length);
+            }
+          }
+        }
       }
     },
   },
