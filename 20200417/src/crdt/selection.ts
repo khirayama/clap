@@ -1,5 +1,21 @@
 import * as Automerge from 'automerge';
 
+export type Selection = {
+  isComposing: boolean;
+  compositionText: string;
+  ids: string[];
+  range: {
+    anchor: {
+      id: string;
+      offset: Automerge.Counter;
+    };
+    focus: {
+      id: string;
+      offset: Automerge.Counter;
+    };
+  } | null;
+};
+
 export const utils = {
   mode: (selection: Selection): 'normal' | 'select' | 'insert' => {
     if (selection.ids.length === 0) {
@@ -19,20 +35,4 @@ export const utils = {
       selection.range.anchor.offset.value === selection.range.focus.offset.value
     );
   },
-};
-
-export type Selection = {
-  isComposing: boolean;
-  compositionText: string;
-  ids: string[];
-  range: {
-    anchor: {
-      id: string;
-      offset: Automerge.Counter;
-    };
-    focus: {
-      id: string;
-      offset: Automerge.Counter;
-    };
-  } | null;
 };
