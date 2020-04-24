@@ -38,7 +38,7 @@ doc = Automerge.change(doc, (doc) => {
 
 // Insert text
 doc = Automerge.change(doc, (doc) => {
-  transform.inline.insert(doc.selection, doc.document, 'H', 'e', 'l', 'l', 'o', ' ');
+  transform.util.insertText(doc.selection, doc.document, ['H', 'e', 'l', 'l', 'o', ' ']);
 });
 
 console.log(JSON.stringify(doc, null, 2));

@@ -1,5 +1,5 @@
 import { DocumentNode, ItemNode, Inline } from './node';
-import { Selection } from './selection';
+import { Selection, utils } from './selection';
 
 export const traversal = {
   node: {
@@ -18,13 +18,13 @@ export const traversal = {
       }
       return null;
     },
-    findCurrentNode: (document: DocumentNode, selection: Selection): DocumentNode | ItemNode | null => {
+    findCurrentNode: (selection: Selection, document: DocumentNode): DocumentNode | ItemNode | null => {
       if (selection.ids.length === 0) {
         return null;
       }
       return traversal.node.find(document, selection.ids[0]);
     },
-    findCurrentNodes: (document: DocumentNode, selection: Selection): (DocumentNode | ItemNode | null)[] => {
+    findCurrentNodes: (selection: Selection, document: DocumentNode): (DocumentNode | ItemNode | null)[] => {
       return selection.ids.map((id) => {
         return traversal.node.find(document, id);
       });
@@ -37,6 +37,15 @@ export const traversal = {
           if (inline.id === id) {
             return inline;
           }
+        }
+      }
+      return null;
+    },
+    findCurrentInline: (selection: Selection, document: DocumentNode): Inline | null => {
+      if (selection.range && utils.isCollasped(selection)) {
+        const node = traversal.node.findCurrentNode(selection, document);
+        if (node) {
+          traversal.inline.find(node, selection.range.anchor.id);
         }
       }
       return null;

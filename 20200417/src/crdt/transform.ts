@@ -1,8 +1,9 @@
-import { DocumentNode, ItemNode } from './node';
+import { DocumentNode, ItemNode, Inline } from './node';
 import { Selection, utils } from './selection';
 import { traversal } from './traversal';
 
 export const transform = {
+  // Transform node itself primitively
   node: {
     // after, before, remove
     // Add node to the last
@@ -20,20 +21,21 @@ export const transform = {
       }
     },
   },
+  // Transform inline itself primitively
   inline: {
-    insert: (selection: Selection, document: DocumentNode, ...chars: string[]): void => {
-      if (selection.range && utils.isCollasped(selection)) {
-        const node = traversal.node.find(document, selection.ids[0]);
+    insert: (inline: Inline, index: number, chars: string[]) => {
+      inline.text.splice(index, 0, ...chars);
+    },
+  },
+  // Transform using Selection and Node
+  util: {
+    insertText: (selection: Selection, document: DocumentNode, chars: string[]): void => {
+      const inline = traversal.inline.findCurrentInline(selection, document);
 
-        if (node) {
-          const inline = traversal.inline.find(node, selection.range.anchor.id);
-
-          if (inline) {
-            inline.text.splice(selection.range.anchor.offset.value, 0, ...chars);
-            selection.range.anchor.offset.increment(chars.length);
-            selection.range.focus.offset.increment(chars.length);
-          }
-        }
+      if (inline && selection.range) {
+        transform.inline.insert(inline, selection.range.anchor.offset.value, chars);
+        selection.range.anchor.offset.increment(chars.length);
+        selection.range.focus.offset.increment(chars.length);
       }
     },
   },
