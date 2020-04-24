@@ -44,8 +44,8 @@ export const traversal = {
     findCurrentInline: (selection: Selection, document: DocumentNode): Inline | null => {
       if (selection.range && utils.isCollasped(selection)) {
         const node = traversal.node.findCurrentNode(selection, document);
-        if (node) {
-          traversal.inline.find(node, selection.range.anchor.id);
+        if (node && selection.range) {
+          return traversal.inline.find(node, selection.range.anchor.id);
         }
       }
       return null;
