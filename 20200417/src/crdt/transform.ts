@@ -47,7 +47,8 @@ export const transform = {
 
       if (inline === null) return;
 
-      transform.inline.insert(inline, selection.range.anchor.offset.value, chars);
+      const positionToInsert = selection.range.anchor.offset.value;
+      transform.inline.insert(inline, positionToInsert, chars);
 
       const userIds = Object.keys(users);
       const selectionSnapshot = JSON.parse(JSON.stringify(selection));
@@ -58,13 +59,13 @@ export const transform = {
             // 編集者に対しての処理
             if (
               slctn.range.anchor.id === selectionSnapshot.range.anchor.id &&
-              slctn.range.anchor.offset.value >= selectionSnapshot.range.anchor.offset
+              slctn.range.anchor.offset.value >= positionToInsert
             ) {
               slctn.range.anchor.offset.increment(chars.length);
             }
             if (
               slctn.range.focus.id === selectionSnapshot.range.focus.id &&
-              slctn.range.focus.offset.value >= selectionSnapshot.range.focus.offset
+              slctn.range.focus.offset.value >= positionToInsert
             ) {
               slctn.range.focus.offset.increment(chars.length);
             }
@@ -72,13 +73,13 @@ export const transform = {
             // 共同編集者への処理
             if (
               slctn.range.anchor.id === selectionSnapshot.range.anchor.id &&
-              slctn.range.anchor.offset.value > selectionSnapshot.range.anchor.offset
+              slctn.range.anchor.offset.value > positionToInsert
             ) {
               slctn.range.anchor.offset.increment(chars.length);
             }
             if (
               slctn.range.focus.id === selectionSnapshot.range.anchor.id &&
-              slctn.range.focus.offset.value > selectionSnapshot.range.anchor.offset
+              slctn.range.focus.offset.value > positionToInsert
             ) {
               slctn.range.focus.offset.increment(chars.length);
             }
