@@ -54,8 +54,8 @@ export const transform = {
       for (const uid of userIds) {
         const slctn = users[uid];
         if (slctn && slctn.range && utils.isCollasped(slctn) && slctn.ids[0] === node.id) {
-          // キャレット位置が、共同編集者と同じ場合、編集者のキャレット位置のみ移動させる。
           if (uid === userId) {
+            // 編集者に対しての処理
             if (
               slctn.range.anchor.id === selectionSnapshot.range.anchor.id &&
               slctn.range.anchor.offset.value >= selectionSnapshot.range.anchor.offset
@@ -69,6 +69,7 @@ export const transform = {
               slctn.range.focus.offset.increment(chars.length);
             }
           } else {
+            // 共同編集者への処理
             if (
               slctn.range.anchor.id === selectionSnapshot.range.anchor.id &&
               slctn.range.anchor.offset.value > selectionSnapshot.range.anchor.offset
@@ -76,8 +77,8 @@ export const transform = {
               slctn.range.anchor.offset.increment(chars.length);
             }
             if (
-              slctn.range.focus.id === selectionSnapshot.range.focus.id &&
-              slctn.range.focus.offset.value > selectionSnapshot.range.focus.offset
+              slctn.range.focus.id === selectionSnapshot.range.anchor.id &&
+              slctn.range.focus.offset.value > selectionSnapshot.range.anchor.offset
             ) {
               slctn.range.focus.offset.increment(chars.length);
             }
