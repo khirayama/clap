@@ -3,7 +3,6 @@ import * as Automerge from 'automerge';
 import { CRDTDocument } from './CRDTDocument';
 import { usecase } from './usecase';
 import { factory } from './factory';
-import { transform } from './transform';
 
 type Doc = ReturnType<typeof usecase.init>;
 
@@ -16,10 +15,10 @@ const member = {
 };
 
 // [user] Create document
-let userDoc = new CRDTDocument(user.id);
+const userDoc: CRDTDocument = new CRDTDocument(user.id);
 
 // [member] Join member
-let memberDoc = new CRDTDocument(member.id, userDoc.save());
+const memberDoc: CRDTDocument = new CRDTDocument(member.id, userDoc.save());
 memberDoc.change((doc: Doc) => {
   const selection = factory.selection.createSelection();
   doc.users[member.id] = selection;
@@ -54,7 +53,7 @@ memberDoc.merge(new CRDTDocument(user.id, userDoc.save()));
 
 // [user] Insert text by user
 userDoc.change((userDoc) => {
-  usecase.insertText(user.id, userDoc.users, userDoc.document, ['H', 'e', 'l', 'l', 'o', ' ']);
+  usecase.insertText(user.id, userDoc, ['H', 'e', 'l', 'l', 'o', ' ']);
 });
 
 // [user][members] Merge
