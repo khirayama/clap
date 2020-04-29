@@ -1,19 +1,21 @@
 import * as Automerge from 'automerge';
 
+export type Range = {
+  anchor: {
+    id: string;
+    offset: Automerge.Counter;
+  };
+  focus: {
+    id: string;
+    offset: Automerge.Counter;
+  };
+};
+
 export type Selection = {
   isComposing: boolean;
   compositionText: string;
   ids: string[];
-  range: {
-    anchor: {
-      id: string;
-      offset: Automerge.Counter;
-    };
-    focus: {
-      id: string;
-      offset: Automerge.Counter;
-    };
-  } | null;
+  range: Range | null;
 };
 
 export const utils = {
