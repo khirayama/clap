@@ -1,0 +1,24 @@
+- RemoteDocumentHandler
+  - 通信レイヤーを管理する。remote documentの編集者と考える。
+- CRDTDocument
+  - Documentの構造を管理する。
+  - Automergeを隠蔽する役割を担う。
+  - Automerge/usecaseへの参照が可能。
+- usecase
+  - factory/transformを扱う。
+  - プリミティブな操作はfactory/transformで行う。
+  - factory/transform/traversalへの参照が可能
+  - 引数もしくは返り値にselectionをdocumentを利用するようなケース。
+- factory
+  - node/inline/selectionのプリミティブな生成を行う。
+  - traversalへの参照が可能
+- transform
+  - node/inline/selectionのプリミティブな変換を行う。
+  - factory/traversalへの参照が可能
+- traversal
+  - node/inline/selectionの走査を行う。
+- selection
+- node
+- inline
+
+- selectionとdocumentを引数に与える場合、1.selection, 2.documentの順で行う
