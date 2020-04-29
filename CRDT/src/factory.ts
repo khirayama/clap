@@ -1,7 +1,7 @@
 import * as Automerge from 'automerge';
 
-import { transform } from './transform';
-import { DocumentNode, ParagraphNode, InlineText } from './node';
+import { DocumentNode, ParagraphNode } from './node';
+import { InlineText } from './inline';
 import { Selection } from './selection';
 
 export const factory = {
@@ -58,37 +58,6 @@ export const factory = {
         type: 'text',
         text: [],
         marks: [],
-      };
-    },
-  },
-
-  utils: {
-    init: (userId: string): { document: DocumentNode; users: { [userId: string]: Selection } } => {
-      const selection = factory.selection.createSelection();
-      const document = factory.node.createDocumentNode();
-      const paragraph = factory.node.createParagraphNode();
-      const inlineText = factory.inline.createInlineText();
-
-      paragraph.inline.push(inlineText);
-      transform.node.append(document, paragraph);
-
-      selection.ids.push(paragraph.id);
-      selection.range = {
-        anchor: {
-          id: inlineText.id,
-          offset: new Automerge.Counter(0),
-        },
-        focus: {
-          id: inlineText.id,
-          offset: new Automerge.Counter(0),
-        },
-      };
-
-      return {
-        document,
-        users: {
-          [userId]: selection,
-        },
       };
     },
   },
