@@ -5,9 +5,17 @@ import { transform } from './transform';
 import { traversal } from './traversal';
 import { Selection, utils as selectionUtils } from './selection';
 import { DocumentNode } from './node';
+import { CRDTDocument } from './CRDTDocument';
+
+/*
+ * API設計時の注意: 引数を与える場合の優先順位
+ * userId > CRDTDocument > 個別の引数
+ */
+
+export type Doc = { document: DocumentNode; users: { [userId: string]: Selection } };
 
 export const usecase = {
-  init: (userId: string): { document: DocumentNode; users: { [userId: string]: Selection } } => {
+  init: (userId: string): Doc => {
     const selection = factory.selection.createSelection();
     const document = factory.node.createDocumentNode();
     const paragraph = factory.node.createParagraphNode();
@@ -36,12 +44,9 @@ export const usecase = {
     };
   },
 
-  insertText: (
-    userId: string,
-    users: { [userId: string]: Selection },
-    document: DocumentNode,
-    chars: string[],
-  ): void => {
+  insertText: (userId: string, doc: Doc, chars: string[]): void => {
+    const users = doc.users;
+    const document = doc.document;
     const selection: Selection = users[userId];
 
     if (selection.range === null || !selectionUtils.isCollasped(selection)) return;
