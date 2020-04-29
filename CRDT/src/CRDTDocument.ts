@@ -1,8 +1,6 @@
 import * as Automerge from 'automerge';
 
-import { usecase } from './usecase';
-
-type Doc = ReturnType<typeof usecase.init>;
+import { usecase, Doc } from './usecase';
 
 export class CRDTDocument {
   public userId: string;
@@ -16,7 +14,7 @@ export class CRDTDocument {
       : Automerge.from(usecase.init(this.userId), this.userId);
   }
 
-  public change(func: Automerge.ChangeFn<this['doc']>): void {
+  public change(func: Automerge.ChangeFn<Doc>): void {
     this.doc = Automerge.change(this.doc, func);
   }
 
