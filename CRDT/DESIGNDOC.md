@@ -9,6 +9,7 @@
   - プリミティブな操作はfactory/transformで行う。
   - factory/transform/traversalへの参照が可能
   - 引数もしくは返り値にselectionをdocumentを利用するようなケース。
+  - CRDTDocumentのchangeの中でのみ呼ばれる。
 - factory
   - node/inline/selectionのプリミティブな生成を行う。
   - traversalへの参照が可能
@@ -21,4 +22,9 @@
 - node
 - inline
 
-- selectionとdocumentを引数に与える場合、1.selection, 2.documentの順で行う
+- API設計の方針
+  - selectionとdocumentを引数に与える場合、1.selection, 2.documentの順で行う
+
+- 実装時の注意
+  - usecaseを実装するとき、必ずSPECへの書き起こしを行う
+  - testcaseはSPECを元に書き起こされる
