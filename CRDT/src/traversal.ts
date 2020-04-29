@@ -1,5 +1,6 @@
-import { DocumentNode, ItemNode, Inline } from './node';
 import { Selection, utils } from './selection';
+import { DocumentNode, ItemNode } from './node';
+import { Inline } from './inline';
 
 export const traversal = {
   node: {
