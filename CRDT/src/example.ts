@@ -2,6 +2,7 @@ import * as Automerge from 'automerge';
 
 import { factory } from './factory';
 import { transform } from './transform';
+import { CRDTDocument } from './CRDTDocument';
 
 type Doc = ReturnType<typeof factory.utils.init>;
 
@@ -11,29 +12,25 @@ const user = {
 };
 
 // [user] Create document
-let userDoc: Automerge.Doc<Doc> = Automerge.from(factory.utils.init(user.id), user.id);
-let savedUserDoc = Automerge.save(userDoc);
+let userDoc = new CRDTDocument(user.id);
 
 // [member] Join member
 const member = {
   id: Automerge.uuid(),
 };
 
-let memberDoc: Automerge.Doc<Doc> = Automerge.load(savedUserDoc, member.id);
-memberDoc = Automerge.change(memberDoc, (memberDoc: Doc) => {
+let memberDoc = new CRDTDocument(member.id, userDoc.save());
+memberDoc.change((doc: Doc) => {
   const selection = factory.selection.createSelection();
-  memberDoc.users[member.id] = selection;
+  doc.users[member.id] = selection;
 });
-let savedMemberDoc = Automerge.save(memberDoc);
 
 // [user][members] Merge
-let memberDocForUser: Automerge.Doc<Doc> = Automerge.load(savedMemberDoc, member.id);
-userDoc = Automerge.merge(userDoc, memberDocForUser);
-let userDocForMember: Automerge.Doc<Doc> = Automerge.load(savedUserDoc, user.id);
-memberDoc = Automerge.merge(memberDoc, userDocForMember);
+userDoc.merge(new CRDTDocument(member.id, memberDoc.save()));
+memberDoc.merge(new CRDTDocument(user.id, userDoc.save()));
 
 // [member] Focus on first inline
-memberDoc = Automerge.change(memberDoc, (memberDoc: Doc) => {
+memberDoc.change((memberDoc: Doc) => {
   const document = memberDoc.document;
   const selection = memberDoc.users[member.id];
   const firstNode = document.nodes[0];
@@ -50,25 +47,19 @@ memberDoc = Automerge.change(memberDoc, (memberDoc: Doc) => {
     },
   };
 });
-savedMemberDoc = Automerge.save(memberDoc);
 
 // [user][members] Merge
-memberDocForUser = Automerge.load(savedMemberDoc, member.id);
-userDoc = Automerge.merge(userDoc, memberDocForUser);
-userDocForMember = Automerge.load(savedUserDoc, user.id);
-memberDoc = Automerge.merge(memberDoc, userDocForMember);
+userDoc.merge(new CRDTDocument(member.id, memberDoc.save()));
+memberDoc.merge(new CRDTDocument(user.id, userDoc.save()));
 
 // [user] Insert text by user
-userDoc = Automerge.change(userDoc, (userDoc) => {
+userDoc.change((userDoc) => {
   transform.util.insertText(user.id, userDoc.users, userDoc.document, ['H', 'e', 'l', 'l', 'o', ' ']);
 });
-savedUserDoc = Automerge.save(userDoc);
 
 // [user][members] Merge
-memberDocForUser = Automerge.load(savedMemberDoc, member.id);
-userDoc = Automerge.merge(userDoc, memberDocForUser);
-userDocForMember = Automerge.load(savedUserDoc, user.id);
-memberDoc = Automerge.merge(memberDoc, userDocForMember);
+userDoc.merge(new CRDTDocument(member.id, memberDoc.save()));
+memberDoc.merge(new CRDTDocument(user.id, userDoc.save()));
 
 console.log(JSON.stringify(userDoc, null, 2));
 console.log(JSON.stringify(memberDoc, null, 2));
