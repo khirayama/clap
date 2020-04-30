@@ -5,7 +5,6 @@ import { transform } from './transform';
 import { traversal } from './traversal';
 import { Selection, utils as selectionUtils } from './selection';
 import { DocumentNode } from './node';
-import { CRDTDocument } from './CRDTDocument';
 
 /*
  * API設計時の注意: 引数を与える場合の優先順位
@@ -55,44 +54,30 @@ export const usecase = {
 
     if (node === null || node.inline === null) return;
 
-    const inline = traversal.inline.find(node, selection.range.anchor.id);
+    const inlineId = selection.range.anchor.id;
+    const inline = traversal.inline.find(node, inlineId);
 
     if (inline === null) return;
 
-    const positionToInsert = selection.range.anchor.offset.value;
-    transform.inline.insert(inline, positionToInsert, chars);
+    const offset = selection.range.anchor.offset.value;
+    transform.inline.insert(inline, offset, chars);
 
     const userIds = Object.keys(users);
-    const selectionSnapshot = JSON.parse(JSON.stringify(selection));
+    if (selection.range.anchor.id === inlineId && selection.range.anchor.offset.value >= offset) {
+      selection.range.anchor.offset.increment(chars.length);
+    }
+    if (selection.range.focus.id === selection.range.focus.id && selection.range.focus.offset.value >= offset) {
+      selection.range.focus.offset.increment(chars.length);
+    }
     for (const uid of userIds) {
       const slctn = users[uid];
-      if (slctn && slctn.range && selectionUtils.isCollasped(slctn) && slctn.ids[0] === node.id) {
-        if (uid === userId) {
-          // 編集者に対しての処理
-          if (
-            slctn.range.anchor.id === selectionSnapshot.range.anchor.id &&
-            slctn.range.anchor.offset.value >= positionToInsert
-          ) {
-            slctn.range.anchor.offset.increment(chars.length);
-          }
-          if (
-            slctn.range.focus.id === selectionSnapshot.range.focus.id &&
-            slctn.range.focus.offset.value >= positionToInsert
-          ) {
-            slctn.range.focus.offset.increment(chars.length);
-          }
-        } else {
+      if (slctn && slctn.range && slctn.ids[0] === node.id) {
+        if (uid !== userId) {
           // 共同編集者への処理
-          if (
-            slctn.range.anchor.id === selectionSnapshot.range.anchor.id &&
-            slctn.range.anchor.offset.value > positionToInsert
-          ) {
+          if (slctn.range.anchor.id === inlineId && slctn.range.anchor.offset.value > offset) {
             slctn.range.anchor.offset.increment(chars.length);
           }
-          if (
-            slctn.range.focus.id === selectionSnapshot.range.anchor.id &&
-            slctn.range.focus.offset.value > positionToInsert
-          ) {
+          if (slctn.range.focus.id === inlineId && slctn.range.focus.offset.value > offset) {
             slctn.range.focus.offset.increment(chars.length);
           }
         }

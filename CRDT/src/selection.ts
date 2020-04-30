@@ -37,4 +37,8 @@ export const utils = {
       selection.range.anchor.offset.value === selection.range.focus.offset.value
     );
   },
+
+  getOffset: (curOffset: number, offset: number) => {
+    return offset - curOffset;
+  },
 };
