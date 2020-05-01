@@ -1,50 +1,21 @@
-import * as Automerge from 'automerge';
 import * as assert from 'power-assert';
 
 import { usecase } from './usecase';
-import { factory } from './factory';
 import { CRDTDocument } from './CRDTDocument';
 import { utils as selectionUtils } from './selection';
+import { createSampleData } from './testutils';
 
-const user = {
-  id: Automerge.uuid(),
-};
-const member = {
-  id: Automerge.uuid(),
-};
+let user: { id: string };
+let member: { id: string };
 let userDoc: CRDTDocument;
 let memberDoc: CRDTDocument;
 
 beforeEach(() => {
-  userDoc = new CRDTDocument(user.id);
-  memberDoc = new CRDTDocument(member.id, userDoc.save());
-  memberDoc.change((doc) => {
-    const selection = factory.selection.createSelection();
-    doc.users[member.id] = selection;
-  });
-  userDoc.merge(new CRDTDocument(member.id, memberDoc.save()));
-  memberDoc.merge(new CRDTDocument(user.id, userDoc.save()));
-
-  memberDoc.change((doc) => {
-    const document = doc.document;
-    const selection = doc.users[member.id];
-    const firstNode = document.nodes[0];
-
-    selection.ids.push(firstNode.id);
-    selection.range = {
-      anchor: {
-        id: firstNode.inline[0].id,
-        offset: new Automerge.Counter(0),
-      },
-      focus: {
-        id: firstNode.inline[0].id,
-        offset: new Automerge.Counter(0),
-      },
-    };
-  });
-
-  userDoc.merge(new CRDTDocument(member.id, memberDoc.save()));
-  memberDoc.merge(new CRDTDocument(user.id, userDoc.save()));
+  const result = createSampleData();
+  user = result.user;
+  member = result.member;
+  userDoc = result.userDoc;
+  memberDoc = result.memberDoc;
 });
 
 describe('.insertText()', () => {
