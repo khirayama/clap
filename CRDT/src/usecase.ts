@@ -1,5 +1,4 @@
-import * as Automerge from 'automerge';
-
+// factory, transform, traveral
 import { factory } from './factory';
 import { transform } from './transform';
 import { traversal } from './traversal';
@@ -24,16 +23,7 @@ export const usecase = {
     transform.node.append(document, paragraph);
 
     selection.ids.push(paragraph.id);
-    selection.range = {
-      anchor: {
-        id: inlineText.id,
-        offset: new Automerge.Counter(0),
-      },
-      focus: {
-        id: inlineText.id,
-        offset: new Automerge.Counter(0),
-      },
-    };
+    selection.range = factory.selection.createRange(inlineText.id, 0);
 
     return {
       document,

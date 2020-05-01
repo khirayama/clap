@@ -1,10 +1,13 @@
+// Automerge/traversal
 import * as Automerge from 'automerge';
-
 import { DocumentNode, ParagraphNode } from './node';
 import { InlineText } from './inline';
-import { Selection } from './selection';
+import { Selection, Range } from './selection';
 
 export const factory = {
+  uuid: () => {
+    return Automerge.uuid();
+  },
   selection: {
     createSelection: (): Selection => {
       return {
@@ -14,12 +17,24 @@ export const factory = {
         range: null,
       };
     },
+    createRange: (anchorId: string, anchorOffset: number, focusId?: string, focusOffset?: number): Range => {
+      return {
+        anchor: {
+          id: anchorId,
+          offset: new Automerge.Counter(anchorOffset),
+        },
+        focus: {
+          id: focusId ? focusId : anchorId,
+          offset: new Automerge.Counter(focusOffset !== undefined ? focusOffset : anchorOffset),
+        },
+      };
+    },
   },
 
   node: {
     createDocumentNode: (): DocumentNode => {
       const doc: DocumentNode = {
-        id: Automerge.uuid(),
+        id: factory.uuid(),
         object: 'document',
         type: null,
         inline: null,
@@ -38,7 +53,7 @@ export const factory = {
 
     createParagraphNode: (): ParagraphNode => {
       return {
-        id: Automerge.uuid(),
+        id: factory.uuid(),
         object: 'item',
         type: 'paragraph',
         document: null,
@@ -54,7 +69,7 @@ export const factory = {
   inline: {
     createInlineText: (): InlineText => {
       return {
-        id: Automerge.uuid(),
+        id: factory.uuid(),
         type: 'text',
         text: [],
         marks: [],

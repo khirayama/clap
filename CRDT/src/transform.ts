@@ -1,3 +1,4 @@
+// factory/traversal
 import { DocumentNode, ItemNode } from './node';
 import { Inline } from './inline';
 

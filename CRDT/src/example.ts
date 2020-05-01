@@ -1,5 +1,3 @@
-import * as Automerge from 'automerge';
-
 import { CRDTDocument } from './CRDTDocument';
 import { usecase } from './usecase';
 import { factory } from './factory';
@@ -8,10 +6,10 @@ type Doc = ReturnType<typeof usecase.init>;
 
 // Login
 const user = {
-  id: Automerge.uuid(),
+  id: factory.uuid(),
 };
 const member = {
-  id: Automerge.uuid(),
+  id: factory.uuid(),
 };
 
 // [user] Create document
@@ -35,16 +33,7 @@ memberDoc.change((memberDoc: Doc) => {
   const firstNode = document.nodes[0];
 
   selection.ids.push(firstNode.id);
-  selection.range = {
-    anchor: {
-      id: firstNode.inline[0].id,
-      offset: new Automerge.Counter(0),
-    },
-    focus: {
-      id: firstNode.inline[0].id,
-      offset: new Automerge.Counter(0),
-    },
-  };
+  selection.range = factory.selection.createRange(firstNode.inline[0].id, 0);
 });
 
 // [user][members] Merge
@@ -59,6 +48,3 @@ userDoc.change((userDoc) => {
 // [user][members] Merge
 userDoc.merge(new CRDTDocument(member.id, memberDoc.save()));
 memberDoc.merge(new CRDTDocument(user.id, userDoc.save()));
-
-console.log(JSON.stringify(userDoc, null, 2));
-console.log(JSON.stringify(memberDoc, null, 2));

@@ -1,5 +1,5 @@
+// Automerge/usecase
 import * as Automerge from 'automerge';
-
 import { usecase, Doc } from './usecase';
 
 export class CRDTDocument {
