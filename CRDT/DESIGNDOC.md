@@ -12,7 +12,7 @@
   - CRDTDocumentのchangeの中でのみ呼ばれる。
 - factory
   - node/inline/selectionのプリミティブな生成を行う。
-  - traversalへの参照が可能
+  - Automerge/traversalへの参照が可能
 - transform
   - node/inline/selectionのプリミティブな変換を行う。
   - factory/traversalへの参照が可能
