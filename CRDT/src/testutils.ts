@@ -1,6 +1,11 @@
 import { factory } from './factory';
 import { CRDTDocument } from './CRDTDocument';
 
+export function toLooseJSON(obj: any) {
+  // FYI: AutomergeのCounterが、{ value: number }からnumberに変わってしまう点に注意
+  return JSON.parse(JSON.stringify(obj));
+}
+
 export function createSampleData() {
   const user = {
     id: factory.uuid(),
