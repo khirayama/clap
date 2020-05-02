@@ -24,12 +24,10 @@ describe('.insertText()', () => {
       it('文字列が挿入されて選択範囲位置が文字数分後ろへ移動していること', () => {
         const expectedDoc = toLooseJSON(userDoc);
         const inlineText = expectedDoc.doc.document.nodes[0].inline[0];
-        const range = expectedDoc.doc.users[user.id].range;
+        const userSelection = expectedDoc.doc.users[user.id];
         inlineText.text = ['あ', 'い', 'う', 'え', 'お'];
-        if (range) {
-          range.anchor.offset = 5;
-          range.focus.offset = 5;
-        }
+        userSelection.range.anchor.offset = 5;
+        userSelection.range.focus.offset = 5;
 
         userDoc.change((doc) => {
           usecase.insertText(user.id, doc, ['あ', 'い', 'う', 'え', 'お']);
@@ -39,6 +37,16 @@ describe('.insertText()', () => {
       });
 
       it('文字列が挿入されて共同編集者の選択範囲始点が文字数分後ろへ移動していること', () => {
+        const expectedDoc = toLooseJSON(userDoc);
+        const inlineText = expectedDoc.doc.document.nodes[0].inline[0];
+        const userSelection = expectedDoc.doc.users[user.id];
+        const memberSelection = expectedDoc.doc.users[member.id];
+        inlineText.text = ['1', 'あ', 'い', 'う', 'え', 'お', '2', '3'];
+        userSelection.range.anchor.offset = 6;
+        userSelection.range.focus.offset = 6;
+        memberSelection.range.anchor.offset = 7;
+        memberSelection.range.focus.offset = 7;
+
         userDoc.change((doc) => {
           usecase.insertText(user.id, doc, ['1', '2', '3']);
         });
@@ -59,62 +67,21 @@ describe('.insertText()', () => {
           }
           usecase.insertText(user.id, doc, ['あ', 'い', 'う', 'え', 'お']);
         });
-        assert.deepEqual(userDoc.doc, {
-          document: {
-            id: userDoc.doc.document.id,
-            object: 'document',
-            type: null,
-            inline: null,
-            nodes: [
-              {
-                id: userDoc.doc.document.nodes[0].id,
-                object: 'item',
-                type: 'paragraph',
-                document: userDoc.doc.document.id,
-                parent: userDoc.doc.document.id,
-                prev: null,
-                next: null,
-                inline: [
-                  {
-                    id: userDoc.doc.document.nodes[0].inline[0].id,
-                    type: 'text',
-                    text: ['1', 'あ', 'い', 'う', 'え', 'お', '2', '3'],
-                    marks: [],
-                  },
-                ],
-                nodes: [],
-              },
-            ],
-            document: userDoc.doc.document.id,
-            parent: null,
-            prev: null,
-            next: null,
-            meta: { title: [] },
-          },
-          users: {
-            [user.id]: {
-              isComposing: false,
-              compositionText: '',
-              ids: [userDoc.doc.document.nodes[0].id],
-              range: {
-                anchor: { id: userDoc.doc.document.nodes[0].inline[0].id, offset: { value: 6 } },
-                focus: { id: userDoc.doc.document.nodes[0].inline[0].id, offset: { value: 6 } },
-              },
-            },
-            [member.id]: {
-              isComposing: false,
-              compositionText: '',
-              ids: [userDoc.doc.document.nodes[0].id],
-              range: {
-                anchor: { id: userDoc.doc.document.nodes[0].inline[0].id, offset: { value: 7 } },
-                focus: { id: userDoc.doc.document.nodes[0].inline[0].id, offset: { value: 7 } },
-              },
-            },
-          },
-        });
+
+        assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
       });
 
       it('文字列が挿入されて共同編集者の選択範囲終点が文字数分後ろへ移動していること', () => {
+        const expectedDoc = toLooseJSON(userDoc);
+        const inlineText = expectedDoc.doc.document.nodes[0].inline[0];
+        const userSelection = expectedDoc.doc.users[user.id];
+        const memberSelection = expectedDoc.doc.users[member.id];
+        inlineText.text = ['1', 'あ', 'い', 'う', 'え', 'お', '2', '3'];
+        userSelection.range.anchor.offset = 6;
+        userSelection.range.focus.offset = 6;
+        memberSelection.range.anchor.offset = 1;
+        memberSelection.range.focus.offset = 7;
+
         userDoc.change((doc) => {
           usecase.insertText(user.id, doc, ['1', '2', '3']);
         });
@@ -135,59 +102,8 @@ describe('.insertText()', () => {
           }
           usecase.insertText(user.id, doc, ['あ', 'い', 'う', 'え', 'お']);
         });
-        assert.deepEqual(userDoc.doc, {
-          document: {
-            id: userDoc.doc.document.id,
-            object: 'document',
-            type: null,
-            inline: null,
-            nodes: [
-              {
-                id: userDoc.doc.document.nodes[0].id,
-                object: 'item',
-                type: 'paragraph',
-                document: userDoc.doc.document.id,
-                parent: userDoc.doc.document.id,
-                prev: null,
-                next: null,
-                inline: [
-                  {
-                    id: userDoc.doc.document.nodes[0].inline[0].id,
-                    type: 'text',
-                    text: ['1', 'あ', 'い', 'う', 'え', 'お', '2', '3'],
-                    marks: [],
-                  },
-                ],
-                nodes: [],
-              },
-            ],
-            document: userDoc.doc.document.id,
-            parent: null,
-            prev: null,
-            next: null,
-            meta: { title: [] },
-          },
-          users: {
-            [user.id]: {
-              isComposing: false,
-              compositionText: '',
-              ids: [userDoc.doc.document.nodes[0].id],
-              range: {
-                anchor: { id: userDoc.doc.document.nodes[0].inline[0].id, offset: { value: 6 } },
-                focus: { id: userDoc.doc.document.nodes[0].inline[0].id, offset: { value: 6 } },
-              },
-            },
-            [member.id]: {
-              isComposing: false,
-              compositionText: '',
-              ids: [userDoc.doc.document.nodes[0].id],
-              range: {
-                anchor: { id: userDoc.doc.document.nodes[0].inline[0].id, offset: { value: 1 } },
-                focus: { id: userDoc.doc.document.nodes[0].inline[0].id, offset: { value: 7 } },
-              },
-            },
-          },
-        });
+
+        assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
       });
     });
   });
