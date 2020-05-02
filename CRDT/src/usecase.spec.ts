@@ -3,7 +3,7 @@ import * as assert from 'power-assert';
 import { usecase } from './usecase';
 import { CRDTDocument } from './CRDTDocument';
 import { utils as selectionUtils } from './selection';
-import { createSampleData } from './testutils';
+import { createSampleData, toLooseJSON } from './testutils';
 
 let user: { id: string };
 let member: { id: string };
@@ -22,62 +22,20 @@ describe('.insertText()', () => {
   describe('選択範囲が閉じている状態で', () => {
     describe('「あいうえお」と挿入したとき', () => {
       it('文字列が挿入されて選択範囲位置が文字数分後ろへ移動していること', () => {
+        const expectedDoc = toLooseJSON(userDoc);
+        const inlineText = expectedDoc.doc.document.nodes[0].inline[0];
+        const range = expectedDoc.doc.users[user.id].range;
+        inlineText.text = ['あ', 'い', 'う', 'え', 'お'];
+        if (range) {
+          range.anchor.offset = 5;
+          range.focus.offset = 5;
+        }
+
         userDoc.change((doc) => {
           usecase.insertText(user.id, doc, ['あ', 'い', 'う', 'え', 'お']);
         });
-        assert.deepEqual(userDoc.doc, {
-          document: {
-            id: userDoc.doc.document.id,
-            object: 'document',
-            type: null,
-            inline: null,
-            nodes: [
-              {
-                id: userDoc.doc.document.nodes[0].id,
-                object: 'item',
-                type: 'paragraph',
-                document: userDoc.doc.document.id,
-                parent: userDoc.doc.document.id,
-                prev: null,
-                next: null,
-                inline: [
-                  {
-                    id: userDoc.doc.document.nodes[0].inline[0].id,
-                    type: 'text',
-                    text: ['あ', 'い', 'う', 'え', 'お'],
-                    marks: [],
-                  },
-                ],
-                nodes: [],
-              },
-            ],
-            document: userDoc.doc.document.id,
-            parent: null,
-            prev: null,
-            next: null,
-            meta: { title: [] },
-          },
-          users: {
-            [user.id]: {
-              isComposing: false,
-              compositionText: '',
-              ids: [userDoc.doc.document.nodes[0].id],
-              range: {
-                anchor: { id: userDoc.doc.document.nodes[0].inline[0].id, offset: { value: 5 } },
-                focus: { id: userDoc.doc.document.nodes[0].inline[0].id, offset: { value: 5 } },
-              },
-            },
-            [member.id]: {
-              isComposing: false,
-              compositionText: '',
-              ids: [userDoc.doc.document.nodes[0].id],
-              range: {
-                anchor: { id: userDoc.doc.document.nodes[0].inline[0].id, offset: { value: 0 } },
-                focus: { id: userDoc.doc.document.nodes[0].inline[0].id, offset: { value: 0 } },
-              },
-            },
-          },
-        });
+
+        assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
       });
 
       it('文字列が挿入されて共同編集者の選択範囲始点が文字数分後ろへ移動していること', () => {
