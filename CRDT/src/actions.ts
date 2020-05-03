@@ -63,7 +63,6 @@ export const actions = {
       const slctn = users[uid];
       if (slctn && slctn.range && slctn.ids[0] === node.id) {
         if (uid !== userId) {
-          // 共同編集者への処理
           if (slctn.range.anchor.id === inlineId && slctn.range.anchor.offset.value > offset) {
             slctn.range.anchor.offset.increment(chars.length);
           }
@@ -106,7 +105,6 @@ export const actions = {
         const slctn = users[uid];
         if (slctn && slctn.range && slctn.ids[0] === node.id) {
           if (uid !== userId) {
-            // 共同編集者への処理
             if (slctn.range.anchor.id === inlineId && slctn.range.anchor.offset.value > offset) {
               slctn.range.anchor.offset.decrement(1);
             }
@@ -146,7 +144,6 @@ export const actions = {
               const slctn = users[uid];
               if (slctn && slctn.range && slctn.ids[0] === node.id) {
                 if (uid !== userId) {
-                  // 共同編集者への処理
                   if (slctn.range.anchor.id === startInlineId && slctn.range.anchor.offset.value > startOffset) {
                     slctn.range.anchor.offset.decrement(size);
                   }
