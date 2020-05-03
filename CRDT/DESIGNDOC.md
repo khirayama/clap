@@ -17,6 +17,7 @@
   - factory/transform/traversalへの参照が可能。
   - 引数もしくは返り値にselectionをdocumentを利用するようなケース。
   - CRDTDocumentのchangeの中でのみ呼ばれる。
+  - selectionを元にした分のみ受け入れる。ユーザ入力やドキュメントの状態に依存する場合、usecasesで行う。
 - transform
   - node/inline/selectionのプリミティブな変換を行う。
   - factory/traversalへの参照が可能。
