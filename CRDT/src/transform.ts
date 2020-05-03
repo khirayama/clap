@@ -20,13 +20,24 @@ export const transform = {
         parentNode.nodes.push(node);
       }
     },
+    removeInline: (node: ItemNode, inline: Inline): void => {
+      if (node.inline) {
+        for (let i = 0; i < node.inline.length; i += 1) {
+          const inl = node.inline[i];
+          if (inl.id === inline.id) {
+            node.inline.splice(i, 1);
+            return;
+          }
+        }
+      }
+    },
   },
   // Transform inline itself primitively
   inline: {
-    insert: (inline: Inline, index: number, chars: string[]) => {
+    insertText: (inline: Inline, index: number, chars: string[]) => {
       inline.text.splice(index, 0, ...chars);
     },
-    delete: (inline: Inline, index: number, count: number) => {
+    deleteText: (inline: Inline, index: number, count: number) => {
       inline.text.splice(index, count);
     },
   },

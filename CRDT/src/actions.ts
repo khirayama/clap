@@ -50,7 +50,7 @@ export const actions = {
     if (inline === null) return;
 
     const offset = selection.range.anchor.offset.value;
-    transform.inline.insert(inline, offset, chars);
+    transform.inline.insertText(inline, offset, chars);
 
     const userIds = Object.keys(users);
     if (selection.range.anchor.id === inlineId && selection.range.anchor.offset.value >= offset) {
@@ -93,7 +93,7 @@ export const actions = {
       if (inline === null) return;
 
       const offset = selection.range.anchor.offset.value;
-      transform.inline.delete(inline, offset - 1, 1);
+      transform.inline.deleteText(inline, offset - 1, 1);
 
       const userIds = Object.keys(users);
       if (selection.range.anchor.id === inlineId && selection.range.anchor.offset.value >= offset) {
