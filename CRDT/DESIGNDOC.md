@@ -3,8 +3,8 @@
 - CRDTDocument
   - Documentの構造を管理する。
   - Automergeを隠蔽する役割を担う。
-  - Automerge/usecaseへの参照が可能。
-- usecase
+  - Automerge/actionsへの参照が可能。
+- actions
   - factory/transformを扱う。
   - プリミティブな操作はfactory/transformで行う。
   - factory/transform/traversalへの参照が可能
@@ -26,5 +26,5 @@
   - selectionとdocumentを引数に与える場合、1.selection, 2.documentの順で行う
 
 - 実装時の注意
-  - usecaseを実装するとき、必ずSPECへの書き起こしを行う
+  - actionsを実装するとき、必ずSPECへの書き起こしを行う
   - testcaseはSPECを元に書き起こされる
