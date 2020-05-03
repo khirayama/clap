@@ -5,10 +5,59 @@ import { transform } from './transform';
 import { traversal } from './traversal';
 import { Selection, utils as selectionUtils } from './selection';
 
+import { ItemNode } from './node';
+
 /*
  * API設計時の注意: 引数を与える場合の優先順位
  * userId > CRDTDocument > 個別の引数
  */
+function getStartAndEnd(selection: Selection, node: ItemNode) {
+  let start = null;
+  let end = null;
+
+  if (selection.range === null || node.inline === null) {
+    return { start, end };
+  }
+  const anchor = selection.range.anchor;
+  const focus = selection.range.focus;
+
+  if (anchor.id === focus.id) {
+    if (anchor.offset.value < focus.offset.value) {
+      return {
+        start: anchor,
+        end: focus,
+      };
+    } else {
+      return {
+        start: focus,
+        end: anchor,
+      };
+    }
+  }
+
+  for (let i = 0; i < node.inline.length; i += 1) {
+    const inline = node.inline[i];
+
+    if (start === null) {
+      if (inline.id === anchor.id) {
+        start = anchor;
+      } else if (inline.id === focus.id) {
+        start = focus;
+      }
+    } else {
+      if (inline.id === anchor.id) {
+        end = anchor;
+      } else if (inline.id === focus.id) {
+        end = focus;
+      }
+    }
+  }
+
+  return {
+    start,
+    end,
+  };
+}
 
 export const actions = {
   init: (userId: string): Doc => {
@@ -119,9 +168,9 @@ export const actions = {
 
       if (node === null || node.inline === null) return;
 
-      // TODO: anchorとfocusでどっちが前か判定する関数を作り、その返り値を利用する
-      const start = selection.range.anchor;
-      const end = selection.range.focus;
+      const { start, end } = getStartAndEnd(selection, node);
+
+      if (start === null || end === null) return;
 
       for (let i = 0; i < node.inline.length; i += 1) {
         const inline = node.inline[i];
@@ -137,8 +186,8 @@ export const actions = {
 
             const size = endOffset - startOffset;
             const userIds = Object.keys(users);
-            if (selection.range.focus.id === endInlineId && selection.range.focus.offset.value >= endOffset) {
-              selection.range.focus.offset.decrement(size);
+            if (end.id === endInlineId && end.offset.value >= endOffset) {
+              end.offset.decrement(size);
             }
             for (const uid of userIds) {
               const slctn = users[uid];
