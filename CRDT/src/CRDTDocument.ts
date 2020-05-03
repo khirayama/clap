@@ -1,6 +1,7 @@
 // Automerge/actions
 import * as Automerge from 'automerge';
-import { actions, Doc } from './actions';
+import { Doc } from './interfaces';
+import { actions } from './actions';
 
 export class CRDTDocument {
   public userId: string;
