@@ -12,7 +12,7 @@ import { DocumentNode } from './node';
 
 export type Doc = { document: DocumentNode; users: { [userId: string]: Selection } };
 
-export const usecase = {
+export const actions = {
   init: (userId: string): Doc => {
     const selection = factory.selection.createSelection();
     const document = factory.node.createDocumentNode();

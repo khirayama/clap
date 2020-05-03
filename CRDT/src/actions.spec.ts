@@ -1,6 +1,6 @@
 import * as assert from 'power-assert';
 
-import { usecase } from './usecase';
+import { actions } from './actions';
 import { CRDTDocument } from './CRDTDocument';
 import { utils as selectionUtils } from './selection';
 import { createSampleData, toLooseJSON } from './testutils';
@@ -30,7 +30,7 @@ describe('.insertText()', () => {
         userSelection.range.focus.offset = 5;
 
         userDoc.change((doc) => {
-          usecase.insertText(user.id, doc, ['あ', 'い', 'う', 'え', 'お']);
+          actions.insertText(user.id, doc, ['あ', 'い', 'う', 'え', 'お']);
         });
 
         assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
@@ -48,7 +48,7 @@ describe('.insertText()', () => {
         memberSelection.range.focus.offset = 7;
 
         userDoc.change((doc) => {
-          usecase.insertText(user.id, doc, ['1', '2', '3']);
+          actions.insertText(user.id, doc, ['1', '2', '3']);
         });
         memberDoc.merge(userDoc);
         memberDoc.change((doc) => {
@@ -65,7 +65,7 @@ describe('.insertText()', () => {
             range.anchor.offset.increment(selectionUtils.getOffset(range.anchor.offset.value, 1));
             range.focus.offset.increment(selectionUtils.getOffset(range.focus.offset.value, 1));
           }
-          usecase.insertText(user.id, doc, ['あ', 'い', 'う', 'え', 'お']);
+          actions.insertText(user.id, doc, ['あ', 'い', 'う', 'え', 'お']);
         });
 
         assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
@@ -83,7 +83,7 @@ describe('.insertText()', () => {
         memberSelection.range.focus.offset = 7;
 
         userDoc.change((doc) => {
-          usecase.insertText(user.id, doc, ['1', '2', '3']);
+          actions.insertText(user.id, doc, ['1', '2', '3']);
         });
         memberDoc.merge(userDoc);
         memberDoc.change((doc) => {
@@ -100,7 +100,7 @@ describe('.insertText()', () => {
             range.anchor.offset.increment(selectionUtils.getOffset(range.anchor.offset.value, 1));
             range.focus.offset.increment(selectionUtils.getOffset(range.focus.offset.value, 1));
           }
-          usecase.insertText(user.id, doc, ['あ', 'い', 'う', 'え', 'お']);
+          actions.insertText(user.id, doc, ['あ', 'い', 'う', 'え', 'お']);
         });
 
         assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
