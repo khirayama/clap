@@ -3,13 +3,14 @@
 - CRDTDocument
   - Documentの構造を管理する。
   - Automergeを隠蔽する役割を担う。
-  - Automerge/actionsへの参照が可能。
+  - Automerge/usecases/actionsへの参照が可能。
 - factory
   - node/inline/selectionのプリミティブな生成を行う。
   - Automerge/traversalへの参照が可能。
 - usecases
   - actions/factoryの組み合わせや条件分岐を管理する。
   - ユーザの操作を想定。
+  - actions/traversalへの参照が可能。
 - actions
   - factory/transformを扱う。
   - プリミティブな操作はfactory/transformで行う。
