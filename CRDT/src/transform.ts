@@ -29,19 +29,7 @@ export const transform = {
   },
 
   inline: {
-    insertText: (inline: Inline, index: number, chars: string[]) => {
-      inline.text.splice(index, 0, ...chars);
-    },
-    deleteText: (inline: Inline, index: number, count: number) => {
-      inline.text.splice(index, count);
-    },
-    remove: (document: DocumentNode, inline: Inline): void => {
-      if (inline.parent === null) return;
-
-      const node = traversal.node.find(document, inline.parent);
-
-      if (node === null) return;
-
+    remove: (node: ItemNode, inline: Inline): void => {
       if (node.inline) {
         for (let i = 0; i < node.inline.length; i += 1) {
           const inl = node.inline[i];
@@ -51,6 +39,12 @@ export const transform = {
           }
         }
       }
+    },
+    insertText: (inline: Inline, index: number, chars: string[]) => {
+      inline.text.splice(index, 0, ...chars);
+    },
+    deleteText: (inline: Inline, index: number, count: number) => {
+      inline.text.splice(index, count);
     },
   },
 };

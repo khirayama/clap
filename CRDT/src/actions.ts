@@ -228,7 +228,7 @@ export const actions = {
             }
           } else if (isStarted) {
             removedIds.push(inline.id);
-            transform.inline.remove(document, inline);
+            transform.inline.remove(node, inline);
             i -= 1;
           }
         }
