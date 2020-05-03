@@ -3,7 +3,7 @@ import { Doc } from './interfaces';
 import { factory } from './factory';
 import { transform } from './transform';
 import { traversal } from './traversal';
-import { Selection, utils as selectionUtils } from './selection';
+import { Selection, utils as sutils } from './selection';
 
 import { ItemNode } from './node';
 
@@ -87,7 +87,7 @@ export const actions = {
 
     if (selection.range === null) return;
 
-    if (!selectionUtils.isCollasped(selection)) return;
+    if (!sutils.isCollasped(selection)) return;
 
     const node = traversal.node.findCurrentNode(selection, document);
 
@@ -130,7 +130,7 @@ export const actions = {
 
     if (selection.range === null) return;
 
-    if (selectionUtils.isCollasped(selection)) {
+    if (sutils.isCollasped(selection)) {
       const node = traversal.node.findCurrentNode(selection, document);
 
       if (node === null || node.inline === null) return;
