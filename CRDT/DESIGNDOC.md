@@ -4,18 +4,22 @@
   - Documentの構造を管理する。
   - Automergeを隠蔽する役割を担う。
   - Automerge/actionsへの参照が可能。
+- factory
+  - node/inline/selectionのプリミティブな生成を行う。
+  - Automerge/traversalへの参照が可能。
+- usecases
+  - actions/factoryの組み合わせや条件分岐を管理する。
+  - ユーザの操作を想定。
 - actions
   - factory/transformを扱う。
   - プリミティブな操作はfactory/transformで行う。
-  - factory/transform/traversalへの参照が可能
+  - factory/transform/traversalへの参照が可能。
   - 引数もしくは返り値にselectionをdocumentを利用するようなケース。
   - CRDTDocumentのchangeの中でのみ呼ばれる。
-- factory
-  - node/inline/selectionのプリミティブな生成を行う。
-  - Automerge/traversalへの参照が可能
 - transform
   - node/inline/selectionのプリミティブな変換を行う。
-  - factory/traversalへの参照が可能
+  - factory/traversalへの参照が可能。
+  - selectionを元にした操作は行わない。その場合、actionsで行う。
 - traversal
   - node/inline/selectionの走査を行う。
 - selection
@@ -23,8 +27,8 @@
 - inline
 
 - API設計の方針
-  - selectionとdocumentを引数に与える場合、1.selection, 2.documentの順で行う
+  - selectionとdocumentを引数に与える場合、1.selection, 2.documentの順で行う。
 
 - 実装時の注意
-  - actionsを実装するとき、必ずSPECへの書き起こしを行う
-  - testcaseはSPECを元に書き起こされる
+  - actionsを実装するとき、必ずSPECへの書き起こしを行う。
+  - testcaseはSPECを元に書き起こされる。
