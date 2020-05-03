@@ -26,5 +26,8 @@ export const transform = {
     insert: (inline: Inline, index: number, chars: string[]) => {
       inline.text.splice(index, 0, ...chars);
     },
+    delete: (inline: Inline, index: number, count: number) => {
+      inline.text.splice(index, count);
+    },
   },
 };
