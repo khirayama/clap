@@ -172,51 +172,63 @@ export const actions = {
 
       if (start === null || end === null) return;
 
-      for (let i = 0; i < node.inline.length; i += 1) {
-        const inline = node.inline[i];
-        let isStarted = false;
-        if (start.id === end.id) {
-          const startInline = traversal.inline.find(node, start.id);
-          if (startInline) {
-            const startInlineId = start.id;
-            const startOffset = start.offset.value;
-            const endInlineId = end.id;
-            const endOffset = end.offset.value;
-            transform.inline.deleteText(inline, startOffset, endOffset - 1);
+      if (start.id === end.id) {
+        const startInline = traversal.inline.find(node, start.id);
 
-            const size = endOffset - startOffset;
-            const userIds = Object.keys(users);
-            if (end.id === endInlineId && end.offset.value >= endOffset) {
-              end.offset.decrement(size);
-            }
-            for (const uid of userIds) {
-              const slctn = users[uid];
-              if (slctn && slctn.range && slctn.ids[0] === node.id) {
-                if (uid !== userId) {
-                  if (slctn.range.anchor.id === startInlineId && slctn.range.anchor.offset.value > startOffset) {
-                    slctn.range.anchor.offset.decrement(size);
-                  }
-                  if (slctn.range.focus.id === endInlineId && slctn.range.focus.offset.value > endOffset) {
-                    slctn.range.focus.offset.decrement(size);
-                  }
+        if (startInline === null) return;
+
+        for (let i = 0; i < node.inline.length; i += 1) {
+          const inline = node.inline[i];
+
+          const startInlineId = start.id;
+          const startOffset = start.offset.value;
+          const endInlineId = end.id;
+          const endOffset = end.offset.value;
+          transform.inline.deleteText(inline, startOffset, endOffset - 1);
+
+          const size = endOffset - startOffset;
+          const userIds = Object.keys(users);
+          if (end.id === endInlineId && end.offset.value >= endOffset) {
+            end.offset.decrement(size);
+          }
+          for (const uid of userIds) {
+            const slctn = users[uid];
+            if (slctn && slctn.range && slctn.ids[0] === node.id) {
+              if (uid !== userId) {
+                if (slctn.range.anchor.id === startInlineId && slctn.range.anchor.offset.value > startOffset) {
+                  slctn.range.anchor.offset.decrement(size);
+                }
+                if (slctn.range.focus.id === endInlineId && slctn.range.focus.offset.value > endOffset) {
+                  slctn.range.focus.offset.decrement(size);
                 }
               }
             }
           }
-        } else if (inline.id === start.id) {
-          isStarted = true;
-          const startInline = traversal.inline.find(node, start.id);
-          if (startInline) {
-            transform.inline.deleteText(inline, start.offset.value, startInline.text.length - 1);
+        }
+      } else {
+        let isStarted = false;
+
+        for (let i = 0; i < node.inline.length; i += 1) {
+          const inline = node.inline[i];
+
+          if (inline.id === start.id) {
+            isStarted = true;
+            const startInline = traversal.inline.find(node, start.id);
+            if (startInline) {
+              transform.inline.deleteText(inline, start.offset.value, startInline.text.length - start.offset.value);
+            }
+          } else if (inline.id === end.id) {
+            isStarted = false;
+            const endInline = traversal.inline.find(node, end.id);
+            if (endInline) {
+              transform.inline.deleteText(inline, 0, end.offset.value);
+              end.id = start.id;
+              end.offset.increment(sutils.getOffset(end.offset.value, start.offset.value));
+            }
+          } else if (isStarted) {
+            transform.node.removeInline(node, inline);
+            i -= 1;
           }
-        } else if (inline.id === end.id) {
-          isStarted = false;
-          const endInline = traversal.inline.find(node, end.id);
-          if (endInline) {
-            transform.inline.deleteText(inline, 0, end.offset.value);
-          }
-        } else if (isStarted) {
-          transform.node.removeInline(node, inline);
         }
       }
     }
