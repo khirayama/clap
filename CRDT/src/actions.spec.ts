@@ -555,7 +555,7 @@ describe('.deleteText()', () => {
           assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
         });
 
-        it.skip('選択範囲の文字が削除されて、共同編集者選択範囲始点が編集者選択範囲を含まれていない場合に共同編集者選択範囲始点が編集者選択範囲始点に移動していること', () => {
+        it('選択範囲の文字が削除されて、共同編集者選択範囲始点が編集者選択範囲を含まれていない場合に共同編集者選択範囲始点が編集者選択範囲始点に移動していること', () => {
           userDoc.change((doc) => {
             const document = doc.document;
             const selection = doc.users[user.id];
@@ -613,7 +613,7 @@ describe('.deleteText()', () => {
           assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
         });
 
-        it.skip('選択範囲の文字が削除されて、共同編集者選択範囲終点が編集者選択範囲を含まれている場合に共同編集者選択範囲始点が編集者選択範囲始点に移動していること', () => {
+        it('選択範囲の文字が削除されて、共同編集者選択範囲終点が編集者選択範囲を含まれている場合に共同編集者選択範囲始点が編集者選択範囲始点に移動していること', () => {
           userDoc.change((doc) => {
             const document = doc.document;
             const selection = doc.users[user.id];
@@ -671,7 +671,7 @@ describe('.deleteText()', () => {
           assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
         });
 
-        it.skip('選択範囲の文字が削除されて、共同編集者選択範囲が逆位置でも共同編集者選択範囲が正しく移動すること', () => {
+        it('選択範囲の文字が削除されて、共同編集者選択範囲が逆位置でも共同編集者選択範囲が正しく移動すること', () => {
           userDoc.change((doc) => {
             const document = doc.document;
             const selection = doc.users[user.id];
