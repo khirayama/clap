@@ -207,6 +207,7 @@ export const actions = {
         }
       } else {
         let isStarted = false;
+        const removedIds: string[] = [];
 
         for (let i = 0; i < node.inline.length; i += 1) {
           const inline = node.inline[i];
@@ -222,12 +223,51 @@ export const actions = {
             const endInline = traversal.inline.find(node, end.id);
             if (endInline) {
               transform.inline.deleteText(inline, 0, end.offset.value);
-              end.id = start.id;
-              end.offset.increment(sutils.getOffset(end.offset.value, start.offset.value));
             }
           } else if (isStarted) {
+            removedIds.push(inline.id);
             transform.node.removeInline(node, inline);
             i -= 1;
+          }
+        }
+
+        // Selections
+        const startId = start.id;
+        const startOffset = start.offset.value;
+        const endId = end.id;
+        const endOffset = end.offset.value;
+
+        end.id = start.id;
+        end.offset.increment(sutils.getOffset(endOffset, startOffset));
+
+        const userIds = Object.keys(users);
+        for (const uid of userIds) {
+          if (uid !== userId) {
+            const slctn = users[uid];
+
+            if (slctn && slctn.range && slctn.ids[0] === node.id) {
+              const tmp = getStartAndEnd(slctn, node);
+              const collaboratorStart = tmp.start;
+              const collaboratorEnd = tmp.end;
+
+              if (collaboratorStart && collaboratorEnd) {
+                // For start
+                if (
+                  (collaboratorStart.id === startId && collaboratorStart.offset.value > startOffset) ||
+                  removedIds.includes(collaboratorStart.id)
+                ) {
+                  collaboratorStart.id = startId;
+                  collaboratorStart.offset.increment(sutils.getOffset(collaboratorStart.offset.value, startOffset));
+                }
+                // For end
+                if (removedIds.includes(collaboratorEnd.id)) {
+                  collaboratorEnd.id = startId;
+                  collaboratorEnd.offset.increment(sutils.getOffset(collaboratorEnd.offset.value, startOffset));
+                } else if (collaboratorEnd.id === endId && collaboratorEnd.offset.value > endOffset) {
+                  collaboratorEnd.offset.decrement(endOffset);
+                }
+              }
+            }
           }
         }
       }
