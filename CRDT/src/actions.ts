@@ -138,7 +138,6 @@ export const actions = {
             transform.inline.deleteText(inline, startOffset, endOffset - 1);
 
             const size = endOffset - startOffset;
-            console.log(size);
             const userIds = Object.keys(users);
             if (selection.range.focus.id === endInlineId && selection.range.focus.offset.value >= endOffset) {
               selection.range.focus.offset.decrement(size);
