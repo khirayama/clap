@@ -1,10 +1,11 @@
 import * as assert from 'power-assert';
 
 import { actions } from './actions';
+import { transform } from './transform';
+import { factory } from './factory';
 import { CRDTDocument } from './CRDTDocument';
 import { utils as sutils } from './selection';
 import { createSampleData, toLooseJSON } from './testutils';
-import { factory } from './factory';
 
 let user: { id: string };
 let member: { id: string };
@@ -811,6 +812,65 @@ describe('.deleteText()', () => {
 
           assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
         });
+      });
+    });
+  });
+
+  describe('項目を一つ選択している状態で', () => {
+    describe('削除操作を行った時', () => {
+      it('単数の対象項目が削除されていること', () => {
+        userDoc.change((doc) => {
+          const document = doc.document;
+          const selection = doc.users[user.id];
+          const paragraph1 = factory.node.createParagraphNode();
+          const paragraph2 = factory.node.createParagraphNode();
+          const paragraph2_1 = factory.node.createParagraphNode();
+          transform.node.append(paragraph2, paragraph2_1);
+          transform.node.append(document, paragraph1);
+          transform.node.append(document, paragraph2);
+          selection.range = null;
+        });
+
+        const expectedDoc = toLooseJSON(userDoc);
+        const userSelection = expectedDoc.doc.users[user.id];
+        expectedDoc.doc.document.nodes.splice(0, 1);
+        expectedDoc.doc.document.nodes[0].prev = null;
+        userSelection.ids = [expectedDoc.doc.document.nodes[0].id];
+        userSelection.range = null;
+
+        userDoc.change((doc) => {
+          actions.deleteText(user.id, doc);
+        });
+
+        assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
+      });
+
+      it.skip('複数の対象項目が削除されていること', () => {
+        userDoc.change((doc) => {
+          const document = doc.document;
+          const selection = doc.users[user.id];
+          const paragraph1 = factory.node.createParagraphNode();
+          const paragraph2 = factory.node.createParagraphNode();
+          const paragraph2_1 = factory.node.createParagraphNode();
+          transform.node.append(paragraph2, paragraph2_1);
+          transform.node.append(document, paragraph1);
+          transform.node.append(document, paragraph2);
+          selection.ids = [paragraph1.id, paragraph2.id];
+          selection.range = null;
+        });
+
+        const expectedDoc = toLooseJSON(userDoc);
+        const userSelection = expectedDoc.doc.users[user.id];
+        expectedDoc.doc.document.nodes.splice(1, 2);
+        expectedDoc.doc.document.nodes[0].next = null;
+        userSelection.ids = [expectedDoc.doc.document.nodes[0].id];
+        userSelection.range = null;
+
+        userDoc.change((doc) => {
+          actions.deleteText(user.id, doc);
+        });
+
+        assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
       });
     });
   });

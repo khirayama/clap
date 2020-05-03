@@ -273,6 +273,23 @@ export const actions = {
           }
         }
       }
+    } else if (selection.range === null && selection.ids.length) {
+      const nodes = traversal.node.findCurrentNodes(selection, document);
+
+      for (const node of nodes) {
+        if (node !== null && node.object === 'item') {
+          transform.node.remove(document, node);
+          if (node.next) {
+            selection.ids = [node.next];
+          } else if (node.prev) {
+            selection.ids = [node.prev];
+          } else if (node.parent) {
+            selection.ids = [node.parent];
+          } else {
+            selection.ids = [];
+          }
+        }
+      }
     }
   },
 };
