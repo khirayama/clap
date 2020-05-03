@@ -74,4 +74,18 @@ export const usecase = {
       }
     }
   },
+
+  deleteText: (userId: string, doc: Doc, chars: string[]): void => {
+    let TODO = false;
+
+    if (/* TODO: 編集者選択範囲始点がノードのインライン先頭の先頭だった場合 */ TODO) {
+      // noop
+    } else {
+    }
+
+    // post process
+    if (/* TODO: インラインのテキストが空になった場合*/ TODO) {
+      // noop
+    }
+  },
 };
