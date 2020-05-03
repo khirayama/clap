@@ -4,6 +4,7 @@ export type InlineText = {
   id: string;
   type: 'text';
   text: string[];
+  parent: string | null;
   marks: Decoration[];
 };
 

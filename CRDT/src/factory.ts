@@ -71,6 +71,7 @@ export const factory = {
       return {
         id: factory.uuid(),
         type: 'text',
+        parent: null,
         text: [],
         marks: [],
       };

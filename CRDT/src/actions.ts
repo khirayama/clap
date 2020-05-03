@@ -66,6 +66,7 @@ export const actions = {
     const paragraph = factory.node.createParagraphNode();
     const inlineText = factory.inline.createInlineText();
 
+    inlineText.parent = paragraph.id;
     paragraph.inline.push(inlineText);
     transform.node.append(document, paragraph);
 
@@ -227,7 +228,7 @@ export const actions = {
             }
           } else if (isStarted) {
             removedIds.push(inline.id);
-            transform.node.removeInline(node, inline);
+            transform.inline.remove(document, inline);
             i -= 1;
           }
         }

@@ -535,8 +535,10 @@ describe('.deleteText()', () => {
             const inline1 = firstNode.inline[0];
             inline1.text.push('A', 'B', 'C');
             const inline2 = factory.inline.createInlineText();
+            inline2.parent = firstNode.id;
             inline2.text.push('D', 'E', 'F');
             const inline3 = factory.inline.createInlineText();
+            inline3.parent = firstNode.id;
             inline3.text.push('G', 'H', 'I');
 
             firstNode.inline.push(inline2);
@@ -582,8 +584,10 @@ describe('.deleteText()', () => {
             const inline1 = firstNode.inline[0];
             inline1.text.push('A', 'B', 'C');
             const inline2 = factory.inline.createInlineText();
+            inline2.parent = firstNode.id;
             inline2.text.push('D', 'E', 'F');
             const inline3 = factory.inline.createInlineText();
+            inline3.parent = firstNode.id;
             inline3.text.push('G', 'H', 'I');
 
             firstNode.inline.push(inline2);
@@ -640,8 +644,10 @@ describe('.deleteText()', () => {
             const inline1 = firstNode.inline[0];
             inline1.text.push('A', 'B', 'C');
             const inline2 = factory.inline.createInlineText();
+            inline2.parent = firstNode.id;
             inline2.text.push('D', 'E', 'F');
             const inline3 = factory.inline.createInlineText();
+            inline3.parent = firstNode.id;
             inline3.text.push('G', 'H', 'I');
 
             firstNode.inline.push(inline2);
@@ -698,8 +704,10 @@ describe('.deleteText()', () => {
             const inline1 = firstNode.inline[0];
             inline1.text.push('A', 'B', 'C');
             const inline2 = factory.inline.createInlineText();
+            inline2.parent = firstNode.id;
             inline2.text.push('D', 'E', 'F');
             const inline3 = factory.inline.createInlineText();
+            inline3.parent = firstNode.id;
             inline3.text.push('G', 'H', 'I');
 
             firstNode.inline.push(inline2);
@@ -756,8 +764,10 @@ describe('.deleteText()', () => {
             const inline1 = firstNode.inline[0];
             inline1.text.push('A', 'B', 'C');
             const inline2 = factory.inline.createInlineText();
+            inline2.parent = firstNode.id;
             inline2.text.push('D', 'E', 'F');
             const inline3 = factory.inline.createInlineText();
+            inline3.parent = firstNode.id;
             inline3.text.push('G', 'H', 'I');
 
             firstNode.inline.push(inline2);
