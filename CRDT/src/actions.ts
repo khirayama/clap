@@ -87,39 +87,42 @@ export const actions = {
 
     if (selection.range === null) return;
 
-    if (!sutils.isCollasped(selection)) return;
+    if (sutils.isCollasped(selection)) {
+      const node = traversal.node.findCurrentNode(selection, document);
 
-    const node = traversal.node.findCurrentNode(selection, document);
+      if (node === null || node.inline === null) return;
 
-    if (node === null || node.inline === null) return;
+      const inlineId = selection.range.anchor.id;
+      const inline = traversal.inline.find(node, inlineId);
 
-    const inlineId = selection.range.anchor.id;
-    const inline = traversal.inline.find(node, inlineId);
+      if (inline === null) return;
 
-    if (inline === null) return;
+      const offset = selection.range.anchor.offset.value;
+      transform.inline.insertText(inline, offset, chars);
 
-    const offset = selection.range.anchor.offset.value;
-    transform.inline.insertText(inline, offset, chars);
-
-    const userIds = Object.keys(users);
-    if (selection.range.anchor.id === inlineId && selection.range.anchor.offset.value >= offset) {
-      selection.range.anchor.offset.increment(chars.length);
-    }
-    if (selection.range.focus.id === selection.range.focus.id && selection.range.focus.offset.value >= offset) {
-      selection.range.focus.offset.increment(chars.length);
-    }
-    for (const uid of userIds) {
-      const slctn = users[uid];
-      if (slctn && slctn.range && slctn.ids[0] === node.id) {
-        if (uid !== userId) {
-          if (slctn.range.anchor.id === inlineId && slctn.range.anchor.offset.value > offset) {
-            slctn.range.anchor.offset.increment(chars.length);
-          }
-          if (slctn.range.focus.id === inlineId && slctn.range.focus.offset.value > offset) {
-            slctn.range.focus.offset.increment(chars.length);
+      const userIds = Object.keys(users);
+      if (selection.range.anchor.id === inlineId && selection.range.anchor.offset.value >= offset) {
+        selection.range.anchor.offset.increment(chars.length);
+      }
+      if (selection.range.focus.id === selection.range.focus.id && selection.range.focus.offset.value >= offset) {
+        selection.range.focus.offset.increment(chars.length);
+      }
+      for (const uid of userIds) {
+        const slctn = users[uid];
+        if (slctn && slctn.range && slctn.ids[0] === node.id) {
+          if (uid !== userId) {
+            if (slctn.range.anchor.id === inlineId && slctn.range.anchor.offset.value > offset) {
+              slctn.range.anchor.offset.increment(chars.length);
+            }
+            if (slctn.range.focus.id === inlineId && slctn.range.focus.offset.value > offset) {
+              slctn.range.focus.offset.increment(chars.length);
+            }
           }
         }
       }
+    } else {
+      actions.deleteText(userId, doc);
+      actions.insertText(userId, doc, chars);
     }
   },
 
