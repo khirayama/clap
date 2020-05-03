@@ -14,17 +14,43 @@ import { Inline } from './inline';
 export const transform = {
   node: {
     append: (parentNode: DocumentNode | ItemNode, node: ItemNode): void => {
-      if (parentNode.nodes) {
-        const prevNode = parentNode.nodes[parentNode.nodes.length - 1];
+      if (parentNode.nodes === null) return;
 
-        node.document = parentNode.document;
-        node.parent = parentNode.id;
-        if (prevNode) {
-          prevNode.next = node.id;
-          node.prev = prevNode ? prevNode.id : null;
-        }
-        parentNode.nodes.push(node);
+      const prevNode = parentNode.nodes[parentNode.nodes.length - 1];
+
+      node.document = parentNode.document;
+      node.parent = parentNode.id;
+      if (prevNode) {
+        prevNode.next = node.id;
+        node.prev = prevNode ? prevNode.id : null;
       }
+      parentNode.nodes.push(node);
+    },
+    remove: (document: DocumentNode, node: ItemNode): void => {
+      if (node.parent === null) return;
+
+      const parentNode = traversal.node.find(document, node.parent);
+
+      if (parentNode === null) return;
+
+      let index = 0;
+
+      for (let i = 0; i < parentNode.nodes.length; i += 1) {
+        const nd = parentNode.nodes[i];
+        if (nd.id === node.id) {
+          index = i;
+          const prevNode = parentNode.nodes[i - 1] || null;
+          const nextNode = parentNode.nodes[i + 1] || null;
+
+          if (prevNode !== null) {
+            prevNode.next = nextNode !== null ? nextNode.id : null;
+          }
+          if (nextNode !== null) {
+            nextNode.prev = prevNode !== null ? prevNode.id : null;
+          }
+        }
+      }
+      parentNode.nodes.splice(index, 1);
     },
   },
 
