@@ -1,16 +1,14 @@
 // factory, transform, traveral
+import { Doc } from './interfaces';
 import { factory } from './factory';
 import { transform } from './transform';
 import { traversal } from './traversal';
 import { Selection, utils as selectionUtils } from './selection';
-import { DocumentNode } from './node';
 
 /*
  * API設計時の注意: 引数を与える場合の優先順位
  * userId > CRDTDocument > 個別の引数
  */
-
-export type Doc = { document: DocumentNode; users: { [userId: string]: Selection } };
 
 export const actions = {
   init: (userId: string): Doc => {
