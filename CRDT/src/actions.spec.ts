@@ -4,6 +4,7 @@ import { actions } from './actions';
 import { CRDTDocument } from './CRDTDocument';
 import { utils as sutils } from './selection';
 import { createSampleData, toLooseJSON } from './testutils';
+import { factory } from './factory';
 
 let user: { id: string };
 let member: { id: string };
@@ -451,7 +452,48 @@ describe('.deleteText()', () => {
       });
 
       it('インラインをまたぐ選択範囲の文字が削除されて、共同編集者選択範囲が始点と終点が逆位置でも文字数分前に移動していること', () => {
-        // TODO
+        userDoc.change((doc) => {
+          const document = doc.document;
+          const selection = doc.users[user.id];
+          const range = selection.range;
+          const firstNode = document.nodes[0];
+
+          const inline1 = firstNode.inline[0];
+          inline1.text.push('A', 'B', 'C');
+          const inline2 = factory.inline.createInlineText();
+          inline2.text.push('D', 'E', 'F');
+          const inline3 = factory.inline.createInlineText();
+          inline3.text.push('G', 'H', 'I');
+
+          firstNode.inline.push(inline2);
+          firstNode.inline.push(inline3);
+
+          if (range) {
+            range.anchor.id = inline1.id;
+            range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 2));
+            range.focus.id = inline3.id;
+            range.focus.offset.increment(sutils.getOffset(range.focus.offset.value, 1));
+          }
+        });
+
+        const expectedDoc = toLooseJSON(userDoc);
+        const node = expectedDoc.doc.document.nodes[0];
+        const userSelection = expectedDoc.doc.users[user.id];
+        node.inline.splice(1, 1);
+        const inline1 = expectedDoc.doc.document.nodes[0].inline[0];
+        const inline2 = expectedDoc.doc.document.nodes[0].inline[1];
+        inline1.text = ['A', 'B'];
+        inline2.text = ['H', 'I'];
+        userSelection.range.anchor.id = inline1.id;
+        userSelection.range.anchor.offset = 2;
+        userSelection.range.focus.id = inline1.id;
+        userSelection.range.focus.offset = 2;
+
+        userDoc.change((doc) => {
+          actions.deleteText(user.id, doc);
+        });
+
+        assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
       });
     });
   });
