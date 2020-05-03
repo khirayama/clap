@@ -2,11 +2,16 @@
 import { DocumentNode, ItemNode } from './node';
 import { Inline } from './inline';
 
+/*
+ * append: 親要素と追加したい要素を与え、親の子要素の最後に追加する。 https://developer.mozilla.org/ja/docs/Web/API/ParentNode/append
+ * prepend: 親要素と追加したい要素を与え、親の子要素の先頭に追加する。 https://developer.mozilla.org/ja/docs/Web/API/ParentNode/prepend
+ * before: 兄要素と追加したい要素を与え、兄要素の前に追加する。 https://developer.mozilla.org/ja/docs/Web/API/ChildNode/before
+ * after: 兄要素と追加したい要素を与え、兄要素の後ろに追加する。 https://developer.mozilla.org/ja/docs/Web/API/ChildNode/after
+ * remove: 削除したい要素自身を与え、自身を削除する。 https://developer.mozilla.org/ja/docs/Web/API/ChildNode/remove
+ */
+
 export const transform = {
-  // Transform node itself primitively
   node: {
-    // after, before, remove
-    // append: Add node to the last
     append: (parentNode: DocumentNode | ItemNode, node: ItemNode): void => {
       if (parentNode.nodes) {
         const prevNode = parentNode.nodes[parentNode.nodes.length - 1];
@@ -20,6 +25,7 @@ export const transform = {
         parentNode.nodes.push(node);
       }
     },
+    // TODO: transform.inline.removeへ変更
     removeInline: (node: ItemNode, inline: Inline): void => {
       if (node.inline) {
         for (let i = 0; i < node.inline.length; i += 1) {
@@ -32,7 +38,7 @@ export const transform = {
       }
     },
   },
-  // Transform inline itself primitively
+
   inline: {
     insertText: (inline: Inline, index: number, chars: string[]) => {
       inline.text.splice(index, 0, ...chars);
