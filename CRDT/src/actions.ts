@@ -36,7 +36,9 @@ export const actions = {
     const document = doc.document;
     const selection: Selection = users[userId];
 
-    if (selection.range === null || !selectionUtils.isCollasped(selection)) return;
+    if (selection.range === null) return;
+
+    if (!selectionUtils.isCollasped(selection)) return;
 
     const node = traversal.node.findCurrentNode(selection, document);
 
@@ -78,7 +80,9 @@ export const actions = {
     const document = doc.document;
     const selection: Selection = users[userId];
 
-    if (selection.range === null || !selectionUtils.isCollasped(selection)) return;
+    if (selection.range === null) return;
+
+    if (!selectionUtils.isCollasped(selection)) return;
 
     const node = traversal.node.findCurrentNode(selection, document);
 
