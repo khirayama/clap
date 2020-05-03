@@ -272,9 +272,152 @@ describe('.deleteText()', () => {
       });
     });
   });
+
   describe('選択範囲が開いている状態で', () => {
     describe('文字削除を行ったとき', () => {
-      it('選択範囲の文字が削除されて、選択範囲始点と終点が文字数分前に移動していること', () => {});
+      it('選択範囲の文字が削除されて、選択範囲始点と終点が文字数分前に移動していること', () => {
+        const expectedDoc = toLooseJSON(userDoc);
+        const inlineText = expectedDoc.doc.document.nodes[0].inline[0];
+        const userSelection = expectedDoc.doc.users[user.id];
+        const memberSelection = expectedDoc.doc.users[member.id];
+        inlineText.text = ['あ', 'え', 'お'];
+        userSelection.range.anchor.offset = 1;
+        userSelection.range.focus.offset = 1;
+        memberSelection.range.anchor.offset = 2;
+        memberSelection.range.focus.offset = 2;
+
+        userDoc.change((doc) => {
+          actions.insertText(user.id, doc, ['あ', 'い', 'う', 'え', 'お']);
+        });
+        memberDoc.merge(userDoc);
+        memberDoc.change((doc) => {
+          const range = doc.users[member.id].range;
+          if (range !== null) {
+            range.anchor.offset.increment(selectionUtils.getOffset(range.anchor.offset.value, 4));
+            range.focus.offset.increment(selectionUtils.getOffset(range.focus.offset.value, 4));
+          }
+        });
+        userDoc.merge(memberDoc);
+        userDoc.change((doc) => {
+          const range = doc.users[user.id].range;
+          if (range !== null) {
+            range.anchor.offset.increment(selectionUtils.getOffset(range.anchor.offset.value, 1));
+            range.focus.offset.increment(selectionUtils.getOffset(range.focus.offset.value, 3));
+          }
+          actions.deleteText(user.id, doc);
+        });
+
+        assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
+      });
+
+      it('選択範囲の文字が削除されて、共同編集者選択範囲位置が文字数分前に移動していること', () => {
+        const expectedDoc = toLooseJSON(userDoc);
+        const inlineText = expectedDoc.doc.document.nodes[0].inline[0];
+        const userSelection = expectedDoc.doc.users[user.id];
+        const memberSelection = expectedDoc.doc.users[member.id];
+        inlineText.text = ['あ', 'え', 'お'];
+        userSelection.range.anchor.offset = 1;
+        userSelection.range.focus.offset = 1;
+        memberSelection.range.anchor.offset = 2;
+        memberSelection.range.focus.offset = 2;
+
+        userDoc.change((doc) => {
+          actions.insertText(user.id, doc, ['あ', 'い', 'う', 'え', 'お']);
+        });
+        memberDoc.merge(userDoc);
+        memberDoc.change((doc) => {
+          const range = doc.users[member.id].range;
+          if (range !== null) {
+            range.anchor.offset.increment(selectionUtils.getOffset(range.anchor.offset.value, 4));
+            range.focus.offset.increment(selectionUtils.getOffset(range.focus.offset.value, 4));
+          }
+        });
+        userDoc.merge(memberDoc);
+        userDoc.change((doc) => {
+          const range = doc.users[user.id].range;
+          if (range !== null) {
+            range.anchor.offset.increment(selectionUtils.getOffset(range.anchor.offset.value, 1));
+            range.focus.offset.increment(selectionUtils.getOffset(range.focus.offset.value, 3));
+          }
+          actions.deleteText(user.id, doc);
+        });
+
+        assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
+      });
+
+      it('選択範囲の文字が削除されて、共同編集者選択範囲終点が文字数分前に移動していること', () => {
+        const expectedDoc = toLooseJSON(userDoc);
+        const inlineText = expectedDoc.doc.document.nodes[0].inline[0];
+        const userSelection = expectedDoc.doc.users[user.id];
+        const memberSelection = expectedDoc.doc.users[member.id];
+        inlineText.text = ['あ', 'え', 'お'];
+        userSelection.range.anchor.offset = 1;
+        userSelection.range.focus.offset = 1;
+        memberSelection.range.anchor.offset = 0;
+        memberSelection.range.focus.offset = 2;
+
+        userDoc.change((doc) => {
+          actions.insertText(user.id, doc, ['あ', 'い', 'う', 'え', 'お']);
+        });
+        memberDoc.merge(userDoc);
+        memberDoc.change((doc) => {
+          const range = doc.users[member.id].range;
+          if (range !== null) {
+            range.anchor.offset.increment(selectionUtils.getOffset(range.anchor.offset.value, 0));
+            range.focus.offset.increment(selectionUtils.getOffset(range.focus.offset.value, 4));
+          }
+        });
+        userDoc.merge(memberDoc);
+        userDoc.change((doc) => {
+          const range = doc.users[user.id].range;
+          if (range !== null) {
+            range.anchor.offset.increment(selectionUtils.getOffset(range.anchor.offset.value, 1));
+            range.focus.offset.increment(selectionUtils.getOffset(range.focus.offset.value, 3));
+          }
+          actions.deleteText(user.id, doc);
+        });
+
+        assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
+      });
+
+      it('選択範囲の文字が削除されて、共同編集者選択範囲が始点と終点が逆位置でも文字数分前に移動していること', () => {
+        const expectedDoc = toLooseJSON(userDoc);
+        const inlineText = expectedDoc.doc.document.nodes[0].inline[0];
+        const userSelection = expectedDoc.doc.users[user.id];
+        const memberSelection = expectedDoc.doc.users[member.id];
+        inlineText.text = ['あ', 'え', 'お'];
+        userSelection.range.anchor.offset = 1;
+        userSelection.range.focus.offset = 1;
+        memberSelection.range.anchor.offset = 2;
+        memberSelection.range.focus.offset = 0;
+
+        userDoc.change((doc) => {
+          actions.insertText(user.id, doc, ['あ', 'い', 'う', 'え', 'お']);
+        });
+        memberDoc.merge(userDoc);
+        memberDoc.change((doc) => {
+          const range = doc.users[member.id].range;
+          if (range !== null) {
+            range.anchor.offset.increment(selectionUtils.getOffset(range.anchor.offset.value, 4));
+            range.focus.offset.increment(selectionUtils.getOffset(range.focus.offset.value, 0));
+          }
+        });
+        userDoc.merge(memberDoc);
+        userDoc.change((doc) => {
+          const range = doc.users[user.id].range;
+          if (range !== null) {
+            range.anchor.offset.increment(selectionUtils.getOffset(range.anchor.offset.value, 1));
+            range.focus.offset.increment(selectionUtils.getOffset(range.focus.offset.value, 3));
+          }
+          actions.deleteText(user.id, doc);
+        });
+
+        assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
+      });
+
+      it('インラインをまたぐ選択範囲の文字が削除されて、共同編集者選択範囲が始点と終点が逆位置でも文字数分前に移動していること', () => {
+        // TODO
+      });
     });
   });
 });
