@@ -451,49 +451,283 @@ describe('.deleteText()', () => {
         assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
       });
 
-      it('インラインをまたぐ選択範囲の文字が削除されて、共同編集者選択範囲が始点と終点が逆位置でも文字数分前に移動していること', () => {
-        userDoc.change((doc) => {
-          const document = doc.document;
-          const selection = doc.users[user.id];
-          const range = selection.range;
-          const firstNode = document.nodes[0];
+      describe('インラインを跨ぎ削除される場合', () => {
+        it('選択範囲の文字が削除されて、編集者選択範囲終点が編集者選択範囲始点に移動していること', () => {
+          userDoc.change((doc) => {
+            const document = doc.document;
+            const selection = doc.users[user.id];
+            const range = selection.range;
+            const firstNode = document.nodes[0];
 
-          const inline1 = firstNode.inline[0];
-          inline1.text.push('A', 'B', 'C');
-          const inline2 = factory.inline.createInlineText();
-          inline2.text.push('D', 'E', 'F');
-          const inline3 = factory.inline.createInlineText();
-          inline3.text.push('G', 'H', 'I');
+            const inline1 = firstNode.inline[0];
+            inline1.text.push('A', 'B', 'C');
+            const inline2 = factory.inline.createInlineText();
+            inline2.text.push('D', 'E', 'F');
+            const inline3 = factory.inline.createInlineText();
+            inline3.text.push('G', 'H', 'I');
 
-          firstNode.inline.push(inline2);
-          firstNode.inline.push(inline3);
+            firstNode.inline.push(inline2);
+            firstNode.inline.push(inline3);
 
-          if (range) {
-            range.anchor.id = inline1.id;
-            range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 2));
-            range.focus.id = inline3.id;
-            range.focus.offset.increment(sutils.getOffset(range.focus.offset.value, 1));
-          }
+            if (range) {
+              range.anchor.id = inline1.id;
+              range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 2));
+              range.focus.id = inline3.id;
+              range.focus.offset.increment(sutils.getOffset(range.focus.offset.value, 1));
+            }
+          });
+
+          const expectedDoc = toLooseJSON(userDoc);
+          const node = expectedDoc.doc.document.nodes[0];
+          const userSelection = expectedDoc.doc.users[user.id];
+          node.inline.splice(1, 1);
+          const inline1 = expectedDoc.doc.document.nodes[0].inline[0];
+          const inline2 = expectedDoc.doc.document.nodes[0].inline[1];
+          inline1.text = ['A', 'B'];
+          inline2.text = ['H', 'I'];
+          userSelection.range.anchor.id = inline1.id;
+          userSelection.range.anchor.offset = 2;
+          userSelection.range.focus.id = inline1.id;
+          userSelection.range.focus.offset = 2;
+
+          userDoc.change((doc) => {
+            actions.deleteText(user.id, doc);
+          });
+
+          assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
         });
 
-        const expectedDoc = toLooseJSON(userDoc);
-        const node = expectedDoc.doc.document.nodes[0];
-        const userSelection = expectedDoc.doc.users[user.id];
-        node.inline.splice(1, 1);
-        const inline1 = expectedDoc.doc.document.nodes[0].inline[0];
-        const inline2 = expectedDoc.doc.document.nodes[0].inline[1];
-        inline1.text = ['A', 'B'];
-        inline2.text = ['H', 'I'];
-        userSelection.range.anchor.id = inline1.id;
-        userSelection.range.anchor.offset = 2;
-        userSelection.range.focus.id = inline1.id;
-        userSelection.range.focus.offset = 2;
+        it('選択範囲の文字が削除されて、共同編集者選択範囲始点が編集者選択範囲を含まれている場合に共同編集者選択範囲始点が編集者選択範囲始点に移動していること', () => {
+          userDoc.change((doc) => {
+            const document = doc.document;
+            const selection = doc.users[user.id];
+            const range = selection.range;
+            const memberSelection = doc.users[member.id];
+            const memberRange = memberSelection.range;
+            const firstNode = document.nodes[0];
 
-        userDoc.change((doc) => {
-          actions.deleteText(user.id, doc);
+            const inline1 = firstNode.inline[0];
+            inline1.text.push('A', 'B', 'C');
+            const inline2 = factory.inline.createInlineText();
+            inline2.text.push('D', 'E', 'F');
+            const inline3 = factory.inline.createInlineText();
+            inline3.text.push('G', 'H', 'I');
+
+            firstNode.inline.push(inline2);
+            firstNode.inline.push(inline3);
+
+            if (range) {
+              range.anchor.id = inline1.id;
+              range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 2));
+              range.focus.id = inline3.id;
+              range.focus.offset.increment(sutils.getOffset(range.focus.offset.value, 1));
+            }
+            if (memberRange) {
+              memberRange.anchor.id = inline1.id;
+              memberRange.anchor.offset.increment(sutils.getOffset(memberRange.anchor.offset.value, 3));
+              memberRange.focus.id = inline3.id;
+              memberRange.focus.offset.increment(sutils.getOffset(memberRange.focus.offset.value, 2));
+            }
+          });
+
+          const expectedDoc = toLooseJSON(userDoc);
+          const node = expectedDoc.doc.document.nodes[0];
+          const userSelection = expectedDoc.doc.users[user.id];
+          const memberSelection = expectedDoc.doc.users[member.id];
+          node.inline.splice(1, 1);
+          const inline1 = expectedDoc.doc.document.nodes[0].inline[0];
+          const inline2 = expectedDoc.doc.document.nodes[0].inline[1];
+          inline1.text = ['A', 'B'];
+          inline2.text = ['H', 'I'];
+          userSelection.range.anchor.id = inline1.id;
+          userSelection.range.anchor.offset = 2;
+          userSelection.range.focus.id = inline1.id;
+          userSelection.range.focus.offset = 2;
+          memberSelection.range.anchor.id = inline1.id;
+          memberSelection.range.anchor.offset = 2;
+          memberSelection.range.focus.id = inline2.id;
+          memberSelection.range.focus.offset = 1;
+
+          userDoc.change((doc) => {
+            actions.deleteText(user.id, doc);
+          });
+
+          assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
         });
 
-        assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
+        it.skip('選択範囲の文字が削除されて、共同編集者選択範囲始点が編集者選択範囲を含まれていない場合に共同編集者選択範囲始点が編集者選択範囲始点に移動していること', () => {
+          userDoc.change((doc) => {
+            const document = doc.document;
+            const selection = doc.users[user.id];
+            const range = selection.range;
+            const memberSelection = doc.users[member.id];
+            const memberRange = memberSelection.range;
+            const firstNode = document.nodes[0];
+
+            const inline1 = firstNode.inline[0];
+            inline1.text.push('A', 'B', 'C');
+            const inline2 = factory.inline.createInlineText();
+            inline2.text.push('D', 'E', 'F');
+            const inline3 = factory.inline.createInlineText();
+            inline3.text.push('G', 'H', 'I');
+
+            firstNode.inline.push(inline2);
+            firstNode.inline.push(inline3);
+
+            if (range) {
+              range.anchor.id = inline1.id;
+              range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 2));
+              range.focus.id = inline3.id;
+              range.focus.offset.increment(sutils.getOffset(range.focus.offset.value, 1));
+            }
+            if (memberRange) {
+              memberRange.anchor.id = inline1.id;
+              memberRange.anchor.offset.increment(sutils.getOffset(memberRange.focus.offset.value, 1));
+              memberRange.focus.id = inline3.id;
+              memberRange.focus.offset.increment(sutils.getOffset(memberRange.anchor.offset.value, 2));
+            }
+          });
+
+          const expectedDoc = toLooseJSON(userDoc);
+          const node = expectedDoc.doc.document.nodes[0];
+          const userSelection = expectedDoc.doc.users[user.id];
+          const memberSelection = expectedDoc.doc.users[member.id];
+          node.inline.splice(1, 1);
+          const inline1 = expectedDoc.doc.document.nodes[0].inline[0];
+          const inline2 = expectedDoc.doc.document.nodes[0].inline[1];
+          inline1.text = ['A', 'B'];
+          inline2.text = ['H', 'I'];
+          userSelection.range.anchor.id = inline1.id;
+          userSelection.range.anchor.offset = 2;
+          userSelection.range.focus.id = inline1.id;
+          userSelection.range.focus.offset = 2;
+          memberSelection.range.anchor.id = inline1.id;
+          memberSelection.range.anchor.offset = 1;
+          memberSelection.range.focus.id = inline2.id;
+          memberSelection.range.focus.offset = 1;
+
+          userDoc.change((doc) => {
+            actions.deleteText(user.id, doc);
+          });
+
+          assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
+        });
+
+        it.skip('選択範囲の文字が削除されて、共同編集者選択範囲終点が編集者選択範囲を含まれている場合に共同編集者選択範囲始点が編集者選択範囲始点に移動していること', () => {
+          userDoc.change((doc) => {
+            const document = doc.document;
+            const selection = doc.users[user.id];
+            const range = selection.range;
+            const memberSelection = doc.users[member.id];
+            const memberRange = memberSelection.range;
+            const firstNode = document.nodes[0];
+
+            const inline1 = firstNode.inline[0];
+            inline1.text.push('A', 'B', 'C');
+            const inline2 = factory.inline.createInlineText();
+            inline2.text.push('D', 'E', 'F');
+            const inline3 = factory.inline.createInlineText();
+            inline3.text.push('G', 'H', 'I');
+
+            firstNode.inline.push(inline2);
+            firstNode.inline.push(inline3);
+
+            if (range) {
+              range.anchor.id = inline1.id;
+              range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 2));
+              range.focus.id = inline3.id;
+              range.focus.offset.increment(sutils.getOffset(range.focus.offset.value, 1));
+            }
+            if (memberRange) {
+              memberRange.anchor.id = inline3.id;
+              memberRange.anchor.offset.increment(sutils.getOffset(memberRange.anchor.offset.value, 2));
+              memberRange.focus.id = inline1.id;
+              memberRange.focus.offset.increment(sutils.getOffset(memberRange.focus.offset.value, 3));
+            }
+          });
+
+          const expectedDoc = toLooseJSON(userDoc);
+          const node = expectedDoc.doc.document.nodes[0];
+          const userSelection = expectedDoc.doc.users[user.id];
+          const memberSelection = expectedDoc.doc.users[member.id];
+          node.inline.splice(1, 1);
+          const inline1 = expectedDoc.doc.document.nodes[0].inline[0];
+          const inline2 = expectedDoc.doc.document.nodes[0].inline[1];
+          inline1.text = ['A', 'B'];
+          inline2.text = ['H', 'I'];
+          userSelection.range.anchor.id = inline1.id;
+          userSelection.range.anchor.offset = 2;
+          userSelection.range.focus.id = inline1.id;
+          userSelection.range.focus.offset = 2;
+          memberSelection.range.anchor.id = inline2.id;
+          memberSelection.range.anchor.offset = 1;
+          memberSelection.range.focus.id = inline1.id;
+          memberSelection.range.focus.offset = 2;
+
+          userDoc.change((doc) => {
+            actions.deleteText(user.id, doc);
+          });
+
+          assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
+        });
+
+        it.skip('選択範囲の文字が削除されて、共同編集者選択範囲が逆位置でも共同編集者選択範囲が正しく移動すること', () => {
+          userDoc.change((doc) => {
+            const document = doc.document;
+            const selection = doc.users[user.id];
+            const range = selection.range;
+            const memberSelection = doc.users[member.id];
+            const memberRange = memberSelection.range;
+            const firstNode = document.nodes[0];
+
+            const inline1 = firstNode.inline[0];
+            inline1.text.push('A', 'B', 'C');
+            const inline2 = factory.inline.createInlineText();
+            inline2.text.push('D', 'E', 'F');
+            const inline3 = factory.inline.createInlineText();
+            inline3.text.push('G', 'H', 'I');
+
+            firstNode.inline.push(inline2);
+            firstNode.inline.push(inline3);
+
+            if (range) {
+              range.anchor.id = inline1.id;
+              range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 2));
+              range.focus.id = inline3.id;
+              range.focus.offset.increment(sutils.getOffset(range.focus.offset.value, 1));
+            }
+            if (memberRange) {
+              memberRange.anchor.id = inline3.id;
+              memberRange.anchor.offset.increment(sutils.getOffset(memberRange.anchor.offset.value, 2));
+              memberRange.focus.id = inline1.id;
+              memberRange.focus.offset.increment(sutils.getOffset(memberRange.focus.offset.value, 3));
+            }
+          });
+
+          const expectedDoc = toLooseJSON(userDoc);
+          const node = expectedDoc.doc.document.nodes[0];
+          const userSelection = expectedDoc.doc.users[user.id];
+          const memberSelection = expectedDoc.doc.users[member.id];
+          node.inline.splice(1, 1);
+          const inline1 = expectedDoc.doc.document.nodes[0].inline[0];
+          const inline2 = expectedDoc.doc.document.nodes[0].inline[1];
+          inline1.text = ['A', 'B'];
+          inline2.text = ['H', 'I'];
+          userSelection.range.anchor.id = inline1.id;
+          userSelection.range.anchor.offset = 2;
+          userSelection.range.focus.id = inline1.id;
+          userSelection.range.focus.offset = 2;
+          memberSelection.range.anchor.id = inline2.id;
+          memberSelection.range.anchor.offset = 1;
+          memberSelection.range.focus.id = inline1.id;
+          memberSelection.range.focus.offset = 2;
+
+          userDoc.change((doc) => {
+            actions.deleteText(user.id, doc);
+          });
+
+          assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
+        });
       });
     });
   });
