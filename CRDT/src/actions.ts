@@ -85,9 +85,7 @@ export const actions = {
     const document = doc.document;
     const selection: Selection = users[userId];
 
-    if (selection.range === null) return;
-
-    if (sutils.isCollasped(selection)) {
+    if (selection.range !== null && sutils.isCollasped(selection)) {
       const node = traversal.node.findCurrentNode(selection, document);
 
       if (node === null || node.inline === null) return;
@@ -120,9 +118,11 @@ export const actions = {
           }
         }
       }
-    } else {
+    } else if (selection.range !== null && !sutils.isCollasped(selection)) {
       actions.deleteText(userId, doc);
       actions.insertText(userId, doc, chars);
+    } else if (selection.range === null && selection.ids.length) {
+      // TODO
     }
   },
 
@@ -131,9 +131,7 @@ export const actions = {
     const document = doc.document;
     const selection: Selection = users[userId];
 
-    if (selection.range === null) return;
-
-    if (sutils.isCollasped(selection)) {
+    if (selection.range !== null && sutils.isCollasped(selection)) {
       const node = traversal.node.findCurrentNode(selection, document);
 
       if (node === null || node.inline === null) return;
@@ -166,7 +164,7 @@ export const actions = {
           }
         }
       }
-    } else {
+    } else if (selection.range !== null && !sutils.isCollasped(selection)) {
       const node = traversal.node.findCurrentNode(selection, document);
 
       if (node === null || node.inline === null) return;
