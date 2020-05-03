@@ -845,7 +845,7 @@ describe('.deleteText()', () => {
         assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
       });
 
-      it.skip('複数の対象項目が削除されていること', () => {
+      it('複数の対象項目が削除されていること', () => {
         userDoc.change((doc) => {
           const document = doc.document;
           const selection = doc.users[user.id];
