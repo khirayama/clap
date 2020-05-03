@@ -166,7 +166,7 @@ describe('.deleteText()', () => {
         assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
       });
 
-      it('文字列が挿入されて共同編集者の選択範囲終点が文字数分後ろへ移動していること', () => {
+      it('選択範囲始点の前の文字が1文字削除されて、共同編集者選択範囲終点が1文字前に移動していること', () => {
         const expectedDoc = toLooseJSON(userDoc);
         const inlineText = expectedDoc.doc.document.nodes[0].inline[0];
         const userSelection = expectedDoc.doc.users[user.id];
