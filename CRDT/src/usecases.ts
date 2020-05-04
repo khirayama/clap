@@ -22,7 +22,7 @@ export const usecases = {
       actions.removeText(userId, doc);
       actions.insertText(userId, doc, chars);
     } else if (selection.range === null && selection.ids.length) {
-      // TODO
+      // TODO: cおよびd
     }
   },
   indent: () => {},
@@ -39,6 +39,7 @@ export const usecases = {
       // TODO: 「Actions 文字を削除した場合の後処理」を適用する
     } else if (selection.range === null && selection.ids.length) {
       actions.removeItems(userId, doc);
+      // TODO: 「Actions 項目を削除したときの後処理」を適用
     }
   },
 };
