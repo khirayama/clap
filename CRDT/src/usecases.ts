@@ -4,4 +4,6 @@
  * userId > CRDTDocument > 個別の引数
  */
 
-export const usecases = {};
+export const usecases = {
+  remove: () => {},
+};

@@ -219,7 +219,7 @@ describe('.insertText()', () => {
   });
 });
 
-describe('.deleteText()', () => {
+describe('.removeText()', () => {
   describe('選択範囲が閉じている状態で', () => {
     describe('文字削除を行ったとき', () => {
       it('選択範囲始点の前の文字が1文字削除されて、選択範囲始点と終点が1文字前に移動していること', () => {
@@ -235,7 +235,7 @@ describe('.deleteText()', () => {
         userSelection.range.focus.offset = 4;
 
         userDoc.change((doc) => {
-          actions.deleteText(user.id, doc);
+          actions.removeText(user.id, doc);
         });
 
         assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
@@ -270,7 +270,7 @@ describe('.deleteText()', () => {
             range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 2));
             range.focus.offset.increment(sutils.getOffset(range.focus.offset.value, 2));
           }
-          actions.deleteText(user.id, doc);
+          actions.removeText(user.id, doc);
         });
 
         assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
@@ -305,7 +305,7 @@ describe('.deleteText()', () => {
             range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 2));
             range.focus.offset.increment(sutils.getOffset(range.focus.offset.value, 2));
           }
-          actions.deleteText(user.id, doc);
+          actions.removeText(user.id, doc);
         });
 
         assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
@@ -340,7 +340,7 @@ describe('.deleteText()', () => {
             range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 2));
             range.focus.offset.increment(sutils.getOffset(range.focus.offset.value, 2));
           }
-          actions.deleteText(user.id, doc);
+          actions.removeText(user.id, doc);
         });
 
         assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
@@ -379,7 +379,7 @@ describe('.deleteText()', () => {
             range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
             range.focus.offset.increment(sutils.getOffset(range.focus.offset.value, 3));
           }
-          actions.deleteText(user.id, doc);
+          actions.removeText(user.id, doc);
         });
 
         assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
@@ -414,7 +414,7 @@ describe('.deleteText()', () => {
             range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
             range.focus.offset.increment(sutils.getOffset(range.focus.offset.value, 3));
           }
-          actions.deleteText(user.id, doc);
+          actions.removeText(user.id, doc);
         });
 
         assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
@@ -449,7 +449,7 @@ describe('.deleteText()', () => {
             range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
             range.focus.offset.increment(sutils.getOffset(range.focus.offset.value, 3));
           }
-          actions.deleteText(user.id, doc);
+          actions.removeText(user.id, doc);
         });
 
         assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
@@ -484,7 +484,7 @@ describe('.deleteText()', () => {
             range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
             range.focus.offset.increment(sutils.getOffset(range.focus.offset.value, 3));
           }
-          actions.deleteText(user.id, doc);
+          actions.removeText(user.id, doc);
         });
 
         assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
@@ -519,7 +519,7 @@ describe('.deleteText()', () => {
             range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 3));
             range.focus.offset.increment(sutils.getOffset(range.focus.offset.value, 1));
           }
-          actions.deleteText(user.id, doc);
+          actions.removeText(user.id, doc);
         });
 
         assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
@@ -567,7 +567,7 @@ describe('.deleteText()', () => {
           userSelection.range.focus.offset = 2;
 
           userDoc.change((doc) => {
-            actions.deleteText(user.id, doc);
+            actions.removeText(user.id, doc);
           });
 
           assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
@@ -627,7 +627,7 @@ describe('.deleteText()', () => {
           memberSelection.range.focus.offset = 1;
 
           userDoc.change((doc) => {
-            actions.deleteText(user.id, doc);
+            actions.removeText(user.id, doc);
           });
 
           assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
@@ -687,7 +687,7 @@ describe('.deleteText()', () => {
           memberSelection.range.focus.offset = 1;
 
           userDoc.change((doc) => {
-            actions.deleteText(user.id, doc);
+            actions.removeText(user.id, doc);
           });
 
           assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
@@ -747,7 +747,7 @@ describe('.deleteText()', () => {
           memberSelection.range.focus.offset = 2;
 
           userDoc.change((doc) => {
-            actions.deleteText(user.id, doc);
+            actions.removeText(user.id, doc);
           });
 
           assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
@@ -807,7 +807,7 @@ describe('.deleteText()', () => {
           memberSelection.range.focus.offset = 2;
 
           userDoc.change((doc) => {
-            actions.deleteText(user.id, doc);
+            actions.removeText(user.id, doc);
           });
 
           assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
@@ -839,7 +839,7 @@ describe('.deleteText()', () => {
         userSelection.range = null;
 
         userDoc.change((doc) => {
-          actions.deleteText(user.id, doc);
+          actions.removeText(user.id, doc);
         });
 
         assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
@@ -867,7 +867,7 @@ describe('.deleteText()', () => {
         userSelection.range = null;
 
         userDoc.change((doc) => {
-          actions.deleteText(user.id, doc);
+          actions.removeText(user.id, doc);
         });
 
         assert.deepEqual(toLooseJSON(userDoc), expectedDoc);

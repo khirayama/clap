@@ -69,7 +69,7 @@ export const transform = {
     insertText: (inline: Inline, index: number, chars: string[]) => {
       inline.text.splice(index, 0, ...chars);
     },
-    deleteText: (inline: Inline, index: number, count: number) => {
+    removeText: (inline: Inline, index: number, count: number) => {
       inline.text.splice(index, count);
     },
   },

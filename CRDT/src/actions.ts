@@ -120,14 +120,14 @@ export const actions = {
         }
       }
     } else if (selection.range !== null && !sutils.isCollasped(selection)) {
-      actions.deleteText(userId, doc);
+      actions.removeText(userId, doc);
       actions.insertText(userId, doc, chars);
     } else if (selection.range === null && selection.ids.length) {
       // TODO
     }
   },
 
-  deleteText: (userId: string, doc: Doc): void => {
+  removeText: (userId: string, doc: Doc): void => {
     const users = doc.users;
     const document = doc.document;
     const selection: Selection = users[userId];
@@ -143,7 +143,7 @@ export const actions = {
       if (inline === null) return;
 
       const offset = selection.range.anchor.offset.value;
-      transform.inline.deleteText(inline, offset - 1, 1);
+      transform.inline.removeText(inline, offset - 1, 1);
 
       const userIds = Object.keys(users);
       if (selection.range.anchor.id === inlineId && selection.range.anchor.offset.value >= offset) {
@@ -186,7 +186,7 @@ export const actions = {
           const startOffset = start.offset.value;
           const endInlineId = end.id;
           const endOffset = end.offset.value;
-          transform.inline.deleteText(inline, startOffset, endOffset - 1);
+          transform.inline.removeText(inline, startOffset, endOffset - 1);
 
           const size = endOffset - startOffset;
           const userIds = Object.keys(users);
@@ -218,13 +218,13 @@ export const actions = {
             isStarted = true;
             const startInline = traversal.inline.find(node, start.id);
             if (startInline) {
-              transform.inline.deleteText(inline, start.offset.value, startInline.text.length - start.offset.value);
+              transform.inline.removeText(inline, start.offset.value, startInline.text.length - start.offset.value);
             }
           } else if (inline.id === end.id) {
             isStarted = false;
             const endInline = traversal.inline.find(node, end.id);
             if (endInline) {
-              transform.inline.deleteText(inline, 0, end.offset.value);
+              transform.inline.removeText(inline, 0, end.offset.value);
             }
           } else if (isStarted) {
             removedIds.push(inline.id);
