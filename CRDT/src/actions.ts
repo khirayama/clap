@@ -277,6 +277,11 @@ export const actions = {
     }
   },
 
+  postprocessTextDeletion: (userId: string, doc: Doc): void => {
+    // TODO: 「Actions 文字を削除した場合の後処理」を適用する
+    console.log(userId, doc);
+  },
+
   removeItems: (userId: string, doc: Doc): void => {
     const users = doc.users;
     const document = doc.document;
@@ -300,5 +305,10 @@ export const actions = {
         }
       }
     }
+  },
+
+  postprocessItemDeletion: (userId: string, doc: Doc): void => {
+    // TODO: 「Actions 項目を削除したときの後処理」を適用
+    console.log(userId, doc);
   },
 };
