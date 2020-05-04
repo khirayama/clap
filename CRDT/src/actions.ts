@@ -282,6 +282,8 @@ export const actions = {
     const document = doc.document;
     const selection: Selection = users[userId];
 
+    if (selection.range !== null) return;
+
     const nodes = traversal.node.findCurrentNodes(selection, document);
 
     for (const node of nodes) {
@@ -294,7 +296,7 @@ export const actions = {
         } else if (node.parent) {
           selection.ids = [node.parent];
         } else {
-          // TODO: 「項目を追加する」を適用
+          selection.ids = [];
         }
       }
     }
