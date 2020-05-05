@@ -168,21 +168,17 @@ describe('.input()', () => {
 
   describe('選択範囲が開いている状態で', () => {
     describe('「あいうえお」と挿入したとき', () => {
-      it.skip('選択範囲を削除が適用され、文字挿入が行われていること', () => {
+      it('選択範囲を削除が適用され、文字挿入が行われていること', () => {
         const expectedDoc = toLooseJSON(userDoc);
         const inlineText = expectedDoc.doc.document.nodes[0].inline[0];
         const userSelection = expectedDoc.doc.users[user.id];
         const memberSelection = expectedDoc.doc.users[member.id];
-        inlineText.text = ['1', 'あ', 'い', 'う', 'え', 'お', '4'];
+        inlineText.text = 'AあいうえおDEFGHI'.split('');
         userSelection.range.anchor.offset = 6;
         userSelection.range.focus.offset = 6;
         memberSelection.range.anchor.offset = 0;
         memberSelection.range.focus.offset = 7;
 
-        userDoc.change((doc) => {
-          usecases.input(user.id, doc, ['1', '2', '3', '4']);
-        });
-        memberDoc.merge(userDoc);
         memberDoc.change((doc) => {
           const range = doc.users[member.id].range;
           if (range !== null) {
@@ -199,25 +195,22 @@ describe('.input()', () => {
           }
           usecases.input(user.id, doc, ['あ', 'い', 'う', 'え', 'お']);
         });
+        memberDoc.merge(userDoc);
 
         assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
       });
 
-      it.skip('共同編集者選択範囲が逆位置でも選択範囲を削除が適用され、文字挿入が行われていること', () => {
+      it('共同編集者選択範囲が逆位置でも選択範囲を削除が適用され、文字挿入が行われていること', () => {
         const expectedDoc = toLooseJSON(userDoc);
         const inlineText = expectedDoc.doc.document.nodes[0].inline[0];
         const userSelection = expectedDoc.doc.users[user.id];
         const memberSelection = expectedDoc.doc.users[member.id];
-        inlineText.text = ['1', 'あ', 'い', 'う', 'え', 'お', '4'];
+        inlineText.text = 'AあいうえおDEFGHI'.split('');
         userSelection.range.anchor.offset = 6;
         userSelection.range.focus.offset = 6;
         memberSelection.range.anchor.offset = 7;
         memberSelection.range.focus.offset = 0;
 
-        userDoc.change((doc) => {
-          usecases.input(user.id, doc, ['1', '2', '3', '4']);
-        });
-        memberDoc.merge(userDoc);
         memberDoc.change((doc) => {
           const range = doc.users[member.id].range;
           if (range !== null) {
@@ -234,6 +227,7 @@ describe('.input()', () => {
           }
           usecases.input(user.id, doc, ['あ', 'い', 'う', 'え', 'お']);
         });
+        memberDoc.merge(userDoc);
 
         assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
       });
