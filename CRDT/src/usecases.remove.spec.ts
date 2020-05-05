@@ -23,7 +23,7 @@ beforeEach(() => {
 describe('.remove()', () => {
   describe('選択範囲が閉じている状態で', () => {
     describe('文字削除を行ったとき', () => {
-      it('選択範囲始点の前の文字が1文字削除されて、選択範囲始点と終点が1文字前に移動していること', () => {
+      it.skip('選択範囲始点の前の文字が1文字削除されて、選択範囲始点と終点が1文字前に移動していること', () => {
         userDoc.change((doc) => {
           usecases.input(user.id, doc, ['あ', 'い', 'う', 'え', 'お']);
         });
@@ -42,7 +42,7 @@ describe('.remove()', () => {
         assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
       });
 
-      it('選択範囲始点の前の文字が1文字削除されて、共同編集者選択範囲始点が1文字前に移動していること', () => {
+      it.skip('選択範囲始点の前の文字が1文字削除されて、共同編集者選択範囲始点が1文字前に移動していること', () => {
         const expectedDoc = toLooseJSON(userDoc);
         const inlineText = expectedDoc.doc.document.nodes[0].inline[0];
         const userSelection = expectedDoc.doc.users[user.id];
@@ -77,7 +77,7 @@ describe('.remove()', () => {
         assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
       });
 
-      it('選択範囲始点の前の文字が1文字削除されて、共同編集者選択範囲終点が1文字前に移動していること', () => {
+      it.skip('選択範囲始点の前の文字が1文字削除されて、共同編集者選択範囲終点が1文字前に移動していること', () => {
         const expectedDoc = toLooseJSON(userDoc);
         const inlineText = expectedDoc.doc.document.nodes[0].inline[0];
         const userSelection = expectedDoc.doc.users[user.id];
@@ -112,7 +112,7 @@ describe('.remove()', () => {
         assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
       });
 
-      it('選択範囲始点の前の文字が1文字削除されて、共同編集者選択範囲の始点と終点が逆位置でも始点が1文字前に移動していること', () => {
+      it.skip('選択範囲始点の前の文字が1文字削除されて、共同編集者選択範囲の始点と終点が逆位置でも始点が1文字前に移動していること', () => {
         const expectedDoc = toLooseJSON(userDoc);
         const inlineText = expectedDoc.doc.document.nodes[0].inline[0];
         const userSelection = expectedDoc.doc.users[user.id];
@@ -151,7 +151,7 @@ describe('.remove()', () => {
 
   describe('選択範囲が開いている状態で', () => {
     describe('文字削除を行ったとき', () => {
-      it('選択範囲の文字が削除されて、選択範囲始点と終点が文字数分前に移動していること', () => {
+      it.skip('選択範囲の文字が削除されて、選択範囲始点と終点が文字数分前に移動していること', () => {
         const expectedDoc = toLooseJSON(userDoc);
         const inlineText = expectedDoc.doc.document.nodes[0].inline[0];
         const userSelection = expectedDoc.doc.users[user.id];
@@ -186,7 +186,7 @@ describe('.remove()', () => {
         assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
       });
 
-      it('選択範囲の文字が削除されて、共同編集者選択範囲位置が文字数分前に移動していること', () => {
+      it.skip('選択範囲の文字が削除されて、共同編集者選択範囲位置が文字数分前に移動していること', () => {
         const expectedDoc = toLooseJSON(userDoc);
         const inlineText = expectedDoc.doc.document.nodes[0].inline[0];
         const userSelection = expectedDoc.doc.users[user.id];
@@ -221,7 +221,7 @@ describe('.remove()', () => {
         assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
       });
 
-      it('選択範囲の文字が削除されて、共同編集者選択範囲終点が文字数分前に移動していること', () => {
+      it.skip('選択範囲の文字が削除されて、共同編集者選択範囲終点が文字数分前に移動していること', () => {
         const expectedDoc = toLooseJSON(userDoc);
         const inlineText = expectedDoc.doc.document.nodes[0].inline[0];
         const userSelection = expectedDoc.doc.users[user.id];
@@ -256,7 +256,7 @@ describe('.remove()', () => {
         assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
       });
 
-      it('選択範囲の文字が削除されて、共同編集者選択範囲が始点と終点が逆位置でも文字数分前に移動していること', () => {
+      it.skip('選択範囲の文字が削除されて、共同編集者選択範囲が始点と終点が逆位置でも文字数分前に移動していること', () => {
         const expectedDoc = toLooseJSON(userDoc);
         const inlineText = expectedDoc.doc.document.nodes[0].inline[0];
         const userSelection = expectedDoc.doc.users[user.id];
@@ -291,7 +291,7 @@ describe('.remove()', () => {
         assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
       });
 
-      it('逆位置の選択範囲の文字が削除されて、共同編集者選択範囲が始点と終点が逆位置でも文字数分前に移動していること', () => {
+      it.skip('逆位置の選択範囲の文字が削除されて、共同編集者選択範囲が始点と終点が逆位置でも文字数分前に移動していること', () => {
         const expectedDoc = toLooseJSON(userDoc);
         const inlineText = expectedDoc.doc.document.nodes[0].inline[0];
         const userSelection = expectedDoc.doc.users[user.id];
@@ -327,7 +327,7 @@ describe('.remove()', () => {
       });
 
       describe('インラインを跨ぎ削除される場合', () => {
-        it('選択範囲の文字が削除されて、編集者選択範囲終点が編集者選択範囲始点に移動していること', () => {
+        it.skip('選択範囲の文字が削除されて、編集者選択範囲終点が編集者選択範囲始点に移動していること', () => {
           userDoc.change((doc) => {
             const document = doc.document;
             const selection = doc.users[user.id];
@@ -374,7 +374,7 @@ describe('.remove()', () => {
           assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
         });
 
-        it('選択範囲の文字が削除されて、共同編集者選択範囲始点が編集者選択範囲を含まれている場合に共同編集者選択範囲始点が編集者選択範囲始点に移動していること', () => {
+        it.skip('選択範囲の文字が削除されて、共同編集者選択範囲始点が編集者選択範囲を含まれている場合に共同編集者選択範囲始点が編集者選択範囲始点に移動していること', () => {
           userDoc.change((doc) => {
             const document = doc.document;
             const selection = doc.users[user.id];
@@ -434,7 +434,7 @@ describe('.remove()', () => {
           assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
         });
 
-        it('選択範囲の文字が削除されて、共同編集者選択範囲始点が編集者選択範囲を含まれていない場合に共同編集者選択範囲始点が編集者選択範囲始点に移動していること', () => {
+        it.skip('選択範囲の文字が削除されて、共同編集者選択範囲始点が編集者選択範囲を含まれていない場合に共同編集者選択範囲始点が編集者選択範囲始点に移動していること', () => {
           userDoc.change((doc) => {
             const document = doc.document;
             const selection = doc.users[user.id];
@@ -494,7 +494,7 @@ describe('.remove()', () => {
           assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
         });
 
-        it('選択範囲の文字が削除されて、共同編集者選択範囲終点が編集者選択範囲を含まれている場合に共同編集者選択範囲始点が編集者選択範囲始点に移動していること', () => {
+        it.skip('選択範囲の文字が削除されて、共同編集者選択範囲終点が編集者選択範囲を含まれている場合に共同編集者選択範囲始点が編集者選択範囲始点に移動していること', () => {
           userDoc.change((doc) => {
             const document = doc.document;
             const selection = doc.users[user.id];
@@ -554,7 +554,7 @@ describe('.remove()', () => {
           assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
         });
 
-        it('選択範囲の文字が削除されて、共同編集者選択範囲が逆位置でも共同編集者選択範囲が正しく移動すること', () => {
+        it.skip('選択範囲の文字が削除されて、共同編集者選択範囲が逆位置でも共同編集者選択範囲が正しく移動すること', () => {
           userDoc.change((doc) => {
             const document = doc.document;
             const selection = doc.users[user.id];
@@ -619,7 +619,7 @@ describe('.remove()', () => {
 
   describe('項目を一つ選択している状態で', () => {
     describe('削除操作を行った時', () => {
-      it('単数の対象項目が削除されていること', () => {
+      it.skip('単数の対象項目が削除されていること', () => {
         userDoc.change((doc) => {
           const document = doc.document;
           const selection = doc.users[user.id];
@@ -646,7 +646,7 @@ describe('.remove()', () => {
         assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
       });
 
-      it('複数の対象項目が削除されていること', () => {
+      it.skip('複数の対象項目が削除されていること', () => {
         userDoc.change((doc) => {
           const document = doc.document;
           const selection = doc.users[user.id];
