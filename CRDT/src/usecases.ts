@@ -1,7 +1,5 @@
 // factory, transform, traveral
 import { Doc } from './interfaces';
-import { factory } from './factory';
-import { transform } from './transform';
 import { traversal } from './traversal';
 import { actions } from './actions';
 import { Selection, utils as sutils } from './selection';
