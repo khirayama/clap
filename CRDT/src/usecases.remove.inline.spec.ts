@@ -28,235 +28,235 @@ describe('削除操作', () => {
   describe('インライン選択状態', () => {
     describe(`${rangePatterns.a}`, () => {
       describe(`${memberRangePatterns.a}`, () => {
-        it('1文字が削除され、編集者および共同編集者の選択範囲始点と終点が1文字前へ移動していること', () => {});
+        it.skip('1文字が削除され、編集者および共同編集者の選択範囲始点と終点が1文字前へ移動していること', () => {});
       });
       describe(`${memberRangePatterns.b}`, () => {
-        it('1文字が削除され、編集者選択範囲のみの始点と終点が1文字前へ移動していること', () => {});
+        it.skip('1文字が削除され、編集者選択範囲のみの始点と終点が1文字前へ移動していること', () => {});
       });
       describe(`${memberRangePatterns.d}`, () => {
-        it('1文字が削除され、編集者選択範囲始点と終点が1文字前へ移動し、共同編集者選択範囲終点が1文字前へ移動していること', () => {});
+        it.skip('1文字が削除され、編集者選択範囲始点と終点が1文字前へ移動し、共同編集者選択範囲終点が1文字前へ移動していること', () => {});
       });
       describe(`${memberRangePatterns.d_}`, () => {
-        it('1文字が削除され、編集者選択範囲始点と終点が1文字前へ移動し、共同編集者選択範囲始点が1文字前へ移動していること', () => {});
+        it.skip('1文字が削除され、編集者選択範囲始点と終点が1文字前へ移動し、共同編集者選択範囲始点が1文字前へ移動していること', () => {});
       });
       describe(`${memberRangePatterns.g}`, () => {
-        it('1文字が削除され、編集者および共同編集者の選択範囲始点と終点が1文字前へ移動していること', () => {});
+        it.skip('1文字が削除され、編集者および共同編集者の選択範囲始点と終点が1文字前へ移動していること', () => {});
       });
       describe(`${memberRangePatterns.h}`, () => {
-        it('1文字が削除され、編集者選択範囲のみの始点と終点が1文字前へ移動していること', () => {});
+        it.skip('1文字が削除され、編集者選択範囲のみの始点と終点が1文字前へ移動していること', () => {});
       });
     });
     describe(`${rangePatterns.b}`, () => {
       describe(`${inlinePatterns.a}`, () => {
         describe(`${memberRangePatterns.a}`, () => {
-          it('', () => {});
+          it.skip('', () => {});
         });
         describe(`${memberRangePatterns.b}`, () => {
-          it('', () => {});
+          it.skip('', () => {});
         });
         describe(`${memberRangePatterns.c}`, () => {
-          it('', () => {});
+          it.skip('', () => {});
         });
         describe(`${memberRangePatterns.c_}`, () => {
-          it('', () => {});
+          it.skip('', () => {});
         });
         describe(`${memberRangePatterns.d}`, () => {
-          it('', () => {});
+          it.skip('', () => {});
         });
         describe(`${memberRangePatterns.d_}`, () => {
-          it('', () => {});
+          it.skip('', () => {});
         });
         describe(`${memberRangePatterns.e}`, () => {
-          it('', () => {});
+          it.skip('', () => {});
         });
         describe(`${memberRangePatterns.f}`, () => {
-          it('', () => {});
+          it.skip('', () => {});
         });
         describe(`${memberRangePatterns.f_}`, () => {
-          it('', () => {});
+          it.skip('', () => {});
         });
         describe(`${memberRangePatterns.g}`, () => {
-          it('', () => {});
+          it.skip('', () => {});
         });
         describe(`${memberRangePatterns.h}`, () => {
-          it('', () => {});
+          it.skip('', () => {});
         });
       });
       describe(`${inlinePatterns.b}`, () => {
         describe(`${memberRangePatterns.a}`, () => {
-          it('', () => {});
+          it.skip('', () => {});
         });
         describe(`${memberRangePatterns.b}`, () => {
-          it('', () => {});
+          it.skip('', () => {});
         });
         describe(`${memberRangePatterns.c}`, () => {
-          it('', () => {});
+          it.skip('', () => {});
         });
         describe(`${memberRangePatterns.c_}`, () => {
-          it('', () => {});
+          it.skip('', () => {});
         });
         describe(`${memberRangePatterns.d}`, () => {
-          it('', () => {});
+          it.skip('', () => {});
         });
         describe(`${memberRangePatterns.d_}`, () => {
-          it('', () => {});
+          it.skip('', () => {});
         });
         describe(`${memberRangePatterns.e}`, () => {
-          it('', () => {});
+          it.skip('', () => {});
         });
         describe(`${memberRangePatterns.f}`, () => {
-          it('', () => {});
+          it.skip('', () => {});
         });
         describe(`${memberRangePatterns.f_}`, () => {
-          it('', () => {});
+          it.skip('', () => {});
         });
         describe(`${memberRangePatterns.g}`, () => {
-          it('', () => {});
+          it.skip('', () => {});
         });
         describe(`${memberRangePatterns.h}`, () => {
-          it('', () => {});
+          it.skip('', () => {});
         });
       });
       describe(`${inlinePatterns.c}`, () => {
         describe(`${memberRangePatterns.a}`, () => {
-          it('', () => {});
+          it.skip('', () => {});
         });
         describe(`${memberRangePatterns.b}`, () => {
-          it('', () => {});
+          it.skip('', () => {});
         });
         describe(`${memberRangePatterns.c}`, () => {
-          it('', () => {});
+          it.skip('', () => {});
         });
         describe(`${memberRangePatterns.c_}`, () => {
-          it('', () => {});
+          it.skip('', () => {});
         });
         describe(`${memberRangePatterns.d}`, () => {
-          it('', () => {});
+          it.skip('', () => {});
         });
         describe(`${memberRangePatterns.d_}`, () => {
-          it('', () => {});
+          it.skip('', () => {});
         });
         describe(`${memberRangePatterns.e}`, () => {
-          it('', () => {});
+          it.skip('', () => {});
         });
         describe(`${memberRangePatterns.f}`, () => {
-          it('', () => {});
+          it.skip('', () => {});
         });
         describe(`${memberRangePatterns.f_}`, () => {
-          it('', () => {});
+          it.skip('', () => {});
         });
         describe(`${memberRangePatterns.g}`, () => {
-          it('', () => {});
+          it.skip('', () => {});
         });
         describe(`${memberRangePatterns.h}`, () => {
-          it('', () => {});
+          it.skip('', () => {});
         });
       });
     });
     describe(`${rangePatterns.b_}`, () => {
       describe(`${inlinePatterns.a}`, () => {
         describe(`${memberRangePatterns.a}`, () => {
-          it('', () => {});
+          it.skip('', () => {});
         });
         describe(`${memberRangePatterns.b}`, () => {
-          it('', () => {});
+          it.skip('', () => {});
         });
         describe(`${memberRangePatterns.c}`, () => {
-          it('', () => {});
+          it.skip('', () => {});
         });
         describe(`${memberRangePatterns.c_}`, () => {
-          it('', () => {});
+          it.skip('', () => {});
         });
         describe(`${memberRangePatterns.d}`, () => {
-          it('', () => {});
+          it.skip('', () => {});
         });
         describe(`${memberRangePatterns.d_}`, () => {
-          it('', () => {});
+          it.skip('', () => {});
         });
         describe(`${memberRangePatterns.e}`, () => {
-          it('', () => {});
+          it.skip('', () => {});
         });
         describe(`${memberRangePatterns.f}`, () => {
-          it('', () => {});
+          it.skip('', () => {});
         });
         describe(`${memberRangePatterns.f_}`, () => {
-          it('', () => {});
+          it.skip('', () => {});
         });
         describe(`${memberRangePatterns.g}`, () => {
-          it('', () => {});
+          it.skip('', () => {});
         });
         describe(`${memberRangePatterns.h}`, () => {
-          it('', () => {});
+          it.skip('', () => {});
         });
       });
       describe(`${inlinePatterns.b}`, () => {
         describe(`${memberRangePatterns.a}`, () => {
-          it('', () => {});
+          it.skip('', () => {});
         });
         describe(`${memberRangePatterns.b}`, () => {
-          it('', () => {});
+          it.skip('', () => {});
         });
         describe(`${memberRangePatterns.c}`, () => {
-          it('', () => {});
+          it.skip('', () => {});
         });
         describe(`${memberRangePatterns.c_}`, () => {
-          it('', () => {});
+          it.skip('', () => {});
         });
         describe(`${memberRangePatterns.d}`, () => {
-          it('', () => {});
+          it.skip('', () => {});
         });
         describe(`${memberRangePatterns.d_}`, () => {
-          it('', () => {});
+          it.skip('', () => {});
         });
         describe(`${memberRangePatterns.e}`, () => {
-          it('', () => {});
+          it.skip('', () => {});
         });
         describe(`${memberRangePatterns.f}`, () => {
-          it('', () => {});
+          it.skip('', () => {});
         });
         describe(`${memberRangePatterns.f_}`, () => {
-          it('', () => {});
+          it.skip('', () => {});
         });
         describe(`${memberRangePatterns.g}`, () => {
-          it('', () => {});
+          it.skip('', () => {});
         });
         describe(`${memberRangePatterns.h}`, () => {
-          it('', () => {});
+          it.skip('', () => {});
         });
       });
       describe(`${inlinePatterns.c}`, () => {
         describe(`${memberRangePatterns.a}`, () => {
-          it('', () => {});
+          it.skip('', () => {});
         });
         describe(`${memberRangePatterns.b}`, () => {
-          it('', () => {});
+          it.skip('', () => {});
         });
         describe(`${memberRangePatterns.c}`, () => {
-          it('', () => {});
+          it.skip('', () => {});
         });
         describe(`${memberRangePatterns.c_}`, () => {
-          it('', () => {});
+          it.skip('', () => {});
         });
         describe(`${memberRangePatterns.d}`, () => {
-          it('', () => {});
+          it.skip('', () => {});
         });
         describe(`${memberRangePatterns.d_}`, () => {
-          it('', () => {});
+          it.skip('', () => {});
         });
         describe(`${memberRangePatterns.e}`, () => {
-          it('', () => {});
+          it.skip('', () => {});
         });
         describe(`${memberRangePatterns.f}`, () => {
-          it('', () => {});
+          it.skip('', () => {});
         });
         describe(`${memberRangePatterns.f_}`, () => {
-          it('', () => {});
+          it.skip('', () => {});
         });
         describe(`${memberRangePatterns.g}`, () => {
-          it('', () => {});
+          it.skip('', () => {});
         });
         describe(`${memberRangePatterns.h}`, () => {
-          it('', () => {});
+          it.skip('', () => {});
         });
       });
     });
