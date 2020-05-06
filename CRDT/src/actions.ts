@@ -4,60 +4,12 @@ import { factory } from './factory';
 import { transform } from './transform';
 import { traversal } from './traversal';
 import { Selection, utils as sutils } from './selection';
-
-import { ItemNode } from './node';
+import { getStartAndEnd, hasSameMarks } from './actionsutils';
 
 /*
  * API設計時の注意: 引数を与える場合の優先順位
  * userId > CRDTDocument > 個別の引数
  */
-function getStartAndEnd(selection: Selection, node: ItemNode) {
-  let start = null;
-  let end = null;
-
-  if (selection.range === null || node.inline === null) {
-    return { start, end };
-  }
-  const anchor = selection.range.anchor;
-  const focus = selection.range.focus;
-
-  if (anchor.id === focus.id) {
-    if (anchor.offset.value < focus.offset.value) {
-      return {
-        start: anchor,
-        end: focus,
-      };
-    } else {
-      return {
-        start: focus,
-        end: anchor,
-      };
-    }
-  }
-
-  for (let i = 0; i < node.inline.length; i += 1) {
-    const inline = node.inline[i];
-
-    if (start === null) {
-      if (inline.id === anchor.id) {
-        start = anchor;
-      } else if (inline.id === focus.id) {
-        start = focus;
-      }
-    } else {
-      if (inline.id === anchor.id) {
-        end = anchor;
-      } else if (inline.id === focus.id) {
-        end = focus;
-      }
-    }
-  }
-
-  return {
-    start,
-    end,
-  };
-}
 
 export const actions = {
   init: (userId: string): Doc => {
@@ -279,9 +231,30 @@ export const actions = {
 
   postprocessTextDeletion: (userId: string, doc: Doc): void => {
     // TODO: 「Actions 文字を削除した場合の後処理」を適用する
-    let todo = false;
-    if (todo) {
-      console.log(userId, doc);
+    const users = doc.users;
+    const document = doc.document;
+    const selection: Selection = users[userId];
+
+    const node = traversal.node.findCurrentNode(selection, document);
+
+    if (node === null || node.inline === null) return;
+
+    for (let i = 0; i < node.inline.length; i += 1) {
+      const inln = node.inline[i];
+      const nextInln = node.inline[i + 1] || null;
+
+      if (nextInln && inln.type === nextInln.type && hasSameMarks(inln.marks, nextInln.marks)) {
+        inln.text.splice(inln.text.length, 0, ...nextInln.text);
+        node.inline.splice(i + 1, 1);
+
+        i -= 1;
+
+        const { start, end } = getStartAndEnd(selection, node);
+        if (start !== null && end !== null && start.id !== end.id) {
+          end.id = start.id;
+          end.offset.increment(start.offset.value);
+        }
+      }
     }
   },
 
