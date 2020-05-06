@@ -279,7 +279,7 @@ export const actions = {
           selection.ids = [node.next];
         } else if (node.prev) {
           selection.ids = [node.prev];
-        } else if (node.parent) {
+        } else if (node.parent && node.parent !== node.document) {
           selection.ids = [node.parent];
         } else {
           selection.ids = [];
@@ -294,7 +294,7 @@ export const actions = {
               slctn.ids = [node.next];
             } else if (node.prev) {
               slctn.ids = [node.prev];
-            } else if (node.parent) {
+            } else if (node.parent && node.parent !== node.document) {
               slctn.ids = [node.parent];
             } else {
               slctn.ids = [];
