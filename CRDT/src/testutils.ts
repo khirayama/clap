@@ -20,27 +20,29 @@ export function toLooseJSON(obj: any) {
         - ABC
         - DEF
         - GHI
-  Paragraph4
-    - ABCDEFGHI
+      Paragraph4
+        - ABCDEFGHI
   Paragraph5
     - ABCDEFGHI
-    Paragraph6
+  Paragraph6
+    - ABCDEFGHI
+    Paragraph7
       - ABCDEFGHI
-      Paragraph7
+      Paragraph8
         - ABC
         - DEF
         - GHI
-  Paragraph8
-    - ABCDEFGHI
   Paragraph9
     - ABCDEFGHI
-    Paragraph10
+  Paragraph10
+    - ABCDEFGHI
+    Paragraph11
       - ABCDEFGHI
-      Paragraph11
+      Paragraph12
         - ABC
         - DEF
         - GHI
-    Paragraph12
+    Paragraph13
       - ABCDEFGHI
 */
 
@@ -99,34 +101,37 @@ export function createSampleData() {
     const paragraph6 = factory.node.createParagraphNode();
     paragraph6.inline.push(createInlineText1());
     const paragraph7 = factory.node.createParagraphNode();
-    paragraph7.inline.push(createInlineText2());
-    paragraph7.inline.push(createInlineText3());
-    paragraph7.inline.push(createInlineText4());
+    paragraph7.inline.push(createInlineText1());
     const paragraph8 = factory.node.createParagraphNode();
-    paragraph8.inline.push(createInlineText1());
+    paragraph8.inline.push(createInlineText2());
+    paragraph8.inline.push(createInlineText3());
+    paragraph8.inline.push(createInlineText4());
     const paragraph9 = factory.node.createParagraphNode();
     paragraph9.inline.push(createInlineText1());
     const paragraph10 = factory.node.createParagraphNode();
     paragraph10.inline.push(createInlineText1());
     const paragraph11 = factory.node.createParagraphNode();
-    paragraph11.inline.push(createInlineText2());
-    paragraph11.inline.push(createInlineText3());
-    paragraph11.inline.push(createInlineText4());
+    paragraph11.inline.push(createInlineText1());
     const paragraph12 = factory.node.createParagraphNode();
-    paragraph12.inline.push(createInlineText1());
+    paragraph12.inline.push(createInlineText2());
+    paragraph12.inline.push(createInlineText3());
+    paragraph12.inline.push(createInlineText4());
+    const paragraph13 = factory.node.createParagraphNode();
+    paragraph13.inline.push(createInlineText1());
 
     transform.node.append(paragraph2, paragraph3);
+    transform.node.append(paragraph2, paragraph4);
     transform.node.append(paragraph1, paragraph2);
     transform.node.append(document, paragraph1);
-    transform.node.append(document, paragraph4);
-    transform.node.append(paragraph6, paragraph7);
-    transform.node.append(paragraph5, paragraph6);
     transform.node.append(document, paragraph5);
-    transform.node.append(document, paragraph8);
-    transform.node.append(paragraph10, paragraph11);
-    transform.node.append(paragraph9, paragraph10);
-    transform.node.append(paragraph9, paragraph12);
+    transform.node.append(paragraph7, paragraph8);
+    transform.node.append(paragraph6, paragraph7);
+    transform.node.append(document, paragraph6);
     transform.node.append(document, paragraph9);
+    transform.node.append(paragraph11, paragraph12);
+    transform.node.append(paragraph10, paragraph11);
+    transform.node.append(paragraph10, paragraph13);
+    transform.node.append(document, paragraph10);
   });
   memberDoc.merge(new CRDTDocument(user.id, userDoc.save()));
 

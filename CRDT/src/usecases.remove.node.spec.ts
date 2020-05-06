@@ -74,18 +74,18 @@ describe('削除操作', () => {
 
         it('項目が削除され、編集者と共同編集者の選択範囲が親項目へ移動していること', () => {
           userDoc.change((doc) => {
-            doc.users[user.id].ids = [doc.document.nodes[0].nodes[0].nodes[0].id];
+            doc.users[user.id].ids = [doc.document.nodes[2].nodes[0].nodes[0].id];
             doc.users[user.id].range = null;
           });
           memberDoc.merge(userDoc);
           memberDoc.change((doc) => {
-            doc.users[member.id].ids = [doc.document.nodes[0].nodes[0].nodes[0].id];
+            doc.users[member.id].ids = [doc.document.nodes[2].nodes[0].nodes[0].id];
             doc.users[member.id].range = null;
           });
           userDoc.merge(memberDoc);
 
           const expectedDoc = toLooseJSON(userDoc);
-          const node = expectedDoc.doc.document.nodes[0].nodes[0];
+          const node = expectedDoc.doc.document.nodes[2].nodes[0];
           node.nodes = [];
           expectedDoc.doc.users[user.id].ids = [node.id];
           expectedDoc.doc.users[member.id].ids = [node.id];
@@ -217,6 +217,7 @@ describe('削除操作', () => {
 
           assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
         });
+
         it('複数項目が削除され、編集者と共同編集者の選択範囲が前項目へ移動していること', () => {
           userDoc.change((doc) => {
             doc.users[user.id].ids = [doc.document.nodes[2].id, doc.document.nodes[3].id, doc.document.nodes[4].id];
