@@ -271,7 +271,36 @@ describe('削除操作', () => {
 
           assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
         });
-        it.skip('複数項目が削除され、編集者と共同編集者の選択範囲がなくなっていること', () => {});
+
+        it('複数項目が削除され、編集者と共同編集者の選択範囲がなくなっていること', () => {
+          userDoc.change((doc) => {
+            doc.users[user.id].ids = [
+              doc.document.nodes[0].id,
+              doc.document.nodes[1].id,
+              doc.document.nodes[2].id,
+              doc.document.nodes[3].id,
+              doc.document.nodes[4].id,
+            ];
+            doc.users[user.id].range = null;
+          });
+          memberDoc.merge(userDoc);
+          memberDoc.change((doc) => {
+            doc.users[member.id].ids = [doc.document.nodes[0].id];
+            doc.users[member.id].range = null;
+          });
+          userDoc.merge(memberDoc);
+
+          const expectedDoc = toLooseJSON(userDoc);
+          expectedDoc.doc.document.nodes = [];
+          expectedDoc.doc.users[user.id].ids = [];
+          expectedDoc.doc.users[member.id].ids = [];
+
+          userDoc.change((doc) => {
+            usecases.remove(user.id, doc);
+          });
+
+          assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
+        });
       });
       describe(`共同編集者選択範囲が${nodePatterns.b}`, () => {
         describe('編集者と共同編集者が同じ選択範囲の場合', () => {
