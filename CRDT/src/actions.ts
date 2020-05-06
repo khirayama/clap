@@ -11,6 +11,10 @@ import { getStartAndEnd, hasSameMarks } from './actionsutils';
  * userId > CRDTDocument > 個別の引数
  */
 
+function getMemberIds(userId: string, users: Doc['users']): string[] {
+  return Object.keys(users).filter((uid) => uid !== userId);
+}
+
 export const actions = {
   init: (userId: string): Doc => {
     const selection = factory.selection.createSelection();
@@ -270,6 +274,7 @@ export const actions = {
     for (const node of nodes) {
       if (node !== null && node.object === 'item') {
         transform.node.remove(document, node);
+
         if (node.next) {
           selection.ids = [node.next];
         } else if (node.prev) {
@@ -278,6 +283,25 @@ export const actions = {
           selection.ids = [node.parent];
         } else {
           selection.ids = [];
+        }
+
+        const mids = getMemberIds(userId, doc.users);
+        for (const mid of mids) {
+          const slctn = doc.users[mid];
+          if (slctn.ids.length === 1 && slctn.ids[0] === node.id) {
+            slctn.range = null;
+            if (node.next) {
+              slctn.ids = [node.next];
+            } else if (node.prev) {
+              slctn.ids = [node.prev];
+            } else if (node.parent) {
+              slctn.ids = [node.parent];
+            } else {
+              slctn.ids = [];
+            }
+          } else if (slctn.ids.includes(node.id)) {
+            slctn.ids = slctn.ids.filter((nid) => nid !== node.id);
+          }
         }
       }
     }
