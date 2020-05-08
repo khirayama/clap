@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "rm -rf dist && tsc && concurrently 'tsc -w' 'mocha dist/**/*.spec.js -w --watch-files dist/**/*.js'",
+    "now": "rm -rf dist && tsc && concurrently 'tsc -w' 'mocha dist/usecases.remove.inline.spec.js -w --watch-files dist/**/*.js'",
     "once": "rm -rf dist && tsc && mocha dist/**/*.spec.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
