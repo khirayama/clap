@@ -4,16 +4,12 @@ import { factory } from './factory';
 import { transform } from './transform';
 import { traversal } from './traversal';
 import { Selection, utils as sutils } from './selection';
-import { getStartAndEnd, hasSameMarks } from './actionsutils';
+import { getStartAndEnd, hasSameMarks, getMemberIds } from './actionsutils';
 
 /*
  * API設計時の注意: 引数を与える場合の優先順位
  * userId > CRDTDocument > 個別の引数
  */
-
-function getMemberIds(userId: string, users: Doc['users']): string[] {
-  return Object.keys(users).filter((uid) => uid !== userId);
-}
 
 export const actions = {
   init: (userId: string): Doc => {
