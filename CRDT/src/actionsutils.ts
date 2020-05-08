@@ -1,3 +1,4 @@
+import { Doc } from './interfaces';
 import { Selection } from './selection';
 import { ItemNode } from './node';
 import { Decoration } from './inline';
@@ -60,4 +61,8 @@ export function hasSameMarks(marks1: Decoration[], marks2: Decoration[]): boolea
     }
   }
   return true;
+}
+
+export function getMemberIds(userId: string, users: Doc['users']): string[] {
+  return Object.keys(users).filter((uid) => uid !== userId);
 }
