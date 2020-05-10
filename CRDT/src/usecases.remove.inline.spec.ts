@@ -834,7 +834,7 @@ describe('削除操作', () => {
           assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
         });
 
-        it('選択範囲文字が削除され、編集者選択範囲と共同編集者選択範囲が始点に閉じている', () => {
+        it('選択範囲文字が削除され、編集者選択範囲と共同編集者選択範囲が始点に閉じている(末尾)', () => {
           userDoc.change((doc) => {
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[user.id];
