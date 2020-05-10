@@ -213,7 +213,7 @@ export const actions = {
           const collaboratorStart = tmp.start;
           const collaboratorEnd = tmp.end;
 
-          if (collaboratorStart && collaboratorEnd) {
+          if (collaboratorStart !== null && collaboratorEnd !== null) {
             if (
               (collaboratorStart.id === startId && collaboratorStart.offset.value > startOffset) ||
               removedIds.includes(collaboratorStart.id)
@@ -222,12 +222,15 @@ export const actions = {
               collaboratorStart.offset.increment(sutils.getOffset(collaboratorStart.offset.value, startOffset));
             }
 
-            if (removedIds.includes(collaboratorEnd.id)) {
+            if (
+              removedIds.includes(collaboratorEnd.id) ||
+              (collaboratorEnd.id === startId && collaboratorEnd.offset.value > startOffset) ||
+              (collaboratorEnd.id === endId && collaboratorEnd.offset.value <= endOffset)
+            ) {
               collaboratorEnd.id = startId;
               collaboratorEnd.offset.increment(sutils.getOffset(collaboratorEnd.offset.value, startOffset));
-            } else if (collaboratorEnd.id === endId && collaboratorEnd.offset.value >= endOffset) {
-              collaboratorEnd.id = startId;
-              collaboratorEnd.offset.increment(sutils.getOffset(endOffset, startOffset));
+            } else if (collaboratorEnd.id === endId && collaboratorEnd.offset.value > endOffset) {
+              collaboratorEnd.offset.decrement(endOffset);
             }
           }
         }
