@@ -268,6 +268,8 @@ export const actions = {
 
     if (node === null || node.inline === null) return;
 
+    const tmpNode = { ...node, inline: [...node.inline] };
+
     // インラインが同様の装飾が並んだ場合
     for (let i = 0; i < node.inline.length; i += 1) {
       const inln = node.inline[i];
@@ -276,13 +278,16 @@ export const actions = {
       if (nextInln && inln.type === nextInln.type && hasSameMarks(inln.marks, nextInln.marks)) {
         inln.text.splice(inln.text.length, 0, ...nextInln.text);
         node.inline.splice(i + 1, 1);
-
         i -= 1;
 
-        const { start, end } = getStartAndEnd(selection, node);
-        if (start !== null && end !== null && start.id !== end.id) {
-          end.id = start.id;
-          end.offset.increment(start.offset.value);
+        const userIds = Object.keys(users);
+        for (const uid of userIds) {
+          const slctn = users[uid];
+          const { start, end } = getStartAndEnd(slctn, tmpNode);
+          if (start !== null && end !== null && start.id !== end.id) {
+            end.id = start.id;
+            end.offset.increment(start.offset.value);
+          }
         }
       }
     }
@@ -297,7 +302,7 @@ export const actions = {
         const userIds = Object.keys(users);
         for (const uid of userIds) {
           const slctn = users[uid];
-          const { start, end } = getStartAndEnd(slctn, node);
+          const { start, end } = getStartAndEnd(slctn, tmpNode);
 
           if (prevInln !== null) {
             if (start !== null && end !== null && start.id === inln.id) {
@@ -319,6 +324,7 @@ export const actions = {
             }
           }
         }
+
         node.inline.splice(i, 1);
         i -= 1;
       }
