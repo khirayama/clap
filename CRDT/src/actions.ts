@@ -284,9 +284,15 @@ export const actions = {
         for (const uid of userIds) {
           const slctn = users[uid];
           const { start, end } = getStartAndEnd(slctn, tmpNode);
-          if (start !== null && end !== null && start.id !== end.id) {
-            end.id = start.id;
-            end.offset.increment(start.offset.value);
+          if (start !== null && end !== null) {
+            if (start.id === nextInln.id) {
+              start.id = inln.id;
+              start.offset.increment(start.offset.value);
+            }
+            if (end.id === nextInln.id) {
+              end.id = inln.id;
+              end.offset.increment(end.offset.value);
+            }
           }
         }
       }
