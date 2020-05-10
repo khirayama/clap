@@ -219,6 +219,9 @@ export const actions = {
               slctn.range.anchor.offset.increment(sutils.getOffset(slctn.range.anchor.offset.value, startOffset));
               slctn.range.focus.id = startId;
               slctn.range.focus.offset.increment(sutils.getOffset(slctn.range.focus.offset.value, startOffset));
+            } else if (slctn.range.anchor.id === endId && slctn.range.anchor.offset.value > endOffset) {
+              slctn.range.anchor.offset.decrement(endOffset);
+              slctn.range.focus.offset.decrement(endOffset);
             }
           } else {
             const tmp = getStartAndEnd(slctn, node);
