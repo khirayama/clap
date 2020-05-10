@@ -146,6 +146,7 @@ export const actions = {
         if (end.id === endInlineId && end.offset.value >= endOffset) {
           end.offset.decrement(size);
         }
+
         for (const mid of memberIds) {
           const slctn = users[mid];
           if (slctn && slctn.range && slctn.ids[0] === node.id) {
@@ -173,20 +174,25 @@ export const actions = {
       let isStarted = false;
       const removedIds: string[] = [];
 
+      const startId = start.id;
+      const startOffset = start.offset.value;
+      const endId = end.id;
+      const endOffset = end.offset.value;
+
       for (let i = 0; i < node.inline.length; i += 1) {
         const inline = node.inline[i];
 
-        if (inline.id === start.id) {
+        if (inline.id === startId) {
           isStarted = true;
-          const startInline = traversal.inline.find(node, start.id);
+          const startInline = traversal.inline.find(node, startId);
           if (startInline) {
-            transform.inline.removeText(inline, start.offset.value, startInline.text.length - start.offset.value);
+            transform.inline.removeText(inline, startOffset, startInline.text.length - startOffset);
           }
-        } else if (inline.id === end.id) {
+        } else if (inline.id === endId) {
           isStarted = false;
-          const endInline = traversal.inline.find(node, end.id);
+          const endInline = traversal.inline.find(node, endId);
           if (endInline) {
-            transform.inline.removeText(inline, 0, end.offset.value);
+            transform.inline.removeText(inline, 0, endOffset);
           }
         } else if (isStarted) {
           removedIds.push(inline.id);
@@ -194,11 +200,6 @@ export const actions = {
           i -= 1;
         }
       }
-
-      const startId = start.id;
-      const startOffset = start.offset.value;
-      const endId = end.id;
-      const endOffset = end.offset.value;
 
       end.id = start.id;
       end.offset.increment(sutils.getOffset(endOffset, startOffset));
@@ -235,7 +236,6 @@ export const actions = {
   },
 
   postprocessTextDeletion: (userId: string, doc: Doc): void => {
-    // TODO: 「Actions 文字を削除した場合の後処理」を適用する
     const users = doc.users;
     const document = doc.document;
     const selection: Selection = users[userId];
@@ -244,6 +244,7 @@ export const actions = {
 
     if (node === null || node.inline === null) return;
 
+    // インラインが同様の装飾が並んだ場合
     for (let i = 0; i < node.inline.length; i += 1) {
       const inln = node.inline[i];
       const nextInln = node.inline[i + 1] || null;
@@ -259,6 +260,43 @@ export const actions = {
           end.id = start.id;
           end.offset.increment(start.offset.value);
         }
+      }
+    }
+
+    // インラインのテキストが空になった場合
+    for (let i = 0; i < node.inline.length; i += 1) {
+      const prevInln = node.inline[i - 1] || null;
+      const inln = node.inline[i];
+      const nextInln = node.inline[i + 1] || null;
+
+      if (inln.text.length === 0) {
+        const userIds = Object.keys(users);
+        for (const uid of userIds) {
+          const slctn = users[uid];
+          const { start, end } = getStartAndEnd(slctn, node);
+
+          if (prevInln !== null) {
+            if (start !== null && end !== null && start.id === inln.id) {
+              start.id = prevInln.id;
+              start.offset.increment(sutils.getOffset(start.offset.value, prevInln.text.length));
+            }
+            if (start !== null && end !== null && end.id === inln.id) {
+              end.id = prevInln.id;
+              end.offset.increment(sutils.getOffset(end.offset.value, prevInln.text.length));
+            }
+          } else if (nextInln !== null) {
+            if (start !== null && end !== null && start.id === inln.id) {
+              start.id = nextInln.id;
+              start.offset.increment(sutils.getOffset(start.offset.value, 0));
+            }
+            if (start !== null && end !== null && end.id === inln.id) {
+              end.id = nextInln.id;
+              end.offset.increment(sutils.getOffset(end.offset.value, 0));
+            }
+          }
+        }
+        node.inline.splice(i, 1);
+        i -= 1;
       }
     }
   },
