@@ -1763,23 +1763,278 @@ describe('削除操作', () => {
       });
 
       describe(`${memberRangePatterns.d_}`, () => {
-        it.skip('', () => {});
+        it('選択範囲文字が削除され、編集者選択範囲が始点に閉じており、共同編集者選択範囲終点に影響がなく、始点が削除された文字数分移動していること', () => {
+          userDoc.change((doc) => {
+            const node = doc.document.nodes[0].nodes[0].nodes[0];
+            const selection = doc.users[user.id];
+            const range = selection.range;
+
+            selection.ids = [node.id];
+            if (range) {
+              range.anchor.id = node.inline[0].id;
+              range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
+              range.focus.id = node.inline[2].id;
+              range.focus.offset.increment(sutils.getOffset(range.focus.offset.value, 2));
+            }
+          });
+          memberDoc.merge(userDoc);
+          memberDoc.change((doc) => {
+            const node = doc.document.nodes[0].nodes[0].nodes[0];
+            const selection = doc.users[member.id];
+            const range = selection.range;
+
+            selection.ids = [node.id];
+            if (range) {
+              range.anchor.id = node.inline[2].id;
+              range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 3));
+              range.focus.id = node.inline[1].id;
+              range.focus.offset.increment(sutils.getOffset(range.focus.offset.value, 1));
+            }
+          });
+          userDoc.merge(memberDoc);
+
+          const expectedDoc = toLooseJSON(userDoc);
+          const node = expectedDoc.doc.document.nodes[0].nodes[0].nodes[0];
+          const userSelection = expectedDoc.doc.users[user.id];
+          const memberSelection = expectedDoc.doc.users[member.id];
+          node.inline[0].text = 'AI'.split('');
+          userSelection.range.anchor.id = node.inline[0].id;
+          userSelection.range.anchor.offset = 1;
+          userSelection.range.focus.id = node.inline[0].id;
+          userSelection.range.focus.offset = 1;
+          memberSelection.range.anchor.id = node.inline[0].id;
+          memberSelection.range.anchor.offset = 2;
+          memberSelection.range.focus.id = node.inline[0].id;
+          memberSelection.range.focus.offset = 1;
+          node.inline.splice(1, 2);
+
+          userDoc.change((doc) => {
+            usecases.remove(user.id, doc);
+          });
+          memberDoc.merge(userDoc);
+
+          assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
+        });
       });
 
       describe(`${memberRangePatterns.e}`, () => {
-        it.skip('', () => {});
+        it('選択範囲文字が削除され、編集者と共同編集者の選択範囲が始点に閉じていること', () => {
+          userDoc.change((doc) => {
+            const node = doc.document.nodes[0].nodes[0].nodes[0];
+            const selection = doc.users[user.id];
+            const range = selection.range;
+
+            selection.ids = [node.id];
+            if (range) {
+              range.anchor.id = node.inline[0].id;
+              range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
+              range.focus.id = node.inline[2].id;
+              range.focus.offset.increment(sutils.getOffset(range.focus.offset.value, 2));
+            }
+          });
+          memberDoc.merge(userDoc);
+          memberDoc.change((doc) => {
+            const node = doc.document.nodes[0].nodes[0].nodes[0];
+            const selection = doc.users[member.id];
+            const range = selection.range;
+
+            selection.ids = [node.id];
+            if (range) {
+              range.anchor.id = node.inline[1].id;
+              range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
+              range.focus.id = node.inline[1].id;
+              range.focus.offset.increment(sutils.getOffset(range.focus.offset.value, 1));
+            }
+          });
+          userDoc.merge(memberDoc);
+
+          const expectedDoc = toLooseJSON(userDoc);
+          const node = expectedDoc.doc.document.nodes[0].nodes[0].nodes[0];
+          const userSelection = expectedDoc.doc.users[user.id];
+          const memberSelection = expectedDoc.doc.users[member.id];
+          node.inline[0].text = 'AI'.split('');
+          userSelection.range.anchor.id = node.inline[0].id;
+          userSelection.range.anchor.offset = 1;
+          userSelection.range.focus.id = node.inline[0].id;
+          userSelection.range.focus.offset = 1;
+          memberSelection.range.anchor.id = node.inline[0].id;
+          memberSelection.range.anchor.offset = 1;
+          memberSelection.range.focus.id = node.inline[0].id;
+          memberSelection.range.focus.offset = 1;
+          node.inline.splice(1, 2);
+
+          userDoc.change((doc) => {
+            usecases.remove(user.id, doc);
+          });
+          memberDoc.merge(userDoc);
+
+          assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
+        });
       });
 
       describe(`${memberRangePatterns.f}`, () => {
-        it.skip('', () => {});
+        it('選択範囲文字が削除され、編集者選択範囲が始点に閉じており、共同編集者選択範囲始点が編集者選択範囲始点に移動し、終点が削除された文字数分移動していること', () => {
+          userDoc.change((doc) => {
+            const node = doc.document.nodes[0].nodes[0].nodes[0];
+            const selection = doc.users[user.id];
+            const range = selection.range;
+
+            selection.ids = [node.id];
+            if (range) {
+              range.anchor.id = node.inline[0].id;
+              range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
+              range.focus.id = node.inline[2].id;
+              range.focus.offset.increment(sutils.getOffset(range.focus.offset.value, 2));
+            }
+          });
+          memberDoc.merge(userDoc);
+          memberDoc.change((doc) => {
+            const node = doc.document.nodes[0].nodes[0].nodes[0];
+            const selection = doc.users[member.id];
+            const range = selection.range;
+
+            selection.ids = [node.id];
+            if (range) {
+              range.anchor.id = node.inline[1].id;
+              range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
+              range.focus.id = node.inline[2].id;
+              range.focus.offset.increment(sutils.getOffset(range.focus.offset.value, 3));
+            }
+          });
+          userDoc.merge(memberDoc);
+
+          const expectedDoc = toLooseJSON(userDoc);
+          const node = expectedDoc.doc.document.nodes[0].nodes[0].nodes[0];
+          const userSelection = expectedDoc.doc.users[user.id];
+          const memberSelection = expectedDoc.doc.users[member.id];
+          node.inline[0].text = 'AI'.split('');
+          userSelection.range.anchor.id = node.inline[0].id;
+          userSelection.range.anchor.offset = 1;
+          userSelection.range.focus.id = node.inline[0].id;
+          userSelection.range.focus.offset = 1;
+          memberSelection.range.anchor.id = node.inline[0].id;
+          memberSelection.range.anchor.offset = 1;
+          memberSelection.range.focus.id = node.inline[0].id;
+          memberSelection.range.focus.offset = 2;
+          node.inline.splice(1, 2);
+
+          userDoc.change((doc) => {
+            usecases.remove(user.id, doc);
+          });
+          memberDoc.merge(userDoc);
+
+          assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
+        });
       });
 
       describe(`${memberRangePatterns.f_}`, () => {
-        it.skip('', () => {});
+        it('選択範囲文字が削除され、編集者選択範囲が始点に閉じており、共同編集者選択範囲終点が編集者選択範囲始点に移動し、始点が削除された文字数分移動していること', () => {
+          userDoc.change((doc) => {
+            const node = doc.document.nodes[0].nodes[0].nodes[0];
+            const selection = doc.users[user.id];
+            const range = selection.range;
+
+            selection.ids = [node.id];
+            if (range) {
+              range.anchor.id = node.inline[0].id;
+              range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
+              range.focus.id = node.inline[2].id;
+              range.focus.offset.increment(sutils.getOffset(range.focus.offset.value, 2));
+            }
+          });
+          memberDoc.merge(userDoc);
+          memberDoc.change((doc) => {
+            const node = doc.document.nodes[0].nodes[0].nodes[0];
+            const selection = doc.users[member.id];
+            const range = selection.range;
+
+            selection.ids = [node.id];
+            if (range) {
+              range.anchor.id = node.inline[2].id;
+              range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 3));
+              range.focus.id = node.inline[1].id;
+              range.focus.offset.increment(sutils.getOffset(range.focus.offset.value, 1));
+            }
+          });
+          userDoc.merge(memberDoc);
+
+          const expectedDoc = toLooseJSON(userDoc);
+          const node = expectedDoc.doc.document.nodes[0].nodes[0].nodes[0];
+          const userSelection = expectedDoc.doc.users[user.id];
+          const memberSelection = expectedDoc.doc.users[member.id];
+          node.inline[0].text = 'AI'.split('');
+          userSelection.range.anchor.id = node.inline[0].id;
+          userSelection.range.anchor.offset = 1;
+          userSelection.range.focus.id = node.inline[0].id;
+          userSelection.range.focus.offset = 1;
+          memberSelection.range.anchor.id = node.inline[0].id;
+          memberSelection.range.anchor.offset = 2;
+          memberSelection.range.focus.id = node.inline[0].id;
+          memberSelection.range.focus.offset = 1;
+          node.inline.splice(1, 2);
+
+          userDoc.change((doc) => {
+            usecases.remove(user.id, doc);
+          });
+          memberDoc.merge(userDoc);
+
+          assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
+        });
       });
 
       describe(`${memberRangePatterns.g}`, () => {
-        it.skip('', () => {});
+        it('選択範囲文字が削除され、編集者選択範囲が始点に閉じており、共同編集者選択範囲始点と終点が削除された文字数分移動していること', () => {
+          userDoc.change((doc) => {
+            const node = doc.document.nodes[0].nodes[0].nodes[0];
+            const selection = doc.users[user.id];
+            const range = selection.range;
+
+            selection.ids = [node.id];
+            if (range) {
+              range.anchor.id = node.inline[0].id;
+              range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
+              range.focus.id = node.inline[2].id;
+              range.focus.offset.increment(sutils.getOffset(range.focus.offset.value, 2));
+            }
+          });
+          memberDoc.merge(userDoc);
+          memberDoc.change((doc) => {
+            const node = doc.document.nodes[0].nodes[0].nodes[0];
+            const selection = doc.users[member.id];
+            const range = selection.range;
+
+            selection.ids = [node.id];
+            if (range) {
+              range.anchor.id = node.inline[2].id;
+              range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 3));
+              range.focus.id = node.inline[2].id;
+              range.focus.offset.increment(sutils.getOffset(range.focus.offset.value, 3));
+            }
+          });
+          userDoc.merge(memberDoc);
+
+          const expectedDoc = toLooseJSON(userDoc);
+          const node = expectedDoc.doc.document.nodes[0].nodes[0].nodes[0];
+          const userSelection = expectedDoc.doc.users[user.id];
+          const memberSelection = expectedDoc.doc.users[member.id];
+          node.inline[0].text = 'AI'.split('');
+          userSelection.range.anchor.id = node.inline[0].id;
+          userSelection.range.anchor.offset = 1;
+          userSelection.range.focus.id = node.inline[0].id;
+          userSelection.range.focus.offset = 1;
+          memberSelection.range.anchor.id = node.inline[0].id;
+          memberSelection.range.anchor.offset = 2;
+          memberSelection.range.focus.id = node.inline[0].id;
+          memberSelection.range.focus.offset = 2;
+          node.inline.splice(1, 2);
+
+          userDoc.change((doc) => {
+            usecases.remove(user.id, doc);
+          });
+          memberDoc.merge(userDoc);
+
+          assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
+        });
       });
 
       describe(`${memberRangePatterns.h}`, () => {
