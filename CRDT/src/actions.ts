@@ -179,6 +179,11 @@ export const actions = {
       const endId = end.id;
       const endOffset = end.offset.value;
 
+      const tmpNode = {
+        ...node,
+        inline: [...node.inline],
+      };
+
       for (let i = 0; i < node.inline.length; i += 1) {
         const inline = node.inline[i];
 
@@ -224,7 +229,7 @@ export const actions = {
               slctn.range.focus.offset.decrement(endOffset);
             }
           } else {
-            const tmp = getStartAndEnd(slctn, node);
+            const tmp = getStartAndEnd(slctn, tmpNode);
             const collaboratorStart = tmp.start;
             const collaboratorEnd = tmp.end;
 
