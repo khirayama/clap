@@ -209,28 +209,41 @@ export const actions = {
         const slctn = users[mid];
 
         if (slctn && slctn.range && slctn.ids[0] === node.id) {
-          const tmp = getStartAndEnd(slctn, node);
-          const collaboratorStart = tmp.start;
-          const collaboratorEnd = tmp.end;
-
-          if (collaboratorStart !== null && collaboratorEnd !== null) {
+          if (sutils.isCollasped(slctn)) {
             if (
-              (collaboratorStart.id === startId && collaboratorStart.offset.value > startOffset) ||
-              removedIds.includes(collaboratorStart.id)
+              (slctn.range.anchor.id === startId && slctn.range.anchor.offset.value > startOffset) ||
+              (slctn.range.anchor.id === endId && slctn.range.anchor.offset.value <= endOffset) ||
+              removedIds.includes(slctn.range.anchor.id)
             ) {
-              collaboratorStart.id = startId;
-              collaboratorStart.offset.increment(sutils.getOffset(collaboratorStart.offset.value, startOffset));
+              slctn.range.anchor.id = startId;
+              slctn.range.anchor.offset.increment(sutils.getOffset(slctn.range.anchor.offset.value, startOffset));
+              slctn.range.focus.id = startId;
+              slctn.range.focus.offset.increment(sutils.getOffset(slctn.range.focus.offset.value, startOffset));
             }
+          } else {
+            const tmp = getStartAndEnd(slctn, node);
+            const collaboratorStart = tmp.start;
+            const collaboratorEnd = tmp.end;
 
-            if (
-              removedIds.includes(collaboratorEnd.id) ||
-              (collaboratorEnd.id === startId && collaboratorEnd.offset.value > startOffset) ||
-              (collaboratorEnd.id === endId && collaboratorEnd.offset.value <= endOffset)
-            ) {
-              collaboratorEnd.id = startId;
-              collaboratorEnd.offset.increment(sutils.getOffset(collaboratorEnd.offset.value, startOffset));
-            } else if (collaboratorEnd.id === endId && collaboratorEnd.offset.value > endOffset) {
-              collaboratorEnd.offset.decrement(endOffset);
+            if (collaboratorStart !== null && collaboratorEnd !== null) {
+              if (
+                (collaboratorStart.id === startId && collaboratorStart.offset.value > startOffset) ||
+                removedIds.includes(collaboratorStart.id)
+              ) {
+                collaboratorStart.id = startId;
+                collaboratorStart.offset.increment(sutils.getOffset(collaboratorStart.offset.value, startOffset));
+              }
+
+              if (
+                removedIds.includes(collaboratorEnd.id) ||
+                (collaboratorEnd.id === startId && collaboratorEnd.offset.value > startOffset) ||
+                (collaboratorEnd.id === endId && collaboratorEnd.offset.value <= endOffset)
+              ) {
+                collaboratorEnd.id = startId;
+                collaboratorEnd.offset.increment(sutils.getOffset(collaboratorEnd.offset.value, startOffset));
+              } else if (collaboratorEnd.id === endId && collaboratorEnd.offset.value > endOffset) {
+                collaboratorEnd.offset.decrement(endOffset);
+              }
             }
           }
         }
