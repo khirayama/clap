@@ -1,7 +1,8 @@
 // factory/traversal
-import { DocumentNode, ItemNode } from './node';
+import { DocumentNode, ItemNode, SuperNode, ParagraphNode, Heading1Node, HorizontalRuleNode } from './node';
 import { traversal } from './traversal';
 import { Inline } from './inline';
+import { factory } from './factory';
 
 /*
  * append: 親要素と追加したい要素を与え、親の子要素の最後に追加する。 https://developer.mozilla.org/ja/docs/Web/API/ParentNode/append
@@ -26,6 +27,7 @@ export const transform = {
       }
       parentNode.nodes.push(node);
     },
+
     remove: (document: DocumentNode, node: ItemNode): void => {
       if (node.parent === null) return;
 
@@ -52,11 +54,56 @@ export const transform = {
       }
       parentNode.nodes.splice(index, 1);
     },
+
     appendInline: (parentNode: ItemNode, inline: Inline): void => {
       if (parentNode.inline === null) return;
 
       inline.parent = parentNode.id;
       parentNode.inline.push(inline);
+    },
+
+    turnInto: (node: ItemNode, itemType: SuperNode['type']): void => {
+      switch (itemType) {
+        case 'paragraph': {
+          const tmp = node as ParagraphNode;
+          tmp.type = 'paragraph';
+          if (node.inline === null) {
+            tmp.inline = [];
+            const inline = factory.inline.createInlineText();
+            transform.node.appendInline(tmp, inline);
+          }
+          if (node.nodes === null) {
+            tmp.nodes = [];
+          }
+          break;
+        }
+        case 'heading1': {
+          const tmp = node as Heading1Node;
+          tmp.type = 'heading1';
+          if (node.inline === null) {
+            tmp.inline = [];
+            const inline = factory.inline.createInlineText();
+            transform.node.appendInline(tmp, inline);
+          }
+          if (node.nodes !== null) {
+            // TODO: node.nodesをフラットに変更する
+            tmp.nodes = null;
+          }
+          break;
+        }
+        case 'horizontal-rule': {
+          const tmp = node as HorizontalRuleNode;
+          tmp.type = 'horizontal-rule';
+          if (node.inline !== null) {
+            tmp.inline = null;
+          }
+          if (node.nodes !== null) {
+            // TODO: node.nodesをフラットに変更する
+            tmp.nodes = null;
+          }
+          break;
+        }
+      }
     },
   },
 
