@@ -21,15 +21,44 @@ export const traversal = {
       return null;
     },
     findCurrentNode: (selection: Selection, document: DocumentNode): DocumentNode | ItemNode | null => {
-      if (selection.ids.length === 0) {
+      if (selection.anchor === null || selection.focus === null) {
         return null;
       }
-      return traversal.node.find(document, selection.ids[0]);
+      return traversal.node.find(document, selection.anchor);
     },
     findCurrentNodes: (selection: Selection, document: DocumentNode): (DocumentNode | ItemNode | null)[] => {
-      return selection.ids.map((id) => {
-        return traversal.node.find(document, id);
-      });
+      const nodes: (DocumentNode | ItemNode | null)[] = [];
+
+      if (selection.anchor === null || selection.focus === null) return nodes;
+
+      const head = traversal.node.find(document, selection.anchor);
+
+      if (head === null || head.parent === null) return nodes;
+
+      const parent = traversal.node.find(document, head.parent);
+
+      if (parent === null) return nodes;
+
+      if (selection.anchor === selection.focus) {
+        nodes.push(head);
+      } else {
+        let flag = false;
+        for (let i = 0; i < parent.nodes.length; i += 1) {
+          const node = parent.nodes[i];
+
+          if (flag === false && (node.id === selection.anchor || node.id === selection.focus)) {
+            flag = true;
+            nodes.push(node);
+          } else if (flag === true && (node.id === selection.anchor || node.id === selection.focus)) {
+            nodes.push(node);
+            break;
+          } else if (flag) {
+            nodes.push(node);
+          }
+        }
+      }
+
+      return nodes;
     },
   },
   inline: {
