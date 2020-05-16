@@ -140,7 +140,8 @@ export function createSampleData() {
     const selection = doc.users[user.id];
     const firstNode = document.nodes[0];
 
-    selection.ids.splice(0, selection.ids.length, firstNode.id);
+    selection.anchor = firstNode.id;
+    selection.focus = firstNode.id;
     selection.range = factory.selection.createRange(firstNode.inline[0].id, firstNode.inline[0].text.length);
   });
   memberDoc.merge(new CRDTDocument(user.id, userDoc.save()));
@@ -150,7 +151,8 @@ export function createSampleData() {
     const selection = factory.selection.createSelection();
     const firstNode = document.nodes[0];
 
-    selection.ids.splice(0, selection.ids.length, firstNode.id);
+    selection.anchor = firstNode.id;
+    selection.focus = firstNode.id;
     selection.range = factory.selection.createRange(firstNode.inline[0].id, firstNode.inline[0].text.length);
 
     doc.users[member.id] = selection;
