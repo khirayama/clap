@@ -5,11 +5,42 @@ import { transform } from './transform';
 import { traversal } from './traversal';
 import { Selection, utils as sutils } from './selection';
 import { getStartAndEnd, hasSameMarks, getMemberIds } from './actionsutils';
+import { DocumentNode } from './node';
 
 /*
  * API設計時の注意: 引数を与える場合の優先順位
  * userId > CRDTDocument > 個別の引数
  */
+
+function isAnchorUpper(document: DocumentNode, anchorId: string, focusId: string): boolean {
+  if (anchorId === focusId) return false;
+
+  const anchorNode = traversal.node.find(document, anchorId);
+  const focusNode = traversal.node.find(document, focusId);
+
+  if (anchorNode === null || anchorNode.parent === null || focusNode === null || focusNode.parent === null)
+    return false;
+
+  if (anchorNode.parent !== focusNode.parent) return false;
+
+  const parentNode = traversal.node.find(document, anchorNode.parent);
+
+  if (parentNode === null || parentNode.nodes === null) return false;
+
+  let isFocusIdAppeared = false;
+  for (let i = 0; i < parentNode.nodes.length; i += 1) {
+    const node = parentNode.nodes[i];
+
+    if (node.id === focusId) {
+      isFocusIdAppeared = true;
+    }
+    if (isFocusIdAppeared === false && node.id === anchorId) {
+      return true;
+    }
+  }
+
+  return false;
+}
 
 export const actions = {
   init: (userId: string): Doc => {
@@ -22,7 +53,8 @@ export const actions = {
     paragraph.inline.push(inlineText);
     transform.node.append(document, paragraph);
 
-    selection.ids.push(paragraph.id);
+    selection.anchor = paragraph.id;
+    selection.focus = paragraph.id;
     selection.range = factory.selection.createRange(inlineText.id, 0);
 
     return {
@@ -61,7 +93,7 @@ export const actions = {
     }
     for (const uid of userIds) {
       const slctn = users[uid];
-      if (slctn && slctn.range && slctn.ids[0] === node.id) {
+      if (slctn && slctn.range && slctn.anchor === node.id) {
         if (uid !== userId) {
           if (slctn.range.anchor.id === inlineId && slctn.range.anchor.offset.value > offset) {
             slctn.range.anchor.offset.increment(chars.length);
@@ -102,7 +134,7 @@ export const actions = {
     }
     for (const mid of memberIds) {
       const slctn = users[mid];
-      if (slctn && slctn.range && slctn.ids[0] === node.id) {
+      if (slctn && slctn.range && slctn.anchor === node.id) {
         if (slctn.range.anchor.id === inlineId && slctn.range.anchor.offset.value >= offset) {
           slctn.range.anchor.offset.decrement(1);
         }
@@ -149,7 +181,7 @@ export const actions = {
 
         for (const mid of memberIds) {
           const slctn = users[mid];
-          if (slctn && slctn.range && slctn.ids[0] === node.id) {
+          if (slctn && slctn.range && slctn.anchor === node.id) {
             const member = getStartAndEnd(slctn, node);
 
             if (member.start === null || member.end === null) break;
@@ -213,7 +245,7 @@ export const actions = {
       for (const mid of memberIds) {
         const slctn = users[mid];
 
-        if (slctn && slctn.range && slctn.ids[0] === node.id) {
+        if (slctn && slctn.range && slctn.anchor === node.id) {
           if (sutils.isCollasped(slctn)) {
             if (
               (slctn.range.anchor.id === startId && slctn.range.anchor.offset.value > startOffset) ||
@@ -348,36 +380,89 @@ export const actions = {
 
     for (const node of nodes) {
       if (node !== null && node.object === 'item') {
-        transform.node.remove(document, node);
-
         if (node.next) {
-          selection.ids = [node.next];
+          selection.anchor = node.next;
+          selection.focus = node.next;
         } else if (node.prev) {
-          selection.ids = [node.prev];
+          selection.anchor = node.prev;
+          selection.focus = node.prev;
         } else if (node.parent && node.parent !== node.document) {
-          selection.ids = [node.parent];
+          selection.anchor = node.parent;
+          selection.focus = node.parent;
         } else {
-          selection.ids = [];
+          selection.anchor = null;
+          selection.focus = null;
         }
 
         const mids = getMemberIds(userId, doc.users);
         for (const mid of mids) {
           const slctn = doc.users[mid];
-          if (slctn.ids.length === 1 && slctn.ids[0] === node.id) {
+          if (slctn.anchor !== null && slctn.focus !== null && (slctn.anchor === node.id || slctn.focus === node.id)) {
             slctn.range = null;
-            if (node.next) {
-              slctn.ids = [node.next];
-            } else if (node.prev) {
-              slctn.ids = [node.prev];
-            } else if (node.parent && node.parent !== node.document) {
-              slctn.ids = [node.parent];
-            } else {
-              slctn.ids = [];
+
+            if (slctn.anchor === slctn.focus) {
+              if (node.next) {
+                slctn.anchor = node.next;
+                slctn.focus = node.next;
+              } else if (node.prev) {
+                slctn.anchor = node.prev;
+                slctn.focus = node.prev;
+              } else if (node.parent && node.parent !== node.document) {
+                slctn.anchor = node.parent;
+                slctn.focus = node.parent;
+              } else {
+                slctn.anchor = null;
+                slctn.focus = null;
+              }
+            } else if (slctn.anchor === node.id) {
+              if (isAnchorUpper(document, slctn.anchor, slctn.focus)) {
+                if (node.next) {
+                  slctn.anchor = node.next;
+                } else if (node.parent && node.parent !== node.document) {
+                  slctn.anchor = node.parent;
+                  slctn.focus = node.parent;
+                } else {
+                  slctn.anchor = null;
+                  slctn.focus = null;
+                }
+              } else {
+                if (node.prev) {
+                  slctn.anchor = node.prev;
+                } else if (node.parent && node.parent !== node.document) {
+                  slctn.anchor = node.parent;
+                  slctn.focus = node.parent;
+                } else {
+                  slctn.anchor = null;
+                  slctn.focus = null;
+                }
+              }
+            } else if (slctn.focus === node.id) {
+              if (isAnchorUpper(document, slctn.anchor, slctn.focus)) {
+                if (node.prev) {
+                  slctn.focus = node.prev;
+                } else if (node.parent && node.parent !== node.document) {
+                  slctn.anchor = node.parent;
+                  slctn.focus = node.parent;
+                } else {
+                  slctn.anchor = null;
+                  slctn.focus = null;
+                }
+              } else {
+                if (node.next) {
+                  slctn.focus = node.next;
+                } else if (node.parent && node.parent !== node.document) {
+                  slctn.anchor = node.parent;
+                  slctn.focus = node.parent;
+                } else {
+                  slctn.anchor = null;
+                  slctn.focus = null;
+                }
+              }
             }
-          } else if (slctn.ids.includes(node.id)) {
-            slctn.ids = slctn.ids.filter((nid) => nid !== node.id);
           }
         }
+
+        transform.node.remove(document, node);
       }
     }
   },
