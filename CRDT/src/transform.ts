@@ -52,6 +52,10 @@ export const transform = {
       }
       parentNode.nodes.splice(index, 1);
     },
+    appendInline: (parentNode: ItemNode, inline: Inline): void => {
+      inline.parent = parentNode.id;
+      parentNode.inline.push(inline);
+    },
   },
 
   inline: {
