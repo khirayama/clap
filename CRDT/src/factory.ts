@@ -1,6 +1,6 @@
 // Automerge/traversal
 import * as Automerge from 'automerge';
-import { DocumentNode, ParagraphNode } from './node';
+import { DocumentNode, ParagraphNode, Heading1Node, HorizontalRuleNode } from './node';
 import { InlineText } from './inline';
 import { Selection, Range } from './selection';
 
@@ -63,6 +63,34 @@ export const factory = {
         next: null,
         inline: [],
         nodes: [],
+      };
+    },
+
+    createHeading1Node: (): Heading1Node => {
+      return {
+        id: factory.uuid(),
+        object: 'item',
+        type: 'heading1',
+        document: null,
+        parent: null,
+        prev: null,
+        next: null,
+        inline: [],
+        nodes: null,
+      };
+    },
+
+    createHorizontalRuleNode: (): HorizontalRuleNode => {
+      return {
+        id: factory.uuid(),
+        object: 'item',
+        type: 'horizontal-rule',
+        document: null,
+        parent: null,
+        prev: null,
+        next: null,
+        inline: null,
+        nodes: null,
       };
     },
   },
