@@ -522,8 +522,14 @@ export const actions = {
       }
     }
 
-    const node = nodes[0] as ParagraphNode;
-    // TODO: Turn into ParagraphNode
+    const node = nodes[0];
+
+    if (node === null || node.object !== 'item') return;
+
+    transform.node.turnInto(node, 'paragraph');
+
+    if (node.type !== 'paragraph') return;
+
     node.inline.splice(0, node.inline.length);
     transform.node.appendInline(node, factory.inline.createInlineText());
 
