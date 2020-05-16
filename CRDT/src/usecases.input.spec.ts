@@ -514,9 +514,189 @@ describe('確定操作', () => {
         assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
       });
     });
-    // describe('編集者選択範囲前半が共同編集者選択範囲後半と重複していた場合');
-    // describe('編集者選択範囲が共同編集者選択範囲内にある場合');
-    // describe('編集者選択範囲後半が共同編集者選択範囲前半と重複していた場合');
-    // describe('編集者選択範囲内に共同編集者選択範囲がある場合');
+
+    describe('編集者選択範囲前半が共同編集者選択範囲後半と重複していた場合', () => {
+      it('選択項目が先頭以外削除され、先頭は段落項目へ変換され、段落項目インラインが空の状態から任意文字列が入力されていること', () => {
+        userDoc.change((doc) => {
+          const selection = doc.users[user.id];
+          selection.range = null;
+          selection.anchor = doc.document.nodes[1].id;
+          selection.focus = doc.document.nodes[3].id;
+        });
+        memberDoc.merge(userDoc);
+        memberDoc.change((doc) => {
+          const selection = doc.users[member.id];
+          selection.range = null;
+          selection.anchor = doc.document.nodes[0].id;
+          selection.focus = doc.document.nodes[2].id;
+        });
+        userDoc.merge(memberDoc);
+
+        const expectedDoc = toLooseJSON(userDoc);
+
+        userDoc.change((doc) => {
+          usecases.input(user.id, doc, ['J', 'K', 'L']);
+        });
+        memberDoc.merge(userDoc);
+
+        const nodes = expectedDoc.doc.document.nodes;
+        const userSelection = expectedDoc.doc.users[user.id];
+        const memberSelection = expectedDoc.doc.users[member.id];
+        nodes[1].inline[0].id = userDoc.doc.document.nodes[1].inline[0].id;
+        nodes[1].inline[0].text = 'JKL'.split('');
+        nodes[1].next = nodes[4].id;
+        nodes[4].prev = nodes[1].id;
+        userSelection.anchor = nodes[1].id;
+        userSelection.focus = nodes[1].id;
+        userSelection.range = {
+          anchor: { offset: 3, id: userDoc.doc.document.nodes[1].inline[0].id },
+          focus: { offset: 3, id: userDoc.doc.document.nodes[1].inline[0].id },
+        };
+        memberSelection.anchor = nodes[0].id;
+        memberSelection.focus = nodes[1].id;
+        memberSelection.range = null;
+        expectedDoc.doc.document.nodes.splice(2, 2);
+
+        assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
+      });
+    });
+
+    describe('編集者選択範囲が共同編集者選択範囲内にある場合', () => {
+      it('選択項目が先頭以外削除され、先頭は段落項目へ変換され、段落項目インラインが空の状態から任意文字列が入力されていること', () => {
+        userDoc.change((doc) => {
+          const selection = doc.users[user.id];
+          selection.range = null;
+          selection.anchor = doc.document.nodes[1].id;
+          selection.focus = doc.document.nodes[3].id;
+        });
+        memberDoc.merge(userDoc);
+        memberDoc.change((doc) => {
+          const selection = doc.users[member.id];
+          selection.range = null;
+          selection.anchor = doc.document.nodes[0].id;
+          selection.focus = doc.document.nodes[4].id;
+        });
+        userDoc.merge(memberDoc);
+
+        const expectedDoc = toLooseJSON(userDoc);
+
+        userDoc.change((doc) => {
+          usecases.input(user.id, doc, ['J', 'K', 'L']);
+        });
+        memberDoc.merge(userDoc);
+
+        const nodes = expectedDoc.doc.document.nodes;
+        const userSelection = expectedDoc.doc.users[user.id];
+        const memberSelection = expectedDoc.doc.users[member.id];
+        nodes[1].inline[0].id = userDoc.doc.document.nodes[1].inline[0].id;
+        nodes[1].inline[0].text = 'JKL'.split('');
+        nodes[1].next = nodes[4].id;
+        nodes[4].prev = nodes[1].id;
+        userSelection.anchor = nodes[1].id;
+        userSelection.focus = nodes[1].id;
+        userSelection.range = {
+          anchor: { offset: 3, id: userDoc.doc.document.nodes[1].inline[0].id },
+          focus: { offset: 3, id: userDoc.doc.document.nodes[1].inline[0].id },
+        };
+        memberSelection.anchor = nodes[0].id;
+        memberSelection.focus = nodes[4].id;
+        memberSelection.range = null;
+        expectedDoc.doc.document.nodes.splice(2, 2);
+
+        assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
+      });
+    });
+
+    describe('編集者選択範囲後半が共同編集者選択範囲前半と重複していた場合', () => {
+      it('選択項目が先頭以外削除され、先頭は段落項目へ変換され、段落項目インラインが空の状態から任意文字列が入力されていること', () => {
+        userDoc.change((doc) => {
+          const selection = doc.users[user.id];
+          selection.range = null;
+          selection.anchor = doc.document.nodes[1].id;
+          selection.focus = doc.document.nodes[3].id;
+        });
+        memberDoc.merge(userDoc);
+        memberDoc.change((doc) => {
+          const selection = doc.users[member.id];
+          selection.range = null;
+          selection.anchor = doc.document.nodes[2].id;
+          selection.focus = doc.document.nodes[4].id;
+        });
+        userDoc.merge(memberDoc);
+
+        const expectedDoc = toLooseJSON(userDoc);
+
+        userDoc.change((doc) => {
+          usecases.input(user.id, doc, ['J', 'K', 'L']);
+        });
+        memberDoc.merge(userDoc);
+
+        const nodes = expectedDoc.doc.document.nodes;
+        const userSelection = expectedDoc.doc.users[user.id];
+        const memberSelection = expectedDoc.doc.users[member.id];
+        nodes[1].inline[0].id = userDoc.doc.document.nodes[1].inline[0].id;
+        nodes[1].inline[0].text = 'JKL'.split('');
+        nodes[1].next = nodes[4].id;
+        nodes[4].prev = nodes[1].id;
+        userSelection.anchor = nodes[1].id;
+        userSelection.focus = nodes[1].id;
+        userSelection.range = {
+          anchor: { offset: 3, id: userDoc.doc.document.nodes[1].inline[0].id },
+          focus: { offset: 3, id: userDoc.doc.document.nodes[1].inline[0].id },
+        };
+        memberSelection.anchor = nodes[1].id;
+        memberSelection.focus = nodes[4].id;
+        memberSelection.range = null;
+        expectedDoc.doc.document.nodes.splice(2, 2);
+
+        assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
+      });
+    });
+
+    describe('編集者選択範囲内に共同編集者選択範囲がある場合', () => {
+      it('選択項目が先頭以外削除され、先頭は段落項目へ変換され、段落項目インラインが空の状態から任意文字列が入力されていること', () => {
+        userDoc.change((doc) => {
+          const selection = doc.users[user.id];
+          selection.range = null;
+          selection.anchor = doc.document.nodes[1].id;
+          selection.focus = doc.document.nodes[3].id;
+        });
+        memberDoc.merge(userDoc);
+        memberDoc.change((doc) => {
+          const selection = doc.users[member.id];
+          selection.range = null;
+          selection.anchor = doc.document.nodes[2].id;
+          selection.focus = doc.document.nodes[2].id;
+        });
+        userDoc.merge(memberDoc);
+
+        const expectedDoc = toLooseJSON(userDoc);
+
+        userDoc.change((doc) => {
+          usecases.input(user.id, doc, ['J', 'K', 'L']);
+        });
+        memberDoc.merge(userDoc);
+
+        const nodes = expectedDoc.doc.document.nodes;
+        const userSelection = expectedDoc.doc.users[user.id];
+        const memberSelection = expectedDoc.doc.users[member.id];
+        nodes[1].inline[0].id = userDoc.doc.document.nodes[1].inline[0].id;
+        nodes[1].inline[0].text = 'JKL'.split('');
+        nodes[1].next = nodes[4].id;
+        nodes[4].prev = nodes[1].id;
+        userSelection.anchor = nodes[1].id;
+        userSelection.focus = nodes[1].id;
+        userSelection.range = {
+          anchor: { offset: 3, id: userDoc.doc.document.nodes[1].inline[0].id },
+          focus: { offset: 3, id: userDoc.doc.document.nodes[1].inline[0].id },
+        };
+        memberSelection.anchor = nodes[1].id;
+        memberSelection.focus = nodes[1].id;
+        memberSelection.range = null;
+        expectedDoc.doc.document.nodes.splice(2, 2);
+
+        assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
+      });
+    });
   });
 });

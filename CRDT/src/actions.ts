@@ -449,6 +449,75 @@ export const actions = {
     for (let i = 1; i < nodes.length; i += 1) {
       const node = nodes[i];
       if (node !== null && node.object === 'item') {
+        const memberIds = getMemberIds(userId, users);
+        for (const mid of memberIds) {
+          const slctn = users[mid];
+
+          if (slctn.anchor !== null && slctn.focus !== null && (slctn.anchor === node.id || slctn.focus === node.id)) {
+            slctn.range = null;
+
+            if (slctn.anchor === slctn.focus) {
+              if (node.prev) {
+                slctn.anchor = node.prev;
+                slctn.focus = node.prev;
+              } else if (node.next) {
+                slctn.anchor = node.next;
+                slctn.focus = node.next;
+              } else if (node.parent && node.parent !== node.document) {
+                slctn.anchor = node.parent;
+                slctn.focus = node.parent;
+              } else {
+                slctn.anchor = null;
+                slctn.focus = null;
+              }
+            } else if (slctn.anchor === node.id) {
+              if (isAnchorUpper(document, slctn.anchor, slctn.focus)) {
+                if (node.prev) {
+                  slctn.anchor = node.prev;
+                } else if (node.parent && node.parent !== node.document) {
+                  slctn.anchor = node.parent;
+                  slctn.focus = node.parent;
+                } else {
+                  slctn.anchor = null;
+                  slctn.focus = null;
+                }
+              } else {
+                if (node.prev) {
+                  slctn.anchor = node.prev;
+                } else if (node.parent && node.parent !== node.document) {
+                  slctn.anchor = node.parent;
+                  slctn.focus = node.parent;
+                } else {
+                  slctn.anchor = null;
+                  slctn.focus = null;
+                }
+              }
+            } else if (slctn.focus === node.id) {
+              if (isAnchorUpper(document, slctn.anchor, slctn.focus)) {
+                if (node.prev) {
+                  slctn.focus = node.prev;
+                } else if (node.parent && node.parent !== node.document) {
+                  slctn.anchor = node.parent;
+                  slctn.focus = node.parent;
+                } else {
+                  slctn.anchor = null;
+                  slctn.focus = null;
+                }
+              } else {
+                if (node.prev) {
+                  slctn.focus = node.prev;
+                } else if (node.parent && node.parent !== node.document) {
+                  slctn.anchor = node.parent;
+                  slctn.focus = node.parent;
+                } else {
+                  slctn.anchor = null;
+                  slctn.focus = null;
+                }
+              }
+            }
+          }
+        }
+
         transform.node.remove(document, node);
       }
     }
@@ -463,14 +532,6 @@ export const actions = {
     selection.range = factory.selection.createRange(node.inline[0].id, 0);
 
     actions.insertText(userId, doc, chars);
-
-    const memberIds = getMemberIds(userId, users);
-    for (const mid of memberIds) {
-      const slctn = users[mid];
-
-      slctn.anchor = node.id;
-      slctn.focus = node.id;
-    }
   },
 
   postprocessItemDeletion: (userId: string, doc: Doc): void => {
