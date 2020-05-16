@@ -80,12 +80,16 @@ describe('削除操作', () => {
 
         it('項目が削除され、編集者と共同編集者の選択範囲が親項目へ移動していること', () => {
           userDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[2].nodes && doc.document.nodes[2].nodes[0].nodes)) return;
+
             doc.users[user.id].anchor = doc.document.nodes[2].nodes[0].nodes[0].id;
             doc.users[user.id].focus = doc.document.nodes[2].nodes[0].nodes[0].id;
             doc.users[user.id].range = null;
           });
           memberDoc.merge(userDoc);
           memberDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[2].nodes && doc.document.nodes[2].nodes[0].nodes)) return;
+
             doc.users[member.id].anchor = doc.document.nodes[2].nodes[0].nodes[0].id;
             doc.users[member.id].focus = doc.document.nodes[2].nodes[0].nodes[0].id;
             doc.users[member.id].range = null;
@@ -262,12 +266,16 @@ describe('削除操作', () => {
 
         it('複数項目が削除され、編集者と共同編集者の選択範囲が親項目へ移動していること', () => {
           userDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             doc.users[user.id].anchor = doc.document.nodes[0].nodes[0].nodes[0].id;
             doc.users[user.id].focus = doc.document.nodes[0].nodes[0].nodes[1].id;
             doc.users[user.id].range = null;
           });
           memberDoc.merge(userDoc);
           memberDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             doc.users[member.id].anchor = doc.document.nodes[0].nodes[0].nodes[0].id;
             doc.users[member.id].focus = doc.document.nodes[0].nodes[0].nodes[0].id;
             doc.users[member.id].range = null;
@@ -383,12 +391,16 @@ describe('削除操作', () => {
 
           it('複数項目が削除され、編集者と共同編集者の選択範囲が親項目に移動していること', () => {
             userDoc.change((doc) => {
+              if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
               doc.users[user.id].anchor = doc.document.nodes[0].nodes[0].nodes[0].id;
               doc.users[user.id].focus = doc.document.nodes[0].nodes[0].nodes[1].id;
               doc.users[user.id].range = null;
             });
             memberDoc.merge(userDoc);
             memberDoc.change((doc) => {
+              if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
               doc.users[member.id].anchor = doc.document.nodes[0].nodes[0].nodes[0].id;
               doc.users[member.id].focus = doc.document.nodes[0].nodes[0].nodes[1].id;
               doc.users[member.id].range = null;
@@ -562,12 +574,16 @@ describe('削除操作', () => {
 
           it('複数項目が削除され、編集者と共同編集者の選択範囲が親項目に移動していること', () => {
             userDoc.change((doc) => {
+              if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
               doc.users[user.id].anchor = doc.document.nodes[0].nodes[0].nodes[0].id;
               doc.users[user.id].focus = doc.document.nodes[0].nodes[0].nodes[1].id;
               doc.users[user.id].range = null;
             });
             memberDoc.merge(userDoc);
             memberDoc.change((doc) => {
+              if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
               doc.users[member.id].anchor = doc.document.nodes[0].nodes[0].nodes[1].id;
               doc.users[member.id].focus = doc.document.nodes[0].nodes[0].nodes[1].id;
               doc.users[member.id].range = null;

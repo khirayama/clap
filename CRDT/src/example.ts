@@ -32,6 +32,8 @@ memberDoc.change((memberDoc: Doc) => {
   const selection = memberDoc.users[member.id];
   const firstNode = document.nodes[0];
 
+  if (firstNode.type !== 'paragraph') return;
+
   selection.anchor = firstNode.id;
   selection.focus = firstNode.id;
   selection.range = factory.selection.createRange(firstNode.inline[0].id, 0);

@@ -493,6 +493,15 @@ describe('確定操作', () => {
         });
         memberDoc.merge(userDoc);
 
+        if (
+          !(
+            userDoc.doc.document.nodes[0] &&
+            userDoc.doc.document.nodes[0].inline &&
+            userDoc.doc.document.nodes[0].inline[0]
+          )
+        )
+          return;
+
         const nodes = expectedDoc.doc.document.nodes;
         const userSelection = expectedDoc.doc.users[user.id];
         const memberSelection = expectedDoc.doc.users[member.id];
@@ -538,6 +547,15 @@ describe('確定操作', () => {
           usecases.input(user.id, doc, ['J', 'K', 'L']);
         });
         memberDoc.merge(userDoc);
+
+        if (
+          !(
+            userDoc.doc.document.nodes[1] &&
+            userDoc.doc.document.nodes[1].inline &&
+            userDoc.doc.document.nodes[1].inline[0]
+          )
+        )
+          return;
 
         const nodes = expectedDoc.doc.document.nodes;
         const userSelection = expectedDoc.doc.users[user.id];
@@ -585,6 +603,15 @@ describe('確定操作', () => {
         });
         memberDoc.merge(userDoc);
 
+        if (
+          !(
+            userDoc.doc.document.nodes[1] &&
+            userDoc.doc.document.nodes[1].inline &&
+            userDoc.doc.document.nodes[1].inline[0]
+          )
+        )
+          return;
+
         const nodes = expectedDoc.doc.document.nodes;
         const userSelection = expectedDoc.doc.users[user.id];
         const memberSelection = expectedDoc.doc.users[member.id];
@@ -631,6 +658,15 @@ describe('確定操作', () => {
         });
         memberDoc.merge(userDoc);
 
+        if (
+          !(
+            userDoc.doc.document.nodes[1] &&
+            userDoc.doc.document.nodes[1].inline &&
+            userDoc.doc.document.nodes[1].inline[0]
+          )
+        )
+          return;
+
         const nodes = expectedDoc.doc.document.nodes;
         const userSelection = expectedDoc.doc.users[user.id];
         const memberSelection = expectedDoc.doc.users[member.id];
@@ -676,6 +712,15 @@ describe('確定操作', () => {
           usecases.input(user.id, doc, ['J', 'K', 'L']);
         });
         memberDoc.merge(userDoc);
+
+        if (
+          !(
+            userDoc.doc.document.nodes[1] &&
+            userDoc.doc.document.nodes[1].inline &&
+            userDoc.doc.document.nodes[1].inline[0]
+          )
+        )
+          return;
 
         const nodes = expectedDoc.doc.document.nodes;
         const userSelection = expectedDoc.doc.users[user.id];

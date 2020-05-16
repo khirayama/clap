@@ -35,16 +35,16 @@ export const traversal = {
 
       if (head === null || head.parent === null) return nodes;
 
-      const parent = traversal.node.find(document, head.parent);
+      const parentNode = traversal.node.find(document, head.parent);
 
-      if (parent === null) return nodes;
+      if (parentNode === null || (parentNode !== null && parentNode.nodes === null)) return nodes;
 
       if (selection.anchor === selection.focus) {
         nodes.push(head);
       } else {
         let flag = false;
-        for (let i = 0; i < parent.nodes.length; i += 1) {
-          const node = parent.nodes[i];
+        for (let i = 0; i < parentNode.nodes.length; i += 1) {
+          const node = parentNode.nodes[i];
 
           if (flag === false && (node.id === selection.anchor || node.id === selection.focus)) {
             flag = true;

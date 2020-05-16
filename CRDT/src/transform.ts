@@ -31,7 +31,7 @@ export const transform = {
 
       const parentNode = traversal.node.find(document, node.parent);
 
-      if (parentNode === null) return;
+      if (parentNode === null || (parentNode !== null && parentNode.nodes === null)) return;
 
       let index = 0;
 
@@ -53,6 +53,8 @@ export const transform = {
       parentNode.nodes.splice(index, 1);
     },
     appendInline: (parentNode: ItemNode, inline: Inline): void => {
+      if (parentNode.inline === null) return;
+
       inline.parent = parentNode.id;
       parentNode.inline.push(inline);
     },

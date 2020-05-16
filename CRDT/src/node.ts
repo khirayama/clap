@@ -3,13 +3,20 @@ import { Inline } from './inline';
 export type SuperNode = {
   id: string;
   object: 'document' | 'item';
-  type: 'paragraph' | null;
+  type: 'heading1' | 'paragraph' | 'horizontal-rule' | null;
   document: string | null;
   parent: string | null;
   prev: string | null;
   next: string | null;
   inline: Inline[] | null;
   nodes: ItemNode[] | null;
+};
+
+export type Heading1Node = SuperNode & {
+  object: 'item';
+  type: 'heading1';
+  inline: Inline[];
+  nodes: null;
 };
 
 export type ParagraphNode = SuperNode & {
@@ -19,7 +26,14 @@ export type ParagraphNode = SuperNode & {
   nodes: ItemNode[];
 };
 
-export type ItemNode = ParagraphNode;
+export type HorizontalRuleNode = SuperNode & {
+  object: 'item';
+  type: 'horizontal-rule';
+  inline: null;
+  nodes: null;
+};
+
+export type ItemNode = Heading1Node | ParagraphNode | HorizontalRuleNode;
 
 export type DocumentNode = SuperNode & {
   object: 'document';

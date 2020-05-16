@@ -309,13 +309,15 @@ describe('削除操作', () => {
       describe(`${memberRangePatterns.h}`, () => {
         it('1文字削除され、編集者選択範囲のみの始点と終点が1文字前へ移動していること', () => {
           userDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[user.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 2));
               range.focus.id = node.inline[0].id;
@@ -324,13 +326,15 @@ describe('削除操作', () => {
           });
           memberDoc.merge(userDoc);
           memberDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[member.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[1].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
               range.focus.id = node.inline[1].id;
@@ -342,7 +346,6 @@ describe('削除操作', () => {
           const expectedDoc = toLooseJSON(userDoc);
           const node = expectedDoc.doc.document.nodes[0].nodes[0].nodes[0];
           const userSelection = expectedDoc.doc.users[user.id];
-          const memberSelection = expectedDoc.doc.users[member.id];
           node.inline[0].text = 'AC'.split('');
           userSelection.range.anchor.offset = 1;
           userSelection.range.focus.offset = 1;
@@ -785,13 +788,15 @@ describe('削除操作', () => {
       describe(`${memberRangePatterns.a}`, () => {
         it('選択範囲文字が削除され、編集者選択範囲と共同編集者選択範囲が始点に閉じている', () => {
           userDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[user.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
               range.focus.id = node.inline[1].id;
@@ -800,13 +805,15 @@ describe('削除操作', () => {
           });
           memberDoc.merge(userDoc);
           memberDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[member.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
               range.focus.id = node.inline[1].id;
@@ -840,13 +847,15 @@ describe('削除操作', () => {
 
         it('選択範囲文字が削除され、編集者選択範囲と共同編集者選択範囲が始点に閉じている(末尾)', () => {
           userDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[user.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 0));
               range.focus.id = node.inline[1].id;
@@ -855,13 +864,15 @@ describe('削除操作', () => {
           });
           memberDoc.merge(userDoc);
           memberDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[member.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 0));
               range.focus.id = node.inline[1].id;
@@ -896,13 +907,15 @@ describe('削除操作', () => {
       describe(`${memberRangePatterns.b}`, () => {
         it('選択範囲文字が削除され、編集者選択範囲が始点に閉じており、共同編集者選択範囲に影響ないこと', () => {
           userDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[user.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 2));
               range.focus.id = node.inline[1].id;
@@ -911,13 +924,15 @@ describe('削除操作', () => {
           });
           memberDoc.merge(userDoc);
           memberDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[member.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
               range.focus.id = node.inline[0].id;
@@ -953,13 +968,15 @@ describe('削除操作', () => {
       describe(`${memberRangePatterns.c}`, () => {
         it('選択範囲文字が削除され、編集者選択範囲が始点に閉じており、共同編集者選択範囲に影響ないこと', () => {
           userDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[user.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 2));
               range.focus.id = node.inline[1].id;
@@ -968,13 +985,15 @@ describe('削除操作', () => {
           });
           memberDoc.merge(userDoc);
           memberDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[member.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
               range.focus.id = node.inline[0].id;
@@ -1010,13 +1029,15 @@ describe('削除操作', () => {
       describe(`${memberRangePatterns.c_}`, () => {
         it('選択範囲文字が削除され、編集者選択範囲が始点に閉じており、共同編集者選択範囲に影響ないこと', () => {
           userDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[user.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 2));
               range.focus.id = node.inline[1].id;
@@ -1025,13 +1046,15 @@ describe('削除操作', () => {
           });
           memberDoc.merge(userDoc);
           memberDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[member.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 3));
               range.focus.id = node.inline[0].id;
@@ -1067,13 +1090,15 @@ describe('削除操作', () => {
       describe(`${memberRangePatterns.d}`, () => {
         it('選択範囲文字が削除され、編集者選択範囲が始点に閉じており、共同編集者選択範囲に影響ないこと', () => {
           userDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[user.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 2));
               range.focus.id = node.inline[1].id;
@@ -1082,13 +1107,15 @@ describe('削除操作', () => {
           });
           memberDoc.merge(userDoc);
           memberDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[member.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
               range.focus.id = node.inline[1].id;
@@ -1124,13 +1151,15 @@ describe('削除操作', () => {
       describe(`${memberRangePatterns.d_}`, () => {
         it('選択範囲文字が削除され、編集者選択範囲が始点に閉じており、共同編集者選択範囲に影響ないこと', () => {
           userDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[user.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 2));
               range.focus.id = node.inline[1].id;
@@ -1139,13 +1168,15 @@ describe('削除操作', () => {
           });
           memberDoc.merge(userDoc);
           memberDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[member.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[1].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 3));
               range.focus.id = node.inline[0].id;
@@ -1181,13 +1212,15 @@ describe('削除操作', () => {
       describe(`${memberRangePatterns.e}`, () => {
         it('選択範囲文字が削除され、編集者と共同編集者の選択範囲が始点に閉じていること(前インライン上)', () => {
           userDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[user.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 2));
               range.focus.id = node.inline[1].id;
@@ -1196,13 +1229,15 @@ describe('削除操作', () => {
           });
           memberDoc.merge(userDoc);
           memberDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[member.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 3));
               range.focus.id = node.inline[0].id;
@@ -1236,13 +1271,15 @@ describe('削除操作', () => {
 
         it('選択範囲文字が削除され、編集者と共同編集者の選択範囲が始点に閉じていること(後インライン上)', () => {
           userDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[user.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 2));
               range.focus.id = node.inline[1].id;
@@ -1251,13 +1288,15 @@ describe('削除操作', () => {
           });
           memberDoc.merge(userDoc);
           memberDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[member.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[1].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
               range.focus.id = node.inline[1].id;
@@ -1293,13 +1332,15 @@ describe('削除操作', () => {
       describe(`${memberRangePatterns.f}`, () => {
         it('選択範囲文字が削除され、編集者選択範囲が始点に閉じており、共同編集者選択範囲始点が編集者選択範囲始点に移動し、終点が後インライン削除文字数分移動していること', () => {
           userDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[user.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 2));
               range.focus.id = node.inline[1].id;
@@ -1308,13 +1349,15 @@ describe('削除操作', () => {
           });
           memberDoc.merge(userDoc);
           memberDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[member.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 3));
               range.focus.id = node.inline[1].id;
@@ -1350,13 +1393,15 @@ describe('削除操作', () => {
       describe(`${memberRangePatterns.f_}`, () => {
         it('選択範囲文字が削除され、編集者選択範囲が始点に閉じており、共同編集者選択範囲始点が編集者選択範囲始点に移動し、終点が後インライン削除文字数分移動していること', () => {
           userDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[user.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 2));
               range.focus.id = node.inline[1].id;
@@ -1365,13 +1410,15 @@ describe('削除操作', () => {
           });
           memberDoc.merge(userDoc);
           memberDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[member.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[1].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 3));
               range.focus.id = node.inline[0].id;
@@ -1407,13 +1454,15 @@ describe('削除操作', () => {
       describe(`${memberRangePatterns.g}`, () => {
         it('選択範囲文字が削除され、編集者選択範囲が始点に閉じており、共同編集者選択範囲始点と終点が後インライン削除文字数分移動していること', () => {
           userDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[user.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 2));
               range.focus.id = node.inline[1].id;
@@ -1422,13 +1471,15 @@ describe('削除操作', () => {
           });
           memberDoc.merge(userDoc);
           memberDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[member.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[1].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 3));
               range.focus.id = node.inline[1].id;
@@ -1464,13 +1515,15 @@ describe('削除操作', () => {
       describe(`${memberRangePatterns.h}`, () => {
         it('選択範囲文字が削除され、編集者選択範囲が始点に閉じており、共同編集者選択範囲始点と終点が後インライン削除文字数分移動していること', () => {
           userDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[user.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 2));
               range.focus.id = node.inline[1].id;
@@ -1479,13 +1532,15 @@ describe('削除操作', () => {
           });
           memberDoc.merge(userDoc);
           memberDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[member.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[2].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
               range.focus.id = node.inline[2].id;
@@ -1518,13 +1573,15 @@ describe('削除操作', () => {
       describe(`${memberRangePatterns.a}`, () => {
         it('選択範囲文字が削除され、編集者選択範囲と共同編集者選択範囲が始点に閉じている', () => {
           userDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[user.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
               range.focus.id = node.inline[2].id;
@@ -1533,13 +1590,15 @@ describe('削除操作', () => {
           });
           memberDoc.merge(userDoc);
           memberDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[member.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
               range.focus.id = node.inline[2].id;
@@ -1575,13 +1634,15 @@ describe('削除操作', () => {
       describe(`${memberRangePatterns.b}`, () => {
         it('選択範囲文字が削除され、編集者選択範囲が始点に閉じており、共同編集者選択範囲に影響しない', () => {
           userDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[user.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
               range.focus.id = node.inline[2].id;
@@ -1590,13 +1651,15 @@ describe('削除操作', () => {
           });
           memberDoc.merge(userDoc);
           memberDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[member.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 0));
               range.focus.id = node.inline[0].id;
@@ -1632,13 +1695,15 @@ describe('削除操作', () => {
       describe(`${memberRangePatterns.c}`, () => {
         it('選択範囲文字が削除され、編集者選択範囲が始点に閉じており、共同編集者選択範囲始点に影響がなく、終点が編集者選択範囲始点に移動していること', () => {
           userDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[user.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
               range.focus.id = node.inline[2].id;
@@ -1647,13 +1712,15 @@ describe('削除操作', () => {
           });
           memberDoc.merge(userDoc);
           memberDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[member.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 0));
               range.focus.id = node.inline[1].id;
@@ -1689,13 +1756,15 @@ describe('削除操作', () => {
       describe(`${memberRangePatterns.c_}`, () => {
         it('選択範囲文字が削除され、編集者選択範囲が始点に閉じており、共同編集者選択範囲終点に影響がなく、始点が編集者選択範囲始点に移動していること', () => {
           userDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[user.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
               range.focus.id = node.inline[2].id;
@@ -1704,13 +1773,15 @@ describe('削除操作', () => {
           });
           memberDoc.merge(userDoc);
           memberDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[member.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[1].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
               range.focus.id = node.inline[0].id;
@@ -1746,13 +1817,15 @@ describe('削除操作', () => {
       describe(`${memberRangePatterns.d}`, () => {
         it('選択範囲文字が削除され、編集者選択範囲が始点に閉じており、共同編集者選択範囲始点に影響がなく、終点が削除された文字数分移動していること', () => {
           userDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[user.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
               range.focus.id = node.inline[2].id;
@@ -1761,13 +1834,15 @@ describe('削除操作', () => {
           });
           memberDoc.merge(userDoc);
           memberDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[member.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[1].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
               range.focus.id = node.inline[2].id;
@@ -1803,13 +1878,15 @@ describe('削除操作', () => {
       describe(`${memberRangePatterns.d_}`, () => {
         it('選択範囲文字が削除され、編集者選択範囲が始点に閉じており、共同編集者選択範囲終点に影響がなく、始点が削除された文字数分移動していること', () => {
           userDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[user.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
               range.focus.id = node.inline[2].id;
@@ -1818,13 +1895,15 @@ describe('削除操作', () => {
           });
           memberDoc.merge(userDoc);
           memberDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[member.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[2].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 3));
               range.focus.id = node.inline[1].id;
@@ -1860,13 +1939,15 @@ describe('削除操作', () => {
       describe(`${memberRangePatterns.e}`, () => {
         it('選択範囲文字が削除され、編集者と共同編集者の選択範囲が始点に閉じていること', () => {
           userDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[user.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
               range.focus.id = node.inline[2].id;
@@ -1875,13 +1956,15 @@ describe('削除操作', () => {
           });
           memberDoc.merge(userDoc);
           memberDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[member.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[1].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
               range.focus.id = node.inline[1].id;
@@ -1917,13 +2000,15 @@ describe('削除操作', () => {
       describe(`${memberRangePatterns.f}`, () => {
         it('選択範囲文字が削除され、編集者選択範囲が始点に閉じており、共同編集者選択範囲始点が編集者選択範囲始点に移動し、終点が削除された文字数分移動していること', () => {
           userDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[user.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
               range.focus.id = node.inline[2].id;
@@ -1932,13 +2017,15 @@ describe('削除操作', () => {
           });
           memberDoc.merge(userDoc);
           memberDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[member.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[1].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
               range.focus.id = node.inline[2].id;
@@ -1974,13 +2061,15 @@ describe('削除操作', () => {
       describe(`${memberRangePatterns.f_}`, () => {
         it('選択範囲文字が削除され、編集者選択範囲が始点に閉じており、共同編集者選択範囲終点が編集者選択範囲始点に移動し、始点が削除された文字数分移動していること', () => {
           userDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[user.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
               range.focus.id = node.inline[2].id;
@@ -1989,13 +2078,15 @@ describe('削除操作', () => {
           });
           memberDoc.merge(userDoc);
           memberDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[member.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[2].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 3));
               range.focus.id = node.inline[1].id;
@@ -2031,13 +2122,15 @@ describe('削除操作', () => {
       describe(`${memberRangePatterns.g}`, () => {
         it('選択範囲文字が削除され、編集者選択範囲が始点に閉じており、共同編集者選択範囲始点と終点が削除された文字数分移動していること', () => {
           userDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[user.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
               range.focus.id = node.inline[2].id;
@@ -2046,13 +2139,15 @@ describe('削除操作', () => {
           });
           memberDoc.merge(userDoc);
           memberDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[member.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[2].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 3));
               range.focus.id = node.inline[2].id;
@@ -2514,13 +2609,15 @@ describe('削除操作', () => {
       describe(`${memberRangePatterns.a}`, () => {
         it('選択範囲文字が削除され、編集者選択範囲と共同編集者選択範囲が始点に閉じている', () => {
           userDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[user.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[1].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 2));
               range.focus.id = node.inline[0].id;
@@ -2529,13 +2626,15 @@ describe('削除操作', () => {
           });
           memberDoc.merge(userDoc);
           memberDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[member.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
               range.focus.id = node.inline[1].id;
@@ -2569,13 +2668,15 @@ describe('削除操作', () => {
 
         it('選択範囲文字が削除され、編集者選択範囲と共同編集者選択範囲が始点に閉じている(末尾)', () => {
           userDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[user.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[1].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 3));
               range.focus.id = node.inline[0].id;
@@ -2584,13 +2685,15 @@ describe('削除操作', () => {
           });
           memberDoc.merge(userDoc);
           memberDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[member.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 0));
               range.focus.id = node.inline[1].id;
@@ -2625,13 +2728,15 @@ describe('削除操作', () => {
       describe(`${memberRangePatterns.b}`, () => {
         it('選択範囲文字が削除され、編集者選択範囲が始点に閉じており、共同編集者選択範囲に影響ないこと', () => {
           userDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[user.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[1].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 3));
               range.focus.id = node.inline[0].id;
@@ -2640,13 +2745,15 @@ describe('削除操作', () => {
           });
           memberDoc.merge(userDoc);
           memberDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[member.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
               range.focus.id = node.inline[0].id;
@@ -2682,13 +2789,15 @@ describe('削除操作', () => {
       describe(`${memberRangePatterns.c}`, () => {
         it('選択範囲文字が削除され、編集者選択範囲が始点に閉じており、共同編集者選択範囲に影響ないこと', () => {
           userDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[user.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[1].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 3));
               range.focus.id = node.inline[0].id;
@@ -2697,13 +2806,15 @@ describe('削除操作', () => {
           });
           memberDoc.merge(userDoc);
           memberDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[member.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
               range.focus.id = node.inline[0].id;
@@ -2739,13 +2850,15 @@ describe('削除操作', () => {
       describe(`${memberRangePatterns.c_}`, () => {
         it('選択範囲文字が削除され、編集者選択範囲が始点に閉じており、共同編集者選択範囲に影響ないこと', () => {
           userDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[user.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[1].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 3));
               range.focus.id = node.inline[0].id;
@@ -2754,13 +2867,15 @@ describe('削除操作', () => {
           });
           memberDoc.merge(userDoc);
           memberDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[member.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 3));
               range.focus.id = node.inline[0].id;
@@ -2796,13 +2911,15 @@ describe('削除操作', () => {
       describe(`${memberRangePatterns.d}`, () => {
         it('選択範囲文字が削除され、編集者選択範囲が始点に閉じており、共同編集者選択範囲に影響ないこと', () => {
           userDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[user.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[1].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 2));
               range.focus.id = node.inline[0].id;
@@ -2811,13 +2928,15 @@ describe('削除操作', () => {
           });
           memberDoc.merge(userDoc);
           memberDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[member.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
               range.focus.id = node.inline[1].id;
@@ -2853,13 +2972,15 @@ describe('削除操作', () => {
       describe(`${memberRangePatterns.d_}`, () => {
         it('選択範囲文字が削除され、編集者選択範囲が始点に閉じており、共同編集者選択範囲に影響ないこと', () => {
           userDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[user.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[1].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 2));
               range.focus.id = node.inline[0].id;
@@ -2868,13 +2989,15 @@ describe('削除操作', () => {
           });
           memberDoc.merge(userDoc);
           memberDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[member.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[1].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 3));
               range.focus.id = node.inline[0].id;
@@ -2910,13 +3033,15 @@ describe('削除操作', () => {
       describe(`${memberRangePatterns.e}`, () => {
         it('選択範囲文字が削除され、編集者と共同編集者の選択範囲が始点に閉じていること(前インライン上)', () => {
           userDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[user.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[1].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 2));
               range.focus.id = node.inline[0].id;
@@ -2925,13 +3050,15 @@ describe('削除操作', () => {
           });
           memberDoc.merge(userDoc);
           memberDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[member.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 3));
               range.focus.id = node.inline[0].id;
@@ -2965,13 +3092,15 @@ describe('削除操作', () => {
 
         it('選択範囲文字が削除され、編集者と共同編集者の選択範囲が始点に閉じていること(後インライン上)', () => {
           userDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[user.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[1].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 2));
               range.focus.id = node.inline[0].id;
@@ -2980,13 +3109,15 @@ describe('削除操作', () => {
           });
           memberDoc.merge(userDoc);
           memberDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[member.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[1].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
               range.focus.id = node.inline[1].id;
@@ -3022,13 +3153,15 @@ describe('削除操作', () => {
       describe(`${memberRangePatterns.f}`, () => {
         it('選択範囲文字が削除され、編集者選択範囲が始点に閉じており、共同編集者選択範囲始点が編集者選択範囲始点に移動し、終点が後インライン削除文字数分移動していること', () => {
           userDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[user.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[1].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 2));
               range.focus.id = node.inline[0].id;
@@ -3037,13 +3170,15 @@ describe('削除操作', () => {
           });
           memberDoc.merge(userDoc);
           memberDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[member.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 3));
               range.focus.id = node.inline[1].id;
@@ -3079,13 +3214,15 @@ describe('削除操作', () => {
       describe(`${memberRangePatterns.f_}`, () => {
         it('選択範囲文字が削除され、編集者選択範囲が始点に閉じており、共同編集者選択範囲始点が編集者選択範囲始点に移動し、終点が後インライン削除文字数分移動していること', () => {
           userDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[user.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[1].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 2));
               range.focus.id = node.inline[0].id;
@@ -3094,13 +3231,15 @@ describe('削除操作', () => {
           });
           memberDoc.merge(userDoc);
           memberDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[member.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[1].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 3));
               range.focus.id = node.inline[0].id;
@@ -3136,13 +3275,15 @@ describe('削除操作', () => {
       describe(`${memberRangePatterns.g}`, () => {
         it('選択範囲文字が削除され、編集者選択範囲が始点に閉じており、共同編集者選択範囲始点と終点が後インライン削除文字数分移動していること', () => {
           userDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[user.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[1].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 2));
               range.focus.id = node.inline[0].id;
@@ -3151,13 +3292,15 @@ describe('削除操作', () => {
           });
           memberDoc.merge(userDoc);
           memberDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[member.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[1].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 3));
               range.focus.id = node.inline[1].id;
@@ -3193,13 +3336,15 @@ describe('削除操作', () => {
       describe(`${memberRangePatterns.h}`, () => {
         it('選択範囲文字が削除され、編集者選択範囲が始点に閉じており、共同編集者選択範囲始点と終点が後インライン削除文字数分移動していること', () => {
           userDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[user.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[1].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 2));
               range.focus.id = node.inline[0].id;
@@ -3208,13 +3353,15 @@ describe('削除操作', () => {
           });
           memberDoc.merge(userDoc);
           memberDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[member.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[2].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
               range.focus.id = node.inline[2].id;
@@ -3247,13 +3394,15 @@ describe('削除操作', () => {
       describe(`${memberRangePatterns.a}`, () => {
         it('選択範囲文字が削除され、編集者選択範囲と共同編集者選択範囲が始点に閉じている', () => {
           userDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[user.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[2].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 2));
               range.focus.id = node.inline[0].id;
@@ -3262,13 +3411,15 @@ describe('削除操作', () => {
           });
           memberDoc.merge(userDoc);
           memberDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[member.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
               range.focus.id = node.inline[2].id;
@@ -3304,13 +3455,15 @@ describe('削除操作', () => {
       describe(`${memberRangePatterns.b}`, () => {
         it('選択範囲文字が削除され、編集者選択範囲が始点に閉じており、共同編集者選択範囲に影響しない', () => {
           userDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[user.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[2].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 2));
               range.focus.id = node.inline[0].id;
@@ -3319,13 +3472,15 @@ describe('削除操作', () => {
           });
           memberDoc.merge(userDoc);
           memberDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[member.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 0));
               range.focus.id = node.inline[0].id;
@@ -3361,13 +3516,15 @@ describe('削除操作', () => {
       describe(`${memberRangePatterns.c}`, () => {
         it('選択範囲文字が削除され、編集者選択範囲が始点に閉じており、共同編集者選択範囲始点に影響がなく、終点が編集者選択範囲始点に移動していること', () => {
           userDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[user.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[2].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 2));
               range.focus.id = node.inline[0].id;
@@ -3376,13 +3533,15 @@ describe('削除操作', () => {
           });
           memberDoc.merge(userDoc);
           memberDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[member.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 0));
               range.focus.id = node.inline[1].id;
@@ -3418,13 +3577,15 @@ describe('削除操作', () => {
       describe(`${memberRangePatterns.c_}`, () => {
         it('選択範囲文字が削除され、編集者選択範囲が始点に閉じており、共同編集者選択範囲終点に影響がなく、始点が編集者選択範囲始点に移動していること', () => {
           userDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[user.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[2].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 2));
               range.focus.id = node.inline[0].id;
@@ -3433,13 +3594,15 @@ describe('削除操作', () => {
           });
           memberDoc.merge(userDoc);
           memberDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[member.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[1].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
               range.focus.id = node.inline[0].id;
@@ -3475,13 +3638,15 @@ describe('削除操作', () => {
       describe(`${memberRangePatterns.d}`, () => {
         it('選択範囲文字が削除され、編集者選択範囲が始点に閉じており、共同編集者選択範囲始点に影響がなく、終点が削除された文字数分移動していること', () => {
           userDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[user.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[2].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 2));
               range.focus.id = node.inline[0].id;
@@ -3490,13 +3655,15 @@ describe('削除操作', () => {
           });
           memberDoc.merge(userDoc);
           memberDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[member.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[1].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
               range.focus.id = node.inline[2].id;
@@ -3532,13 +3699,15 @@ describe('削除操作', () => {
       describe(`${memberRangePatterns.d_}`, () => {
         it('選択範囲文字が削除され、編集者選択範囲が始点に閉じており、共同編集者選択範囲終点に影響がなく、始点が削除された文字数分移動していること', () => {
           userDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[user.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[2].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 2));
               range.focus.id = node.inline[0].id;
@@ -3547,13 +3716,15 @@ describe('削除操作', () => {
           });
           memberDoc.merge(userDoc);
           memberDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[member.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[2].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 3));
               range.focus.id = node.inline[1].id;
@@ -3589,13 +3760,15 @@ describe('削除操作', () => {
       describe(`${memberRangePatterns.e}`, () => {
         it('選択範囲文字が削除され、編集者と共同編集者の選択範囲が始点に閉じていること', () => {
           userDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[user.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[2].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 2));
               range.focus.id = node.inline[0].id;
@@ -3604,13 +3777,15 @@ describe('削除操作', () => {
           });
           memberDoc.merge(userDoc);
           memberDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[member.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[1].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
               range.focus.id = node.inline[1].id;
@@ -3646,13 +3821,15 @@ describe('削除操作', () => {
       describe(`${memberRangePatterns.f}`, () => {
         it('選択範囲文字が削除され、編集者選択範囲が始点に閉じており、共同編集者選択範囲始点が編集者選択範囲始点に移動し、終点が削除された文字数分移動していること', () => {
           userDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[user.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[2].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 2));
               range.focus.id = node.inline[0].id;
@@ -3661,13 +3838,15 @@ describe('削除操作', () => {
           });
           memberDoc.merge(userDoc);
           memberDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[member.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[1].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
               range.focus.id = node.inline[2].id;
@@ -3703,13 +3882,15 @@ describe('削除操作', () => {
       describe(`${memberRangePatterns.f_}`, () => {
         it('選択範囲文字が削除され、編集者選択範囲が始点に閉じており、共同編集者選択範囲終点が編集者選択範囲始点に移動し、始点が削除された文字数分移動していること', () => {
           userDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[user.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[2].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 2));
               range.focus.id = node.inline[0].id;
@@ -3718,13 +3899,15 @@ describe('削除操作', () => {
           });
           memberDoc.merge(userDoc);
           memberDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[member.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[2].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 3));
               range.focus.id = node.inline[1].id;
@@ -3760,13 +3943,15 @@ describe('削除操作', () => {
       describe(`${memberRangePatterns.g}`, () => {
         it('選択範囲文字が削除され、編集者選択範囲が始点に閉じており、共同編集者選択範囲始点と終点が削除された文字数分移動していること', () => {
           userDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[user.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[2].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 2));
               range.focus.id = node.inline[0].id;
@@ -3775,13 +3960,15 @@ describe('削除操作', () => {
           });
           memberDoc.merge(userDoc);
           memberDoc.change((doc) => {
+            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+
             const node = doc.document.nodes[0].nodes[0].nodes[0];
             const selection = doc.users[member.id];
             const range = selection.range;
 
             selection.anchor = node.id;
             selection.focus = node.id;
-            if (range) {
+            if (range && node.inline) {
               range.anchor.id = node.inline[2].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 3));
               range.focus.id = node.inline[2].id;

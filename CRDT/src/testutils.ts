@@ -1,6 +1,7 @@
 import { factory } from './factory';
 import { CRDTDocument } from './CRDTDocument';
 import { transform } from './transform';
+import { ParagraphNode } from './node';
 
 export function toLooseJSON(obj: any) {
   // FYI: AutomergeのCounterが、{ value: number }からnumberに変わってしまう点に注意
@@ -138,7 +139,7 @@ export function createSampleData() {
   userDoc.change((doc) => {
     const document = doc.document;
     const selection = doc.users[user.id];
-    const firstNode = document.nodes[0];
+    const firstNode = document.nodes[0] as ParagraphNode;
 
     selection.anchor = firstNode.id;
     selection.focus = firstNode.id;
@@ -149,7 +150,7 @@ export function createSampleData() {
   memberDoc.change((doc) => {
     const document = doc.document;
     const selection = factory.selection.createSelection();
-    const firstNode = document.nodes[0];
+    const firstNode = document.nodes[0] as ParagraphNode;
 
     selection.anchor = firstNode.id;
     selection.focus = firstNode.id;
