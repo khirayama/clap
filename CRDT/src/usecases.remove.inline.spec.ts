@@ -82,10 +82,106 @@ describe('削除操作', () => {
 
             assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
           });
+
+          it('選択範囲項目が段落項目へ変換されていること(子項目)', () => {
+            const result = createSampleData2();
+            user = result.user;
+            member = result.member;
+            userDoc = result.userDoc;
+            memberDoc = result.memberDoc;
+
+            userDoc.change((doc) => {
+              const selection = doc.users[user.id];
+              const range = selection.range;
+
+              if (
+                !(
+                  doc.document.nodes[1] !== null &&
+                  doc.document.nodes[1].nodes !== null &&
+                  doc.document.nodes[1].nodes[0]
+                )
+              )
+                return;
+
+              const node = doc.document.nodes[1].nodes[0];
+
+              selection.anchor = node.id;
+              selection.focus = node.id;
+              if (range && node.inline) {
+                range.anchor.id = node.inline[0].id;
+                range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 0));
+                range.focus.id = node.inline[0].id;
+                range.focus.offset.increment(sutils.getOffset(range.focus.offset.value, 0));
+              }
+            });
+            memberDoc.merge(userDoc);
+
+            const expectedDoc = toLooseJSON(userDoc);
+            const node = expectedDoc.doc.document.nodes[1].nodes[0];
+            const userSelection = expectedDoc.doc.users[user.id];
+            node.type = 'paragraph';
+            node.nodes = [];
+            userSelection.range.anchor.offset = 0;
+            userSelection.range.focus.offset = 0;
+
+            userDoc.change((doc) => {
+              usecases.remove(user.id, doc);
+            });
+            memberDoc.merge(userDoc);
+
+            assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
+          });
         });
 
         describe('段落項目で親要素がドキュメントじゃない場合', () => {
-          it.skip('アウトデントされていること', () => {});
+          it('選択範囲項目が段落項目へ変換されていること', () => {
+            const result = createSampleData2();
+            user = result.user;
+            member = result.member;
+            userDoc = result.userDoc;
+            memberDoc = result.memberDoc;
+
+            userDoc.change((doc) => {
+              const selection = doc.users[user.id];
+              const range = selection.range;
+
+              if (
+                !(
+                  doc.document.nodes[1] !== null &&
+                  doc.document.nodes[1].nodes !== null &&
+                  doc.document.nodes[1].nodes[0]
+                )
+              )
+                return;
+
+              const node = doc.document.nodes[1].nodes[0];
+
+              selection.anchor = node.id;
+              selection.focus = node.id;
+              if (range && node.inline) {
+                range.anchor.id = node.inline[0].id;
+                range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 0));
+                range.focus.id = node.inline[0].id;
+                range.focus.offset.increment(sutils.getOffset(range.focus.offset.value, 0));
+              }
+            });
+            memberDoc.merge(userDoc);
+
+            const expectedDoc = toLooseJSON(userDoc);
+            const node = expectedDoc.doc.document.nodes[1].nodes[0];
+            const userSelection = expectedDoc.doc.users[user.id];
+            node.type = 'paragraph';
+            node.nodes = [];
+            userSelection.range.anchor.offset = 0;
+            userSelection.range.focus.offset = 0;
+
+            userDoc.change((doc) => {
+              usecases.remove(user.id, doc);
+            });
+            memberDoc.merge(userDoc);
+
+            assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
+          });
         });
 
         describe('段落項目で親要素がドキュメントの場合', () => {
