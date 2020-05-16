@@ -1,7 +1,7 @@
 import { factory } from './factory';
 import { CRDTDocument } from './CRDTDocument';
 import { transform } from './transform';
-import { ParagraphNode } from './node';
+import { ParagraphNode, Heading1Node } from './node';
 
 export function toLooseJSON(obj: any) {
   // FYI: AutomergeのCounterが、{ value: number }からnumberに変わってしまう点に注意
@@ -151,6 +151,79 @@ export function createSampleData() {
     const document = doc.document;
     const selection = factory.selection.createSelection();
     const firstNode = document.nodes[0] as ParagraphNode;
+
+    selection.anchor = firstNode.id;
+    selection.focus = firstNode.id;
+    selection.range = factory.selection.createRange(firstNode.inline[0].id, firstNode.inline[0].text.length);
+
+    doc.users[member.id] = selection;
+  });
+  userDoc.merge(new CRDTDocument(member.id, memberDoc.save()));
+
+  return {
+    user,
+    member,
+    userDoc,
+    memberDoc,
+  };
+}
+
+/*
+ Selection
+  user
+  member
+ Document
+  Heading1
+    - ABCDEFGHI
+  Paragraph1
+    - ABCDEFGHI
+    Heading2
+      - ABCDEFGHI
+*/
+
+export function createSampleData2() {
+  const user = {
+    id: factory.uuid(),
+  };
+  const member = {
+    id: factory.uuid(),
+  };
+
+  const userDoc = new CRDTDocument(user.id);
+  const memberDoc = new CRDTDocument(member.id, userDoc.save());
+
+  userDoc.change((doc) => {
+    const document = doc.document;
+    transform.node.remove(document, document.nodes[0]);
+
+    const heading1 = factory.node.createHeading1Node();
+    transform.node.appendInline(heading1, createInlineText1());
+    const paragraph1 = factory.node.createParagraphNode();
+    transform.node.appendInline(paragraph1, createInlineText1());
+    const heading2 = factory.node.createHeading1Node();
+    transform.node.appendInline(heading2, createInlineText1());
+
+    transform.node.append(document, heading1);
+    transform.node.append(paragraph1, heading2);
+    transform.node.append(document, paragraph1);
+  });
+  memberDoc.merge(new CRDTDocument(user.id, userDoc.save()));
+
+  userDoc.change((doc) => {
+    const document = doc.document;
+    const selection = doc.users[user.id];
+    const firstNode = document.nodes[0] as Heading1Node;
+
+    selection.anchor = firstNode.id;
+    selection.focus = firstNode.id;
+    selection.range = factory.selection.createRange(firstNode.inline[0].id, firstNode.inline[0].text.length);
+  });
+  memberDoc.merge(new CRDTDocument(user.id, userDoc.save()));
+
+  memberDoc.change((doc) => {
+    const document = doc.document;
+    const selection = factory.selection.createSelection();
+    const firstNode = document.nodes[0] as Heading1Node;
 
     selection.anchor = firstNode.id;
     selection.focus = firstNode.id;
