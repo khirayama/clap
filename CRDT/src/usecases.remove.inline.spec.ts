@@ -313,7 +313,8 @@ describe('削除操作', () => {
             const selection = doc.users[user.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 2));
@@ -327,7 +328,8 @@ describe('削除操作', () => {
             const selection = doc.users[member.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[1].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
@@ -787,7 +789,8 @@ describe('削除操作', () => {
             const selection = doc.users[user.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
@@ -801,7 +804,8 @@ describe('削除操作', () => {
             const selection = doc.users[member.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
@@ -840,7 +844,8 @@ describe('削除操作', () => {
             const selection = doc.users[user.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 0));
@@ -854,7 +859,8 @@ describe('削除操作', () => {
             const selection = doc.users[member.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 0));
@@ -894,7 +900,8 @@ describe('削除操作', () => {
             const selection = doc.users[user.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 2));
@@ -908,7 +915,8 @@ describe('削除操作', () => {
             const selection = doc.users[member.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
@@ -949,7 +957,8 @@ describe('削除操作', () => {
             const selection = doc.users[user.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 2));
@@ -963,7 +972,8 @@ describe('削除操作', () => {
             const selection = doc.users[member.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
@@ -1004,7 +1014,8 @@ describe('削除操作', () => {
             const selection = doc.users[user.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 2));
@@ -1018,7 +1029,8 @@ describe('削除操作', () => {
             const selection = doc.users[member.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 3));
@@ -1059,7 +1071,8 @@ describe('削除操作', () => {
             const selection = doc.users[user.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 2));
@@ -1073,7 +1086,8 @@ describe('削除操作', () => {
             const selection = doc.users[member.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
@@ -1114,7 +1128,8 @@ describe('削除操作', () => {
             const selection = doc.users[user.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 2));
@@ -1128,7 +1143,8 @@ describe('削除操作', () => {
             const selection = doc.users[member.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[1].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 3));
@@ -1169,7 +1185,8 @@ describe('削除操作', () => {
             const selection = doc.users[user.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 2));
@@ -1183,7 +1200,8 @@ describe('削除操作', () => {
             const selection = doc.users[member.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 3));
@@ -1222,7 +1240,8 @@ describe('削除操作', () => {
             const selection = doc.users[user.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 2));
@@ -1236,7 +1255,8 @@ describe('削除操作', () => {
             const selection = doc.users[member.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[1].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
@@ -1277,7 +1297,8 @@ describe('削除操作', () => {
             const selection = doc.users[user.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 2));
@@ -1291,7 +1312,8 @@ describe('削除操作', () => {
             const selection = doc.users[member.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 3));
@@ -1332,7 +1354,8 @@ describe('削除操作', () => {
             const selection = doc.users[user.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 2));
@@ -1346,7 +1369,8 @@ describe('削除操作', () => {
             const selection = doc.users[member.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[1].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 3));
@@ -1387,7 +1411,8 @@ describe('削除操作', () => {
             const selection = doc.users[user.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 2));
@@ -1401,7 +1426,8 @@ describe('削除操作', () => {
             const selection = doc.users[member.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[1].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 3));
@@ -1442,7 +1468,8 @@ describe('削除操作', () => {
             const selection = doc.users[user.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 2));
@@ -1456,7 +1483,8 @@ describe('削除操作', () => {
             const selection = doc.users[member.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[2].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
@@ -1494,7 +1522,8 @@ describe('削除操作', () => {
             const selection = doc.users[user.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
@@ -1508,7 +1537,8 @@ describe('削除操作', () => {
             const selection = doc.users[member.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
@@ -1549,7 +1579,8 @@ describe('削除操作', () => {
             const selection = doc.users[user.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
@@ -1563,7 +1594,8 @@ describe('削除操作', () => {
             const selection = doc.users[member.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 0));
@@ -1604,7 +1636,8 @@ describe('削除操作', () => {
             const selection = doc.users[user.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
@@ -1618,7 +1651,8 @@ describe('削除操作', () => {
             const selection = doc.users[member.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 0));
@@ -1659,7 +1693,8 @@ describe('削除操作', () => {
             const selection = doc.users[user.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
@@ -1673,7 +1708,8 @@ describe('削除操作', () => {
             const selection = doc.users[member.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[1].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
@@ -1714,7 +1750,8 @@ describe('削除操作', () => {
             const selection = doc.users[user.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
@@ -1728,7 +1765,8 @@ describe('削除操作', () => {
             const selection = doc.users[member.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[1].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
@@ -1769,7 +1807,8 @@ describe('削除操作', () => {
             const selection = doc.users[user.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
@@ -1783,7 +1822,8 @@ describe('削除操作', () => {
             const selection = doc.users[member.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[2].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 3));
@@ -1824,7 +1864,8 @@ describe('削除操作', () => {
             const selection = doc.users[user.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
@@ -1838,7 +1879,8 @@ describe('削除操作', () => {
             const selection = doc.users[member.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[1].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
@@ -1879,7 +1921,8 @@ describe('削除操作', () => {
             const selection = doc.users[user.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
@@ -1893,7 +1936,8 @@ describe('削除操作', () => {
             const selection = doc.users[member.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[1].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
@@ -1934,7 +1978,8 @@ describe('削除操作', () => {
             const selection = doc.users[user.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
@@ -1948,7 +1993,8 @@ describe('削除操作', () => {
             const selection = doc.users[member.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[2].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 3));
@@ -1989,7 +2035,8 @@ describe('削除操作', () => {
             const selection = doc.users[user.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
@@ -2003,7 +2050,8 @@ describe('削除操作', () => {
             const selection = doc.users[member.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[2].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 3));
@@ -2470,7 +2518,8 @@ describe('削除操作', () => {
             const selection = doc.users[user.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[1].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 2));
@@ -2484,7 +2533,8 @@ describe('削除操作', () => {
             const selection = doc.users[member.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
@@ -2523,7 +2573,8 @@ describe('削除操作', () => {
             const selection = doc.users[user.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[1].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 3));
@@ -2537,7 +2588,8 @@ describe('削除操作', () => {
             const selection = doc.users[member.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 0));
@@ -2577,7 +2629,8 @@ describe('削除操作', () => {
             const selection = doc.users[user.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[1].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 3));
@@ -2591,7 +2644,8 @@ describe('削除操作', () => {
             const selection = doc.users[member.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
@@ -2632,7 +2686,8 @@ describe('削除操作', () => {
             const selection = doc.users[user.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[1].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 3));
@@ -2646,7 +2701,8 @@ describe('削除操作', () => {
             const selection = doc.users[member.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
@@ -2687,7 +2743,8 @@ describe('削除操作', () => {
             const selection = doc.users[user.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[1].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 3));
@@ -2701,7 +2758,8 @@ describe('削除操作', () => {
             const selection = doc.users[member.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 3));
@@ -2742,7 +2800,8 @@ describe('削除操作', () => {
             const selection = doc.users[user.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[1].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 2));
@@ -2756,7 +2815,8 @@ describe('削除操作', () => {
             const selection = doc.users[member.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
@@ -2797,7 +2857,8 @@ describe('削除操作', () => {
             const selection = doc.users[user.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[1].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 2));
@@ -2811,7 +2872,8 @@ describe('削除操作', () => {
             const selection = doc.users[member.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[1].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 3));
@@ -2852,7 +2914,8 @@ describe('削除操作', () => {
             const selection = doc.users[user.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[1].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 2));
@@ -2866,7 +2929,8 @@ describe('削除操作', () => {
             const selection = doc.users[member.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 3));
@@ -2905,7 +2969,8 @@ describe('削除操作', () => {
             const selection = doc.users[user.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[1].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 2));
@@ -2919,7 +2984,8 @@ describe('削除操作', () => {
             const selection = doc.users[member.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[1].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
@@ -2960,7 +3026,8 @@ describe('削除操作', () => {
             const selection = doc.users[user.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[1].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 2));
@@ -2974,7 +3041,8 @@ describe('削除操作', () => {
             const selection = doc.users[member.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 3));
@@ -3015,7 +3083,8 @@ describe('削除操作', () => {
             const selection = doc.users[user.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[1].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 2));
@@ -3029,7 +3098,8 @@ describe('削除操作', () => {
             const selection = doc.users[member.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[1].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 3));
@@ -3070,7 +3140,8 @@ describe('削除操作', () => {
             const selection = doc.users[user.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[1].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 2));
@@ -3084,7 +3155,8 @@ describe('削除操作', () => {
             const selection = doc.users[member.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[1].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 3));
@@ -3125,7 +3197,8 @@ describe('削除操作', () => {
             const selection = doc.users[user.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[1].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 2));
@@ -3139,7 +3212,8 @@ describe('削除操作', () => {
             const selection = doc.users[member.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[2].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
@@ -3177,7 +3251,8 @@ describe('削除操作', () => {
             const selection = doc.users[user.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[2].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 2));
@@ -3191,7 +3266,8 @@ describe('削除操作', () => {
             const selection = doc.users[member.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
@@ -3232,7 +3308,8 @@ describe('削除操作', () => {
             const selection = doc.users[user.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[2].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 2));
@@ -3246,7 +3323,8 @@ describe('削除操作', () => {
             const selection = doc.users[member.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 0));
@@ -3287,7 +3365,8 @@ describe('削除操作', () => {
             const selection = doc.users[user.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[2].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 2));
@@ -3301,7 +3380,8 @@ describe('削除操作', () => {
             const selection = doc.users[member.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[0].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 0));
@@ -3342,7 +3422,8 @@ describe('削除操作', () => {
             const selection = doc.users[user.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[2].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 2));
@@ -3356,7 +3437,8 @@ describe('削除操作', () => {
             const selection = doc.users[member.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[1].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
@@ -3397,7 +3479,8 @@ describe('削除操作', () => {
             const selection = doc.users[user.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[2].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 2));
@@ -3411,7 +3494,8 @@ describe('削除操作', () => {
             const selection = doc.users[member.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[1].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
@@ -3452,7 +3536,8 @@ describe('削除操作', () => {
             const selection = doc.users[user.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[2].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 2));
@@ -3466,7 +3551,8 @@ describe('削除操作', () => {
             const selection = doc.users[member.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[2].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 3));
@@ -3507,7 +3593,8 @@ describe('削除操作', () => {
             const selection = doc.users[user.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[2].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 2));
@@ -3521,7 +3608,8 @@ describe('削除操作', () => {
             const selection = doc.users[member.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[1].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
@@ -3562,7 +3650,8 @@ describe('削除操作', () => {
             const selection = doc.users[user.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[2].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 2));
@@ -3576,7 +3665,8 @@ describe('削除操作', () => {
             const selection = doc.users[member.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[1].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 1));
@@ -3617,7 +3707,8 @@ describe('削除操作', () => {
             const selection = doc.users[user.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[2].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 2));
@@ -3631,7 +3722,8 @@ describe('削除操作', () => {
             const selection = doc.users[member.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[2].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 3));
@@ -3672,7 +3764,8 @@ describe('削除操作', () => {
             const selection = doc.users[user.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[2].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 2));
@@ -3686,7 +3779,8 @@ describe('削除操作', () => {
             const selection = doc.users[member.id];
             const range = selection.range;
 
-            selection.ids = [node.id];
+            selection.anchor = node.id;
+            selection.focus = node.id;
             if (range) {
               range.anchor.id = node.inline[2].id;
               range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 3));
