@@ -3,7 +3,7 @@ import * as assert from 'power-assert';
 import { usecases } from './usecases';
 import { utils as sutils } from './selection';
 import { CRDTDocument } from './CRDTDocument';
-import { createSampleData, toLooseJSON } from './testutils';
+import { createSampleData, createSampleData2, toLooseJSON } from './testutils';
 
 let user: { id: string };
 let member: { id: string };
@@ -49,7 +49,39 @@ describe('削除操作', () => {
     describe(`${rangePatterns.a}`, () => {
       describe('編集者選択範囲始点および終点が先頭の場合', () => {
         describe('段落項目以外の場合', () => {
-          it.skip('選択範囲項目が段落項目へ変換されていること', () => {});
+          it('選択範囲項目が段落項目へ変換されていること', () => {
+            const result = createSampleData2();
+            user = result.user;
+            member = result.member;
+            userDoc = result.userDoc;
+            memberDoc = result.memberDoc;
+
+            userDoc.change((doc) => {
+              const selection = doc.users[user.id];
+              const range = selection.range;
+
+              if (range) {
+                range.anchor.offset.increment(sutils.getOffset(range.anchor.offset.value, 0));
+                range.focus.offset.increment(sutils.getOffset(range.focus.offset.value, 0));
+              }
+            });
+            memberDoc.merge(userDoc);
+
+            const expectedDoc = toLooseJSON(userDoc);
+            const node = expectedDoc.doc.document.nodes[0];
+            const userSelection = expectedDoc.doc.users[user.id];
+            node.type = 'paragraph';
+            node.nodes = [];
+            userSelection.range.anchor.offset = 0;
+            userSelection.range.focus.offset = 0;
+
+            userDoc.change((doc) => {
+              usecases.remove(user.id, doc);
+            });
+            memberDoc.merge(userDoc);
+
+            assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
+          });
         });
 
         describe('段落項目で親要素がドキュメントじゃない場合', () => {

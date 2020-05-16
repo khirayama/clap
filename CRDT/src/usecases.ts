@@ -3,6 +3,7 @@ import { Doc } from './interfaces';
 import { traversal } from './traversal';
 import { actions } from './actions';
 import { Selection, utils as sutils } from './selection';
+import { transform } from './transform';
 /*
  * API設計時の注意: 引数を与える場合の優先順位
  * userId > CRDTDocument > 個別の引数
@@ -44,7 +45,7 @@ export const usecases = {
           selection.range.anchor.id === node.inline[0].id &&
           selection.range.anchor.offset.value === 0
         ) {
-          // TODO: 編集者選択範囲始点が項目のインライン先頭の先頭だった場合
+          transform.node.turnInto(node, 'paragraph');
           if (node.type !== 'paragraph') {
             // TODO: 「Actions 項目タイプを変更する」で段落項目へ変換を適用
           } else if (node.parent !== node.document) {
