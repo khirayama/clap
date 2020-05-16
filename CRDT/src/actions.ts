@@ -437,6 +437,42 @@ export const actions = {
     }
   },
 
+  replaceItem: (userId: string, doc: Doc, chars: string[]): void => {
+    const users = doc.users;
+    const document = doc.document;
+    const selection: Selection = users[userId];
+
+    if (selection.range !== null) return;
+
+    const nodes = traversal.node.findCurrentNodes(selection, document);
+
+    for (let i = 1; i < nodes.length; i += 1) {
+      const node = nodes[i];
+      if (node !== null && node.object === 'item') {
+        transform.node.remove(document, node);
+      }
+    }
+
+    const node = nodes[0] as ParagraphNode;
+    // TODO: Turn into ParagraphNode
+    node.inline.splice(0, node.inline.length);
+    transform.node.appendInline(node, factory.inline.createInlineText());
+
+    selection.anchor = node.id;
+    selection.focus = node.id;
+    selection.range = factory.selection.createRange(node.inline[0].id, 0);
+
+    actions.insertText(userId, doc, chars);
+
+    const memberIds = getMemberIds(userId, users);
+    for (const mid of memberIds) {
+      const slctn = users[mid];
+
+      slctn.anchor = node.id;
+      slctn.focus = node.id;
+    }
+  },
+
   postprocessItemDeletion: (userId: string, doc: Doc): void => {
     // TODO: 「Actions 項目を削除したときの後処理」を適用
     let todo = false;

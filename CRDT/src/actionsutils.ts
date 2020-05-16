@@ -1,7 +1,8 @@
 import { Doc } from './interfaces';
 import { Selection } from './selection';
-import { ItemNode } from './node';
+import { DocumentNode, ItemNode } from './node';
 import { Decoration } from './inline';
+import { traversal } from './traversal';
 
 export function getStartAndEnd(selection: Selection, node: ItemNode) {
   let start = null;
