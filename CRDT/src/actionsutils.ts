@@ -66,3 +66,33 @@ export function hasSameMarks(marks1: Decoration[], marks2: Decoration[]): boolea
 export function getMemberIds(userId: string, users: Doc['users']): string[] {
   return Object.keys(users).filter((uid) => uid !== userId);
 }
+
+export function isAnchorUpper(document: DocumentNode, anchorId: string, focusId: string): boolean {
+  if (anchorId === focusId) return false;
+
+  const anchorNode = traversal.node.find(document, anchorId);
+  const focusNode = traversal.node.find(document, focusId);
+
+  if (anchorNode === null || anchorNode.parent === null || focusNode === null || focusNode.parent === null)
+    return false;
+
+  if (anchorNode.parent !== focusNode.parent) return false;
+
+  const parentNode = traversal.node.find(document, anchorNode.parent);
+
+  if (parentNode === null || parentNode.nodes === null) return false;
+
+  let isFocusIdAppeared = false;
+  for (let i = 0; i < parentNode.nodes.length; i += 1) {
+    const node = parentNode.nodes[i];
+
+    if (node.id === focusId) {
+      isFocusIdAppeared = true;
+    }
+    if (isFocusIdAppeared === false && node.id === anchorId) {
+      return true;
+    }
+  }
+
+  return false;
+}

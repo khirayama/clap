@@ -4,43 +4,13 @@ import { factory } from './factory';
 import { transform } from './transform';
 import { traversal } from './traversal';
 import { Selection, utils as sutils } from './selection';
-import { getStartAndEnd, hasSameMarks, getMemberIds } from './actionsutils';
-import { DocumentNode } from './node';
+import { ParagraphNode } from './node';
+import { getStartAndEnd, hasSameMarks, getMemberIds, isAnchorUpper } from './actionsutils';
 
 /*
  * API設計時の注意: 引数を与える場合の優先順位
  * userId > CRDTDocument > 個別の引数
  */
-
-function isAnchorUpper(document: DocumentNode, anchorId: string, focusId: string): boolean {
-  if (anchorId === focusId) return false;
-
-  const anchorNode = traversal.node.find(document, anchorId);
-  const focusNode = traversal.node.find(document, focusId);
-
-  if (anchorNode === null || anchorNode.parent === null || focusNode === null || focusNode.parent === null)
-    return false;
-
-  if (anchorNode.parent !== focusNode.parent) return false;
-
-  const parentNode = traversal.node.find(document, anchorNode.parent);
-
-  if (parentNode === null || parentNode.nodes === null) return false;
-
-  let isFocusIdAppeared = false;
-  for (let i = 0; i < parentNode.nodes.length; i += 1) {
-    const node = parentNode.nodes[i];
-
-    if (node.id === focusId) {
-      isFocusIdAppeared = true;
-    }
-    if (isFocusIdAppeared === false && node.id === anchorId) {
-      return true;
-    }
-  }
-
-  return false;
-}
 
 export const actions = {
   init: (userId: string): Doc => {
