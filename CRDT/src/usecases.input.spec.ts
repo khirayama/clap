@@ -470,7 +470,7 @@ describe('確定操作', () => {
 
   describe('項目選択状態', () => {
     describe('編集者選択範囲と共同編集者選択範囲が同じ項目を選択していた場合', () => {
-      it.skip('選択項目が先頭以外削除され、先頭は段落項目へ変換され、段落項目インラインが空の状態から任意文字列が入力されていること', () => {
+      it('選択項目が先頭以外削除され、先頭は段落項目へ変換され、段落項目インラインが空の状態から任意文字列が入力されていること', () => {
         userDoc.change((doc) => {
           const selection = doc.users[user.id];
           selection.range = null;
@@ -508,10 +508,7 @@ describe('確定操作', () => {
         };
         memberSelection.anchor = nodes[0].id;
         memberSelection.focus = nodes[0].id;
-        memberSelection.range = {
-          anchor: { offset: 3, id: userDoc.doc.document.nodes[0].inline[0].id },
-          focus: { offset: 3, id: userDoc.doc.document.nodes[0].inline[0].id },
-        };
+        memberSelection.range = null;
         expectedDoc.doc.document.nodes.splice(1, 2);
 
         assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
