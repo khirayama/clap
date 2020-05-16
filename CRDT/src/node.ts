@@ -12,6 +12,9 @@ export type SuperNode = {
   nodes: ItemNode[] | null;
 };
 
+// FYI: 新しいNodeTypeを加えたら、以下に変更が必要。
+// - factory.node
+// - transform.turnInto
 export type Heading1Node = SuperNode & {
   object: 'item';
   type: 'heading1';
