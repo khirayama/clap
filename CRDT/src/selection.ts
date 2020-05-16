@@ -14,13 +14,14 @@ export type Range = {
 export type Selection = {
   isComposing: boolean;
   compositionText: string;
-  ids: string[];
+  anchor: string | null;
+  focus: string | null;
   range: Range | null;
 };
 
 export const utils = {
   mode: (selection: Selection): 'normal' | 'select' | 'insert' => {
-    if (selection.ids.length === 0) {
+    if (selection.anchor === null || selection.focus === null) {
       return 'normal';
     } else if (selection.range === null) {
       return 'select';
@@ -31,7 +32,7 @@ export const utils = {
 
   isCollasped: (selection: Selection): boolean => {
     return !!(
-      selection.ids.length === 1 &&
+      selection.anchor === selection.focus &&
       selection.range &&
       selection.range.anchor.id === selection.range.focus.id &&
       selection.range.anchor.offset.value === selection.range.focus.offset.value
