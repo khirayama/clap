@@ -32,7 +32,8 @@ memberDoc.change((memberDoc: Doc) => {
   const selection = memberDoc.users[member.id];
   const firstNode = document.nodes[0];
 
-  selection.ids.push(firstNode.id);
+  selection.anchor = firstNode.id;
+  selection.focus = firstNode.id;
   selection.range = factory.selection.createRange(firstNode.inline[0].id, 0);
 });
 
