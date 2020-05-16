@@ -13,7 +13,8 @@ export const factory = {
       return {
         isComposing: false,
         compositionText: '',
-        ids: [],
+        anchor: null,
+        focus: null,
         range: null,
       };
     },
