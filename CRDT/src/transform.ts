@@ -86,7 +86,7 @@ export const transform = {
             transform.node.appendInline(tmp, inline);
           }
           if (node.nodes !== null) {
-            // TODO: node.nodesをフラットに変更する
+            // TODO: node.nodesをアウトデントする
             tmp.nodes = null;
           }
           break;
@@ -98,7 +98,7 @@ export const transform = {
             tmp.inline = null;
           }
           if (node.nodes !== null) {
-            // TODO: node.nodesをフラットに変更する
+            // TODO: node.nodesをアウトデントする
             tmp.nodes = null;
           }
           break;
