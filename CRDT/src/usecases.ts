@@ -1,8 +1,11 @@
 // factory, transform, traveral
 import { Doc } from './interfaces';
 import { traversal } from './traversal';
+import { transform } from './transform';
 import { actions } from './actions';
 import { Selection, utils as sutils } from './selection';
+import { factory } from './factory';
+import { ParagraphNode } from './node';
 /*
  * API設計時の注意: 引数を与える場合の優先順位
  * userId > CRDTDocument > 個別の引数
@@ -22,8 +25,31 @@ export const usecases = {
         actions.insertText(userId, doc, chars);
       }
     } else if (selection.range === null) {
-      if (selection.ids.length) {
-        // TODO: cおよびd
+      if (selection.anchor !== null && selection.focus !== null && selection.anchor !== selection.focus) {
+        const users = doc.users;
+        const document = doc.document;
+        const selection: Selection = users[userId];
+
+        if (selection.range !== null) return;
+
+        const nodes = traversal.node.findCurrentNodes(selection, document);
+
+        for (let i = 1; i < nodes.length; i += 1) {
+          const node = nodes[i];
+          if (node !== null && node.object === 'item') {
+            transform.node.remove(document, node);
+          }
+        }
+
+        const node = nodes[0] as ParagraphNode;
+        // TODO: Turn into ParagraphNode
+        node.inline.splice(0, node.inline.length);
+        node.inline.push(factory.inline.createInlineText());
+        selection.anchor = node.id;
+        selection.focus = node.id;
+        selection.range = factory.selection.createRange(node.inline[0].id, 0);
+        actions.insertText(userId, doc, chars);
+        // TODO: Update selection of members
       }
     }
   },
@@ -66,7 +92,7 @@ export const usecases = {
         actions.postprocessTextDeletion(userId, doc);
       }
     } else if (selection.range === null) {
-      if (selection.ids.length) {
+      if (selection.anchor !== null && selection.focus !== null) {
         actions.removeItems(userId, doc);
         actions.postprocessItemDeletion(userId, doc);
       }
