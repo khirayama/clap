@@ -26,7 +26,7 @@ export function transformation(document: DocumentNode) {
           transform.node.remove(node);
         }
 
-        node.document = parentNode.document;
+        node.document = document.id;
         node.parent = parentNode.id;
         if (prevNode) {
           prevNode.next = node.id;
@@ -59,6 +59,10 @@ export function transformation(document: DocumentNode) {
             }
           }
         }
+        node.document = null;
+        node.parent = null;
+        node.next = null;
+        node.prev = null;
         parentNode.nodes.splice(index, 1);
       },
 
