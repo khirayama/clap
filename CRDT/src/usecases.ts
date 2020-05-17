@@ -62,9 +62,25 @@ export function usecases(userId: string, doc: Doc) {
       }
     },
 
-    indent: () => {},
+    indent: () => {
+      const nodes = traverse.node.findCurrentNodes(selection);
 
-    outdent: () => {},
+      for (const node of nodes) {
+        if (node !== null && node.object === 'item') {
+          transform.node.indent(node);
+        }
+      }
+    },
+
+    outdent: () => {
+      const nodes = traverse.node.findCurrentNodes(selection);
+
+      for (const node of nodes) {
+        if (node !== null && node.object === 'item') {
+          transform.node.outdent(node);
+        }
+      }
+    },
 
     remove: () => {
       if (selection.range !== null) {
