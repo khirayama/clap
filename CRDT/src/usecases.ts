@@ -93,19 +93,12 @@ export function usecases(userId: string, doc: Doc) {
             selection.range.anchor.id === node.inline[0].id &&
             selection.range.anchor.offset.value === 0
           ) {
-            transform.node.turnInto(node, 'paragraph');
             if (node.type !== 'paragraph') {
-              // TODO: 「Actions 項目タイプを変更する」で段落項目へ変換を適用
+              transform.node.turnInto(node, 'paragraph');
             } else if (node.parent !== node.document) {
-              // TODO: 「Actions アウトデントする」を適用
+              transform.node.outdent(node);
             } else if (node.parent === node.document) {
-              /* TODO:
-        - 上項目がインラインを持つ場合
-          - 上項目とインラインとして結合する
-        - 上項目がインラインを持たない場合
-          - 「Actions 項目を削除する」で上項目を削除を適用
-          - 「Actions 項目を削除したときの後処理」を適用
-            */
+              /* TODO: 段落項目の親項目がドキュメントの場合*/
             }
           } else {
             commands.removeChar();

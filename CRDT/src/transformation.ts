@@ -128,7 +128,9 @@ export function transformation(document: DocumentNode) {
               transform.node.appendInline(tmp, inline);
             }
             if (node.nodes !== null) {
-              // TODO: node.nodesをアウトデントする
+              for (let i = 0; i < node.nodes.length; i += 1) {
+                transform.node.outdent(node.nodes[i]);
+              }
               tmp.nodes = null;
             }
             break;
@@ -140,7 +142,9 @@ export function transformation(document: DocumentNode) {
               tmp.inline = null;
             }
             if (node.nodes !== null) {
-              // TODO: node.nodesをアウトデントする
+              for (let i = 0; i < node.nodes.length; i += 1) {
+                transform.node.outdent(node.nodes[i]);
+              }
               tmp.nodes = null;
             }
             break;
