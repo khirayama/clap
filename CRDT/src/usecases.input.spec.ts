@@ -31,7 +31,7 @@ describe('確定操作', () => {
           userSelection.range.focus.offset = 10;
 
           userDoc.change((doc) => {
-            usecases.input(user.id, doc, ['J']);
+            usecases(user.id, doc).input(['J']);
           });
           memberDoc.merge(userDoc);
 
@@ -47,7 +47,7 @@ describe('確定操作', () => {
           userSelection.range.focus.offset = 12;
 
           userDoc.change((doc) => {
-            usecases.input(user.id, doc, ['J', 'K', 'L']);
+            usecases(user.id, doc).input(['J', 'K', 'L']);
           });
           memberDoc.merge(userDoc);
 
@@ -87,7 +87,7 @@ describe('確定操作', () => {
           memberSelection.range.focus.offset = 0;
 
           userDoc.change((doc) => {
-            usecases.input(user.id, doc, ['J', 'K', 'L']);
+            usecases(user.id, doc).input(['J', 'K', 'L']);
           });
           memberDoc.merge(userDoc);
 
@@ -127,7 +127,7 @@ describe('確定操作', () => {
           memberSelection.range.focus.offset = 3;
 
           userDoc.change((doc) => {
-            usecases.input(user.id, doc, ['J', 'K', 'L']);
+            usecases(user.id, doc).input(['J', 'K', 'L']);
           });
           memberDoc.merge(userDoc);
 
@@ -169,7 +169,7 @@ describe('確定操作', () => {
           memberSelection.range.focus.offset = 2;
 
           userDoc.change((doc) => {
-            usecases.input(user.id, doc, ['J', 'K', 'L']);
+            usecases(user.id, doc).input(['J', 'K', 'L']);
           });
           memberDoc.merge(userDoc);
 
@@ -210,7 +210,7 @@ describe('確定操作', () => {
           memberSelection.range.focus.offset = 3;
 
           userDoc.change((doc) => {
-            usecases.input(user.id, doc, ['J', 'K', 'L']);
+            usecases(user.id, doc).input(['J', 'K', 'L']);
           });
           memberDoc.merge(userDoc);
 
@@ -251,7 +251,7 @@ describe('確定操作', () => {
           memberSelection.range.focus.offset = 2;
 
           userDoc.change((doc) => {
-            usecases.input(user.id, doc, ['J', 'K', 'L']);
+            usecases(user.id, doc).input(['J', 'K', 'L']);
           });
           memberDoc.merge(userDoc);
 
@@ -292,7 +292,7 @@ describe('確定操作', () => {
           memberSelection.range.focus.offset = 8;
 
           userDoc.change((doc) => {
-            usecases.input(user.id, doc, ['J', 'K', 'L']);
+            usecases(user.id, doc).input(['J', 'K', 'L']);
           });
           memberDoc.merge(userDoc);
 
@@ -333,7 +333,7 @@ describe('確定操作', () => {
           memberSelection.range.focus.offset = 2;
 
           userDoc.change((doc) => {
-            usecases.input(user.id, doc, ['J', 'K', 'L']);
+            usecases(user.id, doc).input(['J', 'K', 'L']);
           });
           memberDoc.merge(userDoc);
 
@@ -374,7 +374,7 @@ describe('確定操作', () => {
           memberSelection.range.focus.offset = 8;
 
           userDoc.change((doc) => {
-            usecases.input(user.id, doc, ['J', 'K', 'L']);
+            usecases(user.id, doc).input(['J', 'K', 'L']);
           });
           memberDoc.merge(userDoc);
 
@@ -415,7 +415,7 @@ describe('確定操作', () => {
           memberSelection.range.focus.offset = 3;
 
           userDoc.change((doc) => {
-            usecases.input(user.id, doc, ['J', 'K', 'L']);
+            usecases(user.id, doc).input(['J', 'K', 'L']);
           });
           memberDoc.merge(userDoc);
 
@@ -458,7 +458,7 @@ describe('確定操作', () => {
         memberSelection.range.focus.offset = 3;
 
         userDoc.change((doc) => {
-          usecases.input(user.id, doc, ['J', 'K', 'L']);
+          usecases(user.id, doc).input(['J', 'K', 'L']);
         });
         memberDoc.merge(userDoc);
 
@@ -489,7 +489,7 @@ describe('確定操作', () => {
         const expectedDoc = toLooseJSON(userDoc);
 
         userDoc.change((doc) => {
-          usecases.input(user.id, doc, ['J', 'K', 'L']);
+          usecases(user.id, doc).input(['J', 'K', 'L']);
         });
         memberDoc.merge(userDoc);
 
@@ -544,7 +544,7 @@ describe('確定操作', () => {
         const expectedDoc = toLooseJSON(userDoc);
 
         userDoc.change((doc) => {
-          usecases.input(user.id, doc, ['J', 'K', 'L']);
+          usecases(user.id, doc).input(['J', 'K', 'L']);
         });
         memberDoc.merge(userDoc);
 
@@ -599,7 +599,7 @@ describe('確定操作', () => {
         const expectedDoc = toLooseJSON(userDoc);
 
         userDoc.change((doc) => {
-          usecases.input(user.id, doc, ['J', 'K', 'L']);
+          usecases(user.id, doc).input(['J', 'K', 'L']);
         });
         memberDoc.merge(userDoc);
 
@@ -654,7 +654,7 @@ describe('確定操作', () => {
         const expectedDoc = toLooseJSON(userDoc);
 
         userDoc.change((doc) => {
-          usecases.input(user.id, doc, ['J', 'K', 'L']);
+          usecases(user.id, doc).input(['J', 'K', 'L']);
         });
         memberDoc.merge(userDoc);
 
@@ -709,7 +709,7 @@ describe('確定操作', () => {
         const expectedDoc = toLooseJSON(userDoc);
 
         userDoc.change((doc) => {
-          usecases.input(user.id, doc, ['J', 'K', 'L']);
+          usecases(user.id, doc).input(['J', 'K', 'L']);
         });
         memberDoc.merge(userDoc);
 

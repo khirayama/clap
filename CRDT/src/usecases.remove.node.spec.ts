@@ -42,7 +42,7 @@ describe('削除操作', () => {
           nodes.splice(0, 1);
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
 
           assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
@@ -72,7 +72,7 @@ describe('削除操作', () => {
           nodes.splice(4, 1);
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
 
           assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
@@ -105,7 +105,7 @@ describe('削除操作', () => {
           expectedDoc.doc.users[member.id].focus = node.id;
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
 
           assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
@@ -132,7 +132,7 @@ describe('削除操作', () => {
           expectedDoc.doc.users[member.id].focus = null;
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
 
           assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
@@ -163,7 +163,7 @@ describe('削除操作', () => {
           nodes.splice(0, 1);
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
 
           assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
@@ -193,7 +193,7 @@ describe('削除操作', () => {
           nodes.splice(4, 1);
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
 
           assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
@@ -228,7 +228,7 @@ describe('削除操作', () => {
           nodes.splice(1, 3);
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
 
           assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
@@ -258,7 +258,7 @@ describe('削除操作', () => {
           nodes.splice(2, 3);
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
 
           assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
@@ -291,7 +291,7 @@ describe('削除操作', () => {
           expectedDoc.doc.users[member.id].focus = node.id;
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
 
           assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
@@ -319,7 +319,7 @@ describe('削除操作', () => {
           expectedDoc.doc.users[member.id].focus = null;
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
 
           assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
@@ -353,7 +353,7 @@ describe('削除操作', () => {
             nodes.splice(1, 3);
 
             userDoc.change((doc) => {
-              usecases.remove(user.id, doc);
+              usecases(user.id, doc).remove();
             });
 
             assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
@@ -383,7 +383,7 @@ describe('削除操作', () => {
             nodes.splice(2, 3);
 
             userDoc.change((doc) => {
-              usecases.remove(user.id, doc);
+              usecases(user.id, doc).remove();
             });
 
             assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
@@ -416,7 +416,7 @@ describe('削除操作', () => {
             node.nodes = [];
 
             userDoc.change((doc) => {
-              usecases.remove(user.id, doc);
+              usecases(user.id, doc).remove();
             });
 
             assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
@@ -444,7 +444,7 @@ describe('削除操作', () => {
             expectedDoc.doc.users[member.id].focus = null;
 
             userDoc.change((doc) => {
-              usecases.remove(user.id, doc);
+              usecases(user.id, doc).remove();
             });
 
             assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
@@ -475,7 +475,7 @@ describe('削除操作', () => {
             nodes.splice(2, 2);
 
             userDoc.change((doc) => {
-              usecases.remove(user.id, doc);
+              usecases(user.id, doc).remove();
             });
 
             assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
@@ -503,7 +503,7 @@ describe('削除操作', () => {
             nodes.splice(2, 3);
 
             userDoc.change((doc) => {
-              usecases.remove(user.id, doc);
+              usecases(user.id, doc).remove();
             });
 
             assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
@@ -536,7 +536,7 @@ describe('削除操作', () => {
             nodes.splice(1, 3);
 
             userDoc.change((doc) => {
-              usecases.remove(user.id, doc);
+              usecases(user.id, doc).remove();
             });
 
             assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
@@ -566,7 +566,7 @@ describe('削除操作', () => {
             nodes.splice(2, 3);
 
             userDoc.change((doc) => {
-              usecases.remove(user.id, doc);
+              usecases(user.id, doc).remove();
             });
 
             assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
@@ -599,7 +599,7 @@ describe('削除操作', () => {
             expectedDoc.doc.users[member.id].focus = node.id;
 
             userDoc.change((doc) => {
-              usecases.remove(user.id, doc);
+              usecases(user.id, doc).remove();
             });
 
             assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
@@ -627,7 +627,7 @@ describe('削除操作', () => {
             expectedDoc.doc.users[member.id].focus = null;
 
             userDoc.change((doc) => {
-              usecases.remove(user.id, doc);
+              usecases(user.id, doc).remove();
             });
 
             assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
@@ -660,7 +660,7 @@ describe('削除操作', () => {
             nodes.splice(1, 3);
 
             userDoc.change((doc) => {
-              usecases.remove(user.id, doc);
+              usecases(user.id, doc).remove();
             });
 
             assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
@@ -690,7 +690,7 @@ describe('削除操作', () => {
             nodes.splice(2, 3);
 
             userDoc.change((doc) => {
-              usecases.remove(user.id, doc);
+              usecases(user.id, doc).remove();
             });
 
             assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
@@ -720,7 +720,7 @@ describe('削除操作', () => {
             nodes.splice(0, 3);
 
             userDoc.change((doc) => {
-              usecases.remove(user.id, doc);
+              usecases(user.id, doc).remove();
             });
 
             assert.deepEqual(toLooseJSON(userDoc), expectedDoc);

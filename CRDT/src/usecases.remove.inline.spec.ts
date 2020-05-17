@@ -76,7 +76,7 @@ describe('削除操作', () => {
             userSelection.range.focus.offset = 0;
 
             userDoc.change((doc) => {
-              usecases.remove(user.id, doc);
+              usecases(user.id, doc).remove();
             });
             memberDoc.merge(userDoc);
 
@@ -125,7 +125,7 @@ describe('削除操作', () => {
             userSelection.range.focus.offset = 0;
 
             userDoc.change((doc) => {
-              usecases.remove(user.id, doc);
+              usecases(user.id, doc).remove();
             });
             memberDoc.merge(userDoc);
 
@@ -176,7 +176,7 @@ describe('削除操作', () => {
             userSelection.range.focus.offset = 0;
 
             userDoc.change((doc) => {
-              usecases.remove(user.id, doc);
+              usecases(user.id, doc).remove();
             });
             memberDoc.merge(userDoc);
 
@@ -230,7 +230,7 @@ describe('削除操作', () => {
             memberSelection.range.focus.offset = 4;
 
             userDoc.change((doc) => {
-              usecases.remove(user.id, doc);
+              usecases(user.id, doc).remove();
             });
             memberDoc.merge(userDoc);
 
@@ -270,7 +270,7 @@ describe('削除操作', () => {
             memberSelection.range.focus.offset = 8;
 
             userDoc.change((doc) => {
-              usecases.remove(user.id, doc);
+              usecases(user.id, doc).remove();
             });
             memberDoc.merge(userDoc);
 
@@ -300,7 +300,7 @@ describe('削除操作', () => {
           userSelection.range.focus.offset = 8;
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
           memberDoc.merge(userDoc);
 
@@ -342,7 +342,7 @@ describe('削除操作', () => {
           memberSelection.range.focus.offset = 6;
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
           memberDoc.merge(userDoc);
 
@@ -384,7 +384,7 @@ describe('削除操作', () => {
           memberSelection.range.focus.offset = 3;
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
           memberDoc.merge(userDoc);
 
@@ -426,7 +426,7 @@ describe('削除操作', () => {
           memberSelection.range.focus.offset = 6;
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
           memberDoc.merge(userDoc);
 
@@ -479,7 +479,7 @@ describe('削除操作', () => {
           userSelection.range.focus.offset = 1;
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
           memberDoc.merge(userDoc);
 
@@ -525,7 +525,7 @@ describe('削除操作', () => {
           memberSelection.range.focus.offset = 0;
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
           memberDoc.merge(userDoc);
 
@@ -567,7 +567,7 @@ describe('削除操作', () => {
           memberSelection.range.focus.offset = 2;
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
           memberDoc.merge(userDoc);
 
@@ -609,7 +609,7 @@ describe('削除操作', () => {
           memberSelection.range.focus.offset = 3;
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
           memberDoc.merge(userDoc);
 
@@ -651,7 +651,7 @@ describe('削除操作', () => {
           memberSelection.range.focus.offset = 2;
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
           memberDoc.merge(userDoc);
 
@@ -693,7 +693,7 @@ describe('削除操作', () => {
           memberSelection.range.focus.offset = 4;
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
           memberDoc.merge(userDoc);
 
@@ -735,7 +735,7 @@ describe('削除操作', () => {
           memberSelection.range.focus.offset = 2;
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
           memberDoc.merge(userDoc);
 
@@ -777,7 +777,7 @@ describe('削除操作', () => {
           memberSelection.range.focus.offset = 3;
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
           memberDoc.merge(userDoc);
 
@@ -819,7 +819,7 @@ describe('削除操作', () => {
           memberSelection.range.focus.offset = 4;
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
           memberDoc.merge(userDoc);
 
@@ -861,7 +861,7 @@ describe('削除操作', () => {
           memberSelection.range.focus.offset = 3;
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
           memberDoc.merge(userDoc);
 
@@ -903,7 +903,7 @@ describe('削除操作', () => {
           memberSelection.range.focus.offset = 4;
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
           memberDoc.merge(userDoc);
 
@@ -966,7 +966,7 @@ describe('削除操作', () => {
           memberSelection.range.focus.offset = 1;
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
           memberDoc.merge(userDoc);
 
@@ -1024,7 +1024,7 @@ describe('削除操作', () => {
           node.inline.splice(0, 2);
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
           memberDoc.merge(userDoc);
 
@@ -1085,7 +1085,7 @@ describe('削除操作', () => {
           node.inline.splice(1, 1);
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
           memberDoc.merge(userDoc);
 
@@ -1146,7 +1146,7 @@ describe('削除操作', () => {
           node.inline.splice(1, 1);
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
           memberDoc.merge(userDoc);
 
@@ -1207,7 +1207,7 @@ describe('削除操作', () => {
           node.inline.splice(1, 1);
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
           memberDoc.merge(userDoc);
 
@@ -1268,7 +1268,7 @@ describe('削除操作', () => {
           memberSelection.range.focus.offset = 1;
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
           memberDoc.merge(userDoc);
 
@@ -1329,7 +1329,7 @@ describe('削除操作', () => {
           memberSelection.range.focus.offset = 1;
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
           memberDoc.merge(userDoc);
 
@@ -1390,7 +1390,7 @@ describe('削除操作', () => {
           memberSelection.range.focus.offset = 2;
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
           memberDoc.merge(userDoc);
 
@@ -1449,7 +1449,7 @@ describe('削除操作', () => {
           memberSelection.range.focus.offset = 2;
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
           memberDoc.merge(userDoc);
 
@@ -1510,7 +1510,7 @@ describe('削除操作', () => {
           memberSelection.range.focus.offset = 1;
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
           memberDoc.merge(userDoc);
 
@@ -1571,7 +1571,7 @@ describe('削除操作', () => {
           memberSelection.range.focus.offset = 2;
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
           memberDoc.merge(userDoc);
 
@@ -1632,7 +1632,7 @@ describe('削除操作', () => {
           memberSelection.range.focus.offset = 1;
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
           memberDoc.merge(userDoc);
 
@@ -1688,7 +1688,7 @@ describe('削除操作', () => {
           userSelection.range.focus.offset = 2;
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
           memberDoc.merge(userDoc);
 
@@ -1751,7 +1751,7 @@ describe('削除操作', () => {
           node.inline.splice(1, 2);
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
           memberDoc.merge(userDoc);
 
@@ -1812,7 +1812,7 @@ describe('削除操作', () => {
           node.inline.splice(1, 2);
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
           memberDoc.merge(userDoc);
 
@@ -1873,7 +1873,7 @@ describe('削除操作', () => {
           node.inline.splice(1, 2);
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
           memberDoc.merge(userDoc);
 
@@ -1934,7 +1934,7 @@ describe('削除操作', () => {
           node.inline.splice(1, 2);
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
           memberDoc.merge(userDoc);
 
@@ -1995,7 +1995,7 @@ describe('削除操作', () => {
           node.inline.splice(1, 2);
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
           memberDoc.merge(userDoc);
 
@@ -2056,7 +2056,7 @@ describe('削除操作', () => {
           node.inline.splice(1, 2);
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
           memberDoc.merge(userDoc);
 
@@ -2117,7 +2117,7 @@ describe('削除操作', () => {
           node.inline.splice(1, 2);
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
           memberDoc.merge(userDoc);
 
@@ -2178,7 +2178,7 @@ describe('削除操作', () => {
           node.inline.splice(1, 2);
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
           memberDoc.merge(userDoc);
 
@@ -2239,7 +2239,7 @@ describe('削除操作', () => {
           node.inline.splice(1, 2);
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
           memberDoc.merge(userDoc);
 
@@ -2300,7 +2300,7 @@ describe('削除操作', () => {
           node.inline.splice(1, 2);
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
           memberDoc.merge(userDoc);
 
@@ -2346,7 +2346,7 @@ describe('削除操作', () => {
           memberSelection.range.focus.offset = 0;
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
           memberDoc.merge(userDoc);
 
@@ -2388,7 +2388,7 @@ describe('削除操作', () => {
           memberSelection.range.focus.offset = 2;
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
           memberDoc.merge(userDoc);
 
@@ -2430,7 +2430,7 @@ describe('削除操作', () => {
           memberSelection.range.focus.offset = 3;
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
           memberDoc.merge(userDoc);
 
@@ -2472,7 +2472,7 @@ describe('削除操作', () => {
           memberSelection.range.focus.offset = 2;
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
           memberDoc.merge(userDoc);
 
@@ -2514,7 +2514,7 @@ describe('削除操作', () => {
           memberSelection.range.focus.offset = 4;
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
           memberDoc.merge(userDoc);
 
@@ -2556,7 +2556,7 @@ describe('削除操作', () => {
           memberSelection.range.focus.offset = 2;
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
           memberDoc.merge(userDoc);
 
@@ -2598,7 +2598,7 @@ describe('削除操作', () => {
           memberSelection.range.focus.offset = 3;
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
           memberDoc.merge(userDoc);
 
@@ -2640,7 +2640,7 @@ describe('削除操作', () => {
           memberSelection.range.focus.offset = 4;
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
           memberDoc.merge(userDoc);
 
@@ -2682,7 +2682,7 @@ describe('削除操作', () => {
           memberSelection.range.focus.offset = 3;
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
           memberDoc.merge(userDoc);
 
@@ -2724,7 +2724,7 @@ describe('削除操作', () => {
           memberSelection.range.focus.offset = 4;
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
           memberDoc.merge(userDoc);
 
@@ -2787,7 +2787,7 @@ describe('削除操作', () => {
           memberSelection.range.focus.offset = 1;
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
           memberDoc.merge(userDoc);
 
@@ -2845,7 +2845,7 @@ describe('削除操作', () => {
           node.inline.splice(0, 2);
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
           memberDoc.merge(userDoc);
 
@@ -2906,7 +2906,7 @@ describe('削除操作', () => {
           node.inline.splice(1, 1);
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
           memberDoc.merge(userDoc);
 
@@ -2967,7 +2967,7 @@ describe('削除操作', () => {
           node.inline.splice(1, 1);
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
           memberDoc.merge(userDoc);
 
@@ -3028,7 +3028,7 @@ describe('削除操作', () => {
           node.inline.splice(1, 1);
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
           memberDoc.merge(userDoc);
 
@@ -3089,7 +3089,7 @@ describe('削除操作', () => {
           memberSelection.range.focus.offset = 1;
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
           memberDoc.merge(userDoc);
 
@@ -3150,7 +3150,7 @@ describe('削除操作', () => {
           memberSelection.range.focus.offset = 1;
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
           memberDoc.merge(userDoc);
 
@@ -3211,7 +3211,7 @@ describe('削除操作', () => {
           memberSelection.range.focus.offset = 2;
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
           memberDoc.merge(userDoc);
 
@@ -3270,7 +3270,7 @@ describe('削除操作', () => {
           memberSelection.range.focus.offset = 2;
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
           memberDoc.merge(userDoc);
 
@@ -3331,7 +3331,7 @@ describe('削除操作', () => {
           memberSelection.range.focus.offset = 1;
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
           memberDoc.merge(userDoc);
 
@@ -3392,7 +3392,7 @@ describe('削除操作', () => {
           memberSelection.range.focus.offset = 2;
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
           memberDoc.merge(userDoc);
 
@@ -3453,7 +3453,7 @@ describe('削除操作', () => {
           memberSelection.range.focus.offset = 1;
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
           memberDoc.merge(userDoc);
 
@@ -3509,7 +3509,7 @@ describe('削除操作', () => {
           userSelection.range.focus.offset = 2;
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
           memberDoc.merge(userDoc);
 
@@ -3572,7 +3572,7 @@ describe('削除操作', () => {
           node.inline.splice(1, 2);
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
           memberDoc.merge(userDoc);
 
@@ -3633,7 +3633,7 @@ describe('削除操作', () => {
           node.inline.splice(1, 2);
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
           memberDoc.merge(userDoc);
 
@@ -3694,7 +3694,7 @@ describe('削除操作', () => {
           node.inline.splice(1, 2);
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
           memberDoc.merge(userDoc);
 
@@ -3755,7 +3755,7 @@ describe('削除操作', () => {
           node.inline.splice(1, 2);
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
           memberDoc.merge(userDoc);
 
@@ -3816,7 +3816,7 @@ describe('削除操作', () => {
           node.inline.splice(1, 2);
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
           memberDoc.merge(userDoc);
 
@@ -3877,7 +3877,7 @@ describe('削除操作', () => {
           node.inline.splice(1, 2);
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
           memberDoc.merge(userDoc);
 
@@ -3938,7 +3938,7 @@ describe('削除操作', () => {
           node.inline.splice(1, 2);
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
           memberDoc.merge(userDoc);
 
@@ -3999,7 +3999,7 @@ describe('削除操作', () => {
           node.inline.splice(1, 2);
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
           memberDoc.merge(userDoc);
 
@@ -4060,7 +4060,7 @@ describe('削除操作', () => {
           node.inline.splice(1, 2);
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
           memberDoc.merge(userDoc);
 
@@ -4121,7 +4121,7 @@ describe('削除操作', () => {
           node.inline.splice(1, 2);
 
           userDoc.change((doc) => {
-            usecases.remove(user.id, doc);
+            usecases(user.id, doc).remove();
           });
           memberDoc.merge(userDoc);
 
