@@ -8,9 +8,11 @@
   - node/inline/selectionのプリミティブな生成を行う。
   - Automerge/traversalへの参照が可能。
 - usecases
+  - contextとしてuserIdとCRDTDocumentを与える。
   - selection/documentを元にした条件分岐を管理する。
   - factory/transform/traversalへの参照が可能。
 - actions
+  - contextとしてuserIdとCRDTDocumentを与える。
   - factory/transformを扱う。
   - プリミティブな操作はfactory/transformで行う。
   - factory/transform/traversalへの参照が可能。
@@ -18,10 +20,12 @@
   - CRDTDocumentのchangeの中でのみ呼ばれる。
   - selectionを元にした分のみ受け入れる。ユーザ入力やドキュメントの状態に依存する場合、usecasesで行う。
 - transform
+  - contextとしてdocumentを与える。
   - node/inline/selectionのプリミティブな変換を行う。
   - factory/traversalへの参照が可能。
   - selectionを元にした操作は行わない。その場合、actionsで行う。
 - traversal
+  - contextとしてdocumentを与える。
   - node/inline/selectionの走査を行う。
 - selection
 - node
