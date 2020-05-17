@@ -1,5 +1,6 @@
-// Automerge/traversal
+// Automerge, traversal
 import * as Automerge from 'automerge';
+
 import { DocumentNode, ParagraphNode, Heading1Node, HorizontalRuleNode } from './node';
 import { InlineText } from './inline';
 import { Selection, Range } from './selection';

@@ -1,8 +1,9 @@
-// factory/traversal
-import { DocumentNode, ItemNode, SuperNode, ParagraphNode, Heading1Node, HorizontalRuleNode } from './node';
-import { traversal } from './traversal';
-import { Inline } from './inline';
+// factory, traversal
 import { factory } from './factory';
+import { traversal } from './traversal';
+
+import { DocumentNode, ItemNode, SuperNode, ParagraphNode, Heading1Node, HorizontalRuleNode } from './node';
+import { Inline } from './inline';
 
 /*
  * append: 親要素と追加したい要素を与え、親の子要素の最後に追加する。 https://developer.mozilla.org/ja/docs/Web/API/ParentNode/append
@@ -12,6 +13,8 @@ import { factory } from './factory';
  * remove: ドキュメントと削除したい要素を与え、自身を削除する。 https://developer.mozilla.org/ja/docs/Web/API/ChildNode/remove
  */
 export function transformation(document: DocumentNode) {
+  const traverse = traversal(document);
+
   const transform = {
     node: {
       append: (parentNode: DocumentNode | ItemNode, node: ItemNode): void => {
@@ -33,8 +36,6 @@ export function transformation(document: DocumentNode) {
       },
 
       remove: (node: ItemNode): void => {
-        const traverse = traversal(document);
-
         if (node.parent === null) return;
 
         const parentNode = traverse.node.find(node.parent);
@@ -113,8 +114,6 @@ export function transformation(document: DocumentNode) {
       },
 
       indent: (node: ItemNode): void => {
-        const traverse = traversal(document);
-
         if (node.prev === null) return;
 
         const upperNode = traverse.node.find(node.prev);
@@ -133,8 +132,6 @@ export function transformation(document: DocumentNode) {
       },
 
       outdent: (node: ItemNode): void => {
-        const traverse = traversal(document);
-
         if (node.parent === null) return;
 
         const parentNode = traverse.node.find(node.parent);

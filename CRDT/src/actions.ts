@@ -1,8 +1,9 @@
-// factory, transform, traveral
-import { Doc } from './interfaces';
+// factory, transformation, traveral
 import { factory } from './factory';
 import { transformation } from './transformation';
 import { traversal } from './traversal';
+
+import { Doc } from './interfaces';
 import { Selection, utils as sutils } from './selection';
 import { getStartAndEnd, hasSameMarks, getMemberIds, isAnchorUpper } from './actionsutils';
 
