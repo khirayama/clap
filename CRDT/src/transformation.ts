@@ -169,7 +169,7 @@ export function transformation(document: DocumentNode) {
 
         const parentNode = traverse.node.find(node.parent);
 
-        if (parentNode === null || parentNode.id === node.document) return;
+        if (parentNode === null || parentNode.object === 'document') return;
 
         if (parentNode.nodes !== null && node.nodes !== null) {
           let isDowner = false;
@@ -183,7 +183,7 @@ export function transformation(document: DocumentNode) {
           }
         }
 
-        transform.node.append(parentNode, node);
+        transform.node.after(parentNode, node);
       },
     },
 
