@@ -34,10 +34,11 @@ export const usecases = {
     const users = doc.users;
     const document = doc.document;
     const selection: Selection = users[userId];
+    const traverse = traversal(document);
 
     if (selection.range !== null) {
       if (sutils.isCollasped(selection)) {
-        const node = traversal.node.findCurrentNode(selection, document);
+        const node = traverse.node.findCurrentNode(selection);
         if (
           node !== null &&
           node.inline !== null &&

@@ -4,7 +4,6 @@ import { factory } from './factory';
 import { transform } from './transform';
 import { traversal } from './traversal';
 import { Selection, utils as sutils } from './selection';
-import { ParagraphNode } from './node';
 import { getStartAndEnd, hasSameMarks, getMemberIds, isAnchorUpper } from './actionsutils';
 
 /*
@@ -39,15 +38,16 @@ export const actions = {
     const users = doc.users;
     const document = doc.document;
     const selection: Selection = users[userId];
+    const traverse = traversal(document);
 
     if (selection.range === null) return;
 
-    const node = traversal.node.findCurrentNode(selection, document);
+    const node = traverse.node.findCurrentNode(selection);
 
     if (node === null || node.inline === null) return;
 
     const inlineId = selection.range.anchor.id;
-    const inline = traversal.inline.find(node, inlineId);
+    const inline = traverse.inline.find(node, inlineId);
 
     if (inline === null) return;
 
@@ -80,15 +80,16 @@ export const actions = {
     const users = doc.users;
     const document = doc.document;
     const selection: Selection = users[userId];
+    const traverse = traversal(document);
 
     if (selection.range === null) return;
 
-    const node = traversal.node.findCurrentNode(selection, document);
+    const node = traverse.node.findCurrentNode(selection);
 
     if (node === null || node.inline === null) return;
 
     const inlineId = selection.range.anchor.id;
-    const inline = traversal.inline.find(node, inlineId);
+    const inline = traverse.inline.find(node, inlineId);
 
     if (inline === null) return;
 
@@ -119,8 +120,9 @@ export const actions = {
     const users = doc.users;
     const document = doc.document;
     const selection: Selection = users[userId];
+    const traverse = traversal(document);
 
-    const node = traversal.node.findCurrentNode(selection, document);
+    const node = traverse.node.findCurrentNode(selection);
 
     if (node === null || node.inline === null) return;
 
@@ -129,7 +131,7 @@ export const actions = {
     if (start === null || end === null) return;
 
     if (start.id === end.id) {
-      const startInline = traversal.inline.find(node, start.id);
+      const startInline = traverse.inline.find(node, start.id);
 
       if (startInline === null) return;
 
@@ -191,13 +193,13 @@ export const actions = {
 
         if (inline.id === startId) {
           isStarted = true;
-          const startInline = traversal.inline.find(node, startId);
+          const startInline = traverse.inline.find(node, startId);
           if (startInline) {
             transform.inline.removeText(inline, startOffset, startInline.text.length - startOffset);
           }
         } else if (inline.id === endId) {
           isStarted = false;
-          const endInline = traversal.inline.find(node, endId);
+          const endInline = traverse.inline.find(node, endId);
           if (endInline) {
             transform.inline.removeText(inline, 0, endOffset);
           }
@@ -265,8 +267,9 @@ export const actions = {
     const users = doc.users;
     const document = doc.document;
     const selection: Selection = users[userId];
+    const traverse = traversal(document);
 
-    const node = traversal.node.findCurrentNode(selection, document);
+    const node = traverse.node.findCurrentNode(selection);
 
     if (node === null || node.inline === null) return;
 
@@ -343,10 +346,11 @@ export const actions = {
     const users = doc.users;
     const document = doc.document;
     const selection: Selection = users[userId];
+    const traverse = traversal(document);
 
     if (selection.range !== null) return;
 
-    const nodes = traversal.node.findCurrentNodes(selection, document);
+    const nodes = traverse.node.findCurrentNodes(selection);
 
     for (const node of nodes) {
       if (node !== null && node.object === 'item') {
@@ -441,10 +445,11 @@ export const actions = {
     const users = doc.users;
     const document = doc.document;
     const selection: Selection = users[userId];
+    const traverse = traversal(document);
 
     if (selection.range !== null) return;
 
-    const nodes = traversal.node.findCurrentNodes(selection, document);
+    const nodes = traverse.node.findCurrentNodes(selection);
 
     for (let i = 1; i < nodes.length; i += 1) {
       const node = nodes[i];

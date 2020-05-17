@@ -69,17 +69,19 @@ export function getMemberIds(userId: string, users: Doc['users']): string[] {
 }
 
 export function isAnchorUpper(document: DocumentNode, anchorId: string, focusId: string): boolean {
+  const traverse = traversal(document);
+
   if (anchorId === focusId) return false;
 
-  const anchorNode = traversal.node.find(document, anchorId);
-  const focusNode = traversal.node.find(document, focusId);
+  const anchorNode = traverse.node.find(anchorId);
+  const focusNode = traverse.node.find(focusId);
 
   if (anchorNode === null || anchorNode.parent === null || focusNode === null || focusNode.parent === null)
     return false;
 
   if (anchorNode.parent !== focusNode.parent) return false;
 
-  const parentNode = traversal.node.find(document, anchorNode.parent);
+  const parentNode = traverse.node.find(anchorNode.parent);
 
   if (parentNode === null || parentNode.nodes === null) return false;
 

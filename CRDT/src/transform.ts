@@ -33,9 +33,11 @@ export const transform = {
     },
 
     remove: (document: DocumentNode, node: ItemNode): void => {
+      const traverse = traversal(document);
+
       if (node.parent === null) return;
 
-      const parentNode = traversal.node.find(document, node.parent);
+      const parentNode = traverse.node.find(node.parent);
 
       if (parentNode === null || (parentNode !== null && parentNode.nodes === null)) return;
 
@@ -111,9 +113,11 @@ export const transform = {
     },
 
     indent: (document: DocumentNode, node: ItemNode): void => {
+      const traverse = traversal(document);
+
       if (node.prev === null) return;
 
-      const upperNode = traversal.node.find(document, node.prev);
+      const upperNode = traverse.node.find(node.prev);
 
       if (upperNode === null) return;
 
@@ -129,9 +133,11 @@ export const transform = {
     },
 
     outdent: (document: DocumentNode, node: ItemNode): void => {
+      const traverse = traversal(document);
+
       if (node.parent === null) return;
 
-      const parentNode = traversal.node.find(document, node.parent);
+      const parentNode = traverse.node.find(node.parent);
 
       if (parentNode === null) return;
 
@@ -165,9 +171,11 @@ export const transform = {
         }
       }
     },
+
     insertText: (inline: Inline, index: number, chars: string[]) => {
       inline.text.splice(index, 0, ...chars);
     },
+
     removeText: (inline: Inline, index: number, count: number) => {
       inline.text.splice(index, count);
     },
