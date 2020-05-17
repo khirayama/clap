@@ -101,7 +101,7 @@ describe('インデント操作', () => {
   });
 });
 
-describe.only('アウトデント操作', () => {
+describe('アウトデント操作', () => {
   describe('親項目がない場合', () => {
     it('何も変更されないこと', () => {
       const expectedDoc = toLooseJSON(userDoc);
@@ -154,7 +154,46 @@ describe.only('アウトデント操作', () => {
     });
 
     describe('選択項目次項目がある場合', () => {
-      it.skip('選択項目が前項目の子項目最後尾に追加され、選択項目子項目全ても前項目の子項目に追加されていること', () => {});
+      it('選択項目が前項目の子項目最後尾に追加され、選択項目子項目全ても前項目の子項目に追加されていること', () => {
+        userDoc.change((doc) => {
+          if (
+            !(
+              doc.document.nodes[0] &&
+              doc.document.nodes[0].nodes &&
+              doc.document.nodes[0].nodes[0] &&
+              doc.document.nodes[0].nodes[0].nodes &&
+              doc.document.nodes[0].nodes[0].nodes[0] !== null
+            )
+          )
+            return;
+
+          const node = doc.document.nodes[0].nodes[0].nodes[0]; // Paragraph3
+
+          doc.users[user.id].anchor = node.id;
+          doc.users[user.id].focus = node.id;
+          doc.users[user.id].range = null;
+        });
+
+        const expectedDoc = toLooseJSON(userDoc);
+        const node = expectedDoc.doc.document.nodes[0]; // Paragraph1
+        const tmp = node.nodes[0].nodes.splice(0, 1)[0]; // Paragraph3
+        node.nodes[0].nodes[0].prev = null; // Paragraph4
+        node.nodes[0].nodes[0].parent = tmp.id;
+        node.nodes.push(tmp);
+        node.nodes[0].next = tmp.id;
+
+        tmp.nodes = node.nodes[0].nodes.concat();
+        node.nodes[0].nodes = [];
+        tmp.prev = node.nodes[0].id;
+        tmp.next = null;
+        tmp.parent = node.id;
+
+        userDoc.change((doc) => {
+          usecases(user.id, doc).outdent();
+        });
+
+        assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
+      });
     });
   });
 });
