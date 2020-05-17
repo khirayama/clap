@@ -35,6 +35,37 @@ export function transformation(document: DocumentNode) {
         parentNode.nodes.push(node);
       },
 
+      after: (upperNode: ItemNode, node: ItemNode): void => {
+        if (upperNode.parent === null) return;
+
+        const parentNode = traverse.node.find(upperNode.parent);
+
+        if (node.document !== null) {
+          transform.node.remove(node);
+        }
+
+        if (parentNode === null || (parentNode !== null && parentNode.nodes === null)) return;
+
+        for (let i = 0; i < parentNode.nodes.length; i += 1) {
+          const nd = parentNode.nodes[i];
+          const nextNd = parentNode.nodes[i + 1] || null;
+
+          if (upperNode.id === nd.id) {
+            nd.next = node.id;
+            node.document = document.id;
+            node.parent = parentNode.id;
+            node.prev = nd.id;
+
+            if (nextNd !== null) {
+              node.next = nextNd.id;
+              nextNd.prev = node.id;
+            }
+            parentNode.nodes.splice(i + 1, 0, node);
+            break;
+          }
+        }
+      },
+
       remove: (node: ItemNode): void => {
         if (node.parent === null) return;
 
