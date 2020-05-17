@@ -13,7 +13,7 @@ beforeEach(() => {
   userDoc = result.userDoc;
 });
 
-describe.only('インデント操作', () => {
+describe('インデント操作', () => {
   describe('前項目がない場合', () => {
     it('何も変更されないこと', () => {
       const expectedDoc = toLooseJSON(userDoc);
@@ -116,7 +116,41 @@ describe.only('アウトデント操作', () => {
 
   describe('親項目がある場合', () => {
     describe('選択項目次項目がない場合', () => {
-      it.skip('選択項目が前項目の子項目最後尾に追加されていること', () => {});
+      it('選択項目が前項目の子項目最後尾に追加されていること', () => {
+        userDoc.change((doc) => {
+          if (
+            !(
+              doc.document.nodes[0] &&
+              doc.document.nodes[0].nodes &&
+              doc.document.nodes[0].nodes[0] &&
+              doc.document.nodes[0].nodes[0].nodes &&
+              doc.document.nodes[0].nodes[0].nodes[1] !== null
+            )
+          )
+            return;
+
+          const node = doc.document.nodes[0].nodes[0].nodes[1]; // Paragraph4
+
+          doc.users[user.id].anchor = node.id;
+          doc.users[user.id].focus = node.id;
+          doc.users[user.id].range = null;
+        });
+
+        const expectedDoc = toLooseJSON(userDoc);
+        const node = expectedDoc.doc.document.nodes[0]; // Paragraph1
+        const tmp = node.nodes[0].nodes.splice(1, 1)[0]; // Paragraph4
+        node.nodes[0].nodes[0].next = null; // Paragraph3
+        node.nodes.push(tmp);
+        node.nodes[0].next = tmp.id;
+        tmp.prev = node.nodes[0].id;
+        tmp.parent = node.id;
+
+        userDoc.change((doc) => {
+          usecases(user.id, doc).outdent();
+        });
+
+        assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
+      });
     });
 
     describe('選択項目次項目がある場合', () => {
