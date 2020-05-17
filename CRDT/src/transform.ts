@@ -19,6 +19,10 @@ export const transform = {
 
       const prevNode = parentNode.nodes[parentNode.nodes.length - 1];
 
+      if (node.document !== null) {
+        // TODO: もしnode.documentがある場合、まず取り除いてから行う
+      }
+
       node.document = parentNode.document;
       node.parent = parentNode.id;
       if (prevNode) {
