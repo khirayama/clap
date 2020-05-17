@@ -3,7 +3,7 @@ import { Doc } from './interfaces';
 import { traversal } from './traversal';
 import { actions } from './actions';
 import { Selection, utils as sutils } from './selection';
-import { transform } from './transform';
+import { transformation } from './transformation';
 /*
  * API設計時の注意: 引数を与える場合の優先順位
  * userId > CRDTDocument > 個別の引数
@@ -34,7 +34,9 @@ export const usecases = {
     const users = doc.users;
     const document = doc.document;
     const selection: Selection = users[userId];
+
     const traverse = traversal(document);
+    const transform = transformation(document);
 
     if (selection.range !== null) {
       if (sutils.isCollasped(selection)) {

@@ -4,7 +4,7 @@ import { DocumentNode, ItemNode } from './node';
 import { Inline } from './inline';
 
 export function traversal(document: DocumentNode) {
-  const methods = {
+  const traverse = {
     node: {
       find: (id: string): DocumentNode | ItemNode | null => {
         const queue: (DocumentNode | ItemNode)[] = [];
@@ -26,7 +26,7 @@ export function traversal(document: DocumentNode) {
         if (selection.anchor === null || selection.focus === null) {
           return null;
         }
-        return methods.node.find(selection.anchor);
+        return traverse.node.find(selection.anchor);
       },
 
       findCurrentNodes: (selection: Selection): (DocumentNode | ItemNode | null)[] => {
@@ -34,11 +34,11 @@ export function traversal(document: DocumentNode) {
 
         if (selection.anchor === null || selection.focus === null) return nodes;
 
-        const head = methods.node.find(selection.anchor);
+        const head = traverse.node.find(selection.anchor);
 
         if (head === null || head.parent === null) return nodes;
 
-        const parentNode = methods.node.find(head.parent);
+        const parentNode = traverse.node.find(head.parent);
 
         if (parentNode === null || (parentNode !== null && parentNode.nodes === null)) return nodes;
 
@@ -79,10 +79,10 @@ export function traversal(document: DocumentNode) {
 
       findCurrentInline: (selection: Selection): Inline | null => {
         if (selection.range && utils.isCollasped(selection)) {
-          const node = methods.node.findCurrentNode(selection);
+          const node = traverse.node.findCurrentNode(selection);
 
           if (node && node.object === 'item' && selection.range) {
-            return methods.inline.find(node, selection.range.anchor.id);
+            return traverse.inline.find(node, selection.range.anchor.id);
           }
         }
         return null;
@@ -90,5 +90,5 @@ export function traversal(document: DocumentNode) {
     },
   };
 
-  return methods;
+  return traverse;
 }

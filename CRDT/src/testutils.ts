@@ -1,6 +1,6 @@
 import { factory } from './factory';
 import { CRDTDocument } from './CRDTDocument';
-import { transform } from './transform';
+import { transformation } from './transformation';
 import { ParagraphNode, Heading1Node } from './node';
 
 export function toLooseJSON(obj: any) {
@@ -85,7 +85,10 @@ export function createSampleData() {
 
   userDoc.change((doc) => {
     const document = doc.document;
-    transform.node.remove(document, document.nodes[0]);
+
+    const transform = transformation(document);
+
+    transform.node.remove(document.nodes[0]);
 
     const paragraph1 = factory.node.createParagraphNode();
     transform.node.appendInline(paragraph1, createInlineText1());
@@ -194,7 +197,10 @@ export function createSampleData2() {
 
   userDoc.change((doc) => {
     const document = doc.document;
-    transform.node.remove(document, document.nodes[0]);
+
+    const transform = transformation(document);
+
+    transform.node.remove(document.nodes[0]);
 
     const heading1 = factory.node.createHeading1Node();
     transform.node.appendInline(heading1, createInlineText1());

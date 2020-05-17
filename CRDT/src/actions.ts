@@ -1,7 +1,7 @@
 // factory, transform, traveral
 import { Doc } from './interfaces';
 import { factory } from './factory';
-import { transform } from './transform';
+import { transformation } from './transformation';
 import { traversal } from './traversal';
 import { Selection, utils as sutils } from './selection';
 import { getStartAndEnd, hasSameMarks, getMemberIds, isAnchorUpper } from './actionsutils';
@@ -17,6 +17,8 @@ export const actions = {
     const document = factory.node.createDocumentNode();
     const paragraph = factory.node.createParagraphNode();
     const inlineText = factory.inline.createInlineText();
+
+    const transform = transformation(document);
 
     inlineText.parent = paragraph.id;
     paragraph.inline.push(inlineText);
@@ -38,7 +40,9 @@ export const actions = {
     const users = doc.users;
     const document = doc.document;
     const selection: Selection = users[userId];
+
     const traverse = traversal(document);
+    const transform = transformation(document);
 
     if (selection.range === null) return;
 
@@ -80,7 +84,9 @@ export const actions = {
     const users = doc.users;
     const document = doc.document;
     const selection: Selection = users[userId];
+
     const traverse = traversal(document);
+    const transform = transformation(document);
 
     if (selection.range === null) return;
 
@@ -120,7 +126,9 @@ export const actions = {
     const users = doc.users;
     const document = doc.document;
     const selection: Selection = users[userId];
+
     const traverse = traversal(document);
+    const transform = transformation(document);
 
     const node = traverse.node.findCurrentNode(selection);
 
@@ -267,6 +275,7 @@ export const actions = {
     const users = doc.users;
     const document = doc.document;
     const selection: Selection = users[userId];
+
     const traverse = traversal(document);
 
     const node = traverse.node.findCurrentNode(selection);
@@ -346,7 +355,9 @@ export const actions = {
     const users = doc.users;
     const document = doc.document;
     const selection: Selection = users[userId];
+
     const traverse = traversal(document);
+    const transform = transformation(document);
 
     if (selection.range !== null) return;
 
@@ -436,7 +447,7 @@ export const actions = {
           }
         }
 
-        transform.node.remove(document, node);
+        transform.node.remove(node);
       }
     }
   },
@@ -445,7 +456,9 @@ export const actions = {
     const users = doc.users;
     const document = doc.document;
     const selection: Selection = users[userId];
+
     const traverse = traversal(document);
+    const transform = transformation(document);
 
     if (selection.range !== null) return;
 
@@ -523,7 +536,7 @@ export const actions = {
           }
         }
 
-        transform.node.remove(document, node);
+        transform.node.remove(node);
       }
     }
 

@@ -10,16 +10,16 @@
 - usecases
   - contextとしてuserIdとCRDTDocumentを与える。
   - selection/documentを元にした条件分岐を管理する。
-  - factory/transform/traversalへの参照が可能。
+  - factory/transformation/traversalへの参照が可能。
 - actions
   - contextとしてuserIdとCRDTDocumentを与える。
-  - factory/transformを扱う。
-  - プリミティブな操作はfactory/transformで行う。
-  - factory/transform/traversalへの参照が可能。
+  - factory/transformationを扱う。
+  - プリミティブな操作はfactory/transformationで行う。
+  - factory/transformation/traversalへの参照が可能。
   - 引数もしくは返り値にselectionをdocumentを利用するようなケース。
   - CRDTDocumentのchangeの中でのみ呼ばれる。
   - selectionを元にした分のみ受け入れる。ユーザ入力やドキュメントの状態に依存する場合、usecasesで行う。
-- transform
+- transformation
   - contextとしてdocumentを与える。
   - node/inline/selectionのプリミティブな変換を行う。
   - factory/traversalへの参照が可能。
