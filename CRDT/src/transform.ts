@@ -105,6 +105,48 @@ export const transform = {
         }
       }
     },
+
+    indent: (document: DocumentNode, node: ItemNode): void => {
+      if (node.prev === null) return;
+
+      const upperNode = traversal.node.find(document, node.prev);
+
+      if (upperNode === null) return;
+
+      transform.node.remove(document, node);
+      transform.node.append(upperNode, node);
+
+      if (node.nodes === null) return;
+
+      for (const nd of node.nodes) {
+        transform.node.remove(document, nd);
+        transform.node.append(upperNode, nd);
+      }
+    },
+
+    outdent: (document: DocumentNode, node: ItemNode): void => {
+      if (node.parent === null) return;
+
+      const parentNode = traversal.node.find(document, node.parent);
+
+      if (parentNode === null) return;
+
+      if (parentNode.nodes !== null && node.nodes !== null) {
+        let isDowner = false;
+        for (let i = 0; i < parentNode.nodes.length; i += 1) {
+          const nd = parentNode.nodes[i];
+          if (nd.id === node.id) {
+            isDowner = true;
+          } else if (isDowner) {
+            transform.node.remove(document, nd);
+            transform.node.append(node, nd);
+          }
+        }
+      }
+
+      transform.node.remove(document, node);
+      transform.node.append(parentNode, node);
+    },
   },
 
   inline: {
