@@ -14,7 +14,7 @@ export function toLooseJSON(obj: any) {
   member
  Document
   Paragraph1
-    - ABCDEFGHI
+    - ABCDEFGHI*
     Paragraph2
       - ABCDEFGHI
       Paragraph3
