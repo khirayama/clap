@@ -1,8 +1,7 @@
+import { Doc } from './interfaces';
 import { CRDTDocument } from './CRDTDocument';
 import { actions } from './actions';
 import { factory } from './factory';
-
-type Doc = ReturnType<typeof actions.init>;
 
 // Login
 const user = {
@@ -45,7 +44,7 @@ memberDoc.merge(new CRDTDocument(user.id, userDoc.save()));
 
 // [user] Insert text by user
 userDoc.change((userDoc) => {
-  actions.insertText(user.id, userDoc, ['H', 'e', 'l', 'l', 'o', ' ']);
+  actions(user.id, userDoc).insertText(['H', 'e', 'l', 'l', 'o', ' ']);
 });
 
 // [user][members] Merge

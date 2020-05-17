@@ -1,7 +1,7 @@
 // Automerge/actions
 import * as Automerge from 'automerge';
 import { Doc } from './interfaces';
-import { actions } from './actions';
+import { init } from './usecases';
 
 export class CRDTDocument {
   public userId: string;
@@ -12,7 +12,7 @@ export class CRDTDocument {
     this.userId = userId;
     this.doc = serializedDocument
       ? Automerge.load(serializedDocument, this.userId)
-      : Automerge.from(actions.init(this.userId), this.userId);
+      : Automerge.from(init(this.userId), this.userId);
   }
 
   public change(func: Automerge.ChangeFn<Doc>): void {

@@ -1,5 +1,6 @@
 // factory, transform, traveral
 import { Doc } from './interfaces';
+import { factory } from './factory';
 import { traversal } from './traversal';
 import { actions } from './actions';
 import { Selection, utils as sutils } from './selection';
@@ -9,27 +10,57 @@ import { transformation } from './transformation';
  * userId > CRDTDocument > 個別の引数
  */
 
+export function init(userId: string): Doc {
+  const selection = factory.selection.createSelection();
+  const document = factory.node.createDocumentNode();
+  const paragraph = factory.node.createParagraphNode();
+  const inlineText = factory.inline.createInlineText();
+
+  const transform = transformation(document);
+
+  inlineText.parent = paragraph.id;
+  paragraph.inline.push(inlineText);
+  transform.node.append(document, paragraph);
+
+  selection.anchor = paragraph.id;
+  selection.focus = paragraph.id;
+  selection.range = factory.selection.createRange(inlineText.id, 0);
+
+  return {
+    document,
+    users: {
+      [userId]: selection,
+    },
+  };
+}
+
 export const usecases = {
   enter: () => {},
+
   input: (userId: string, doc: Doc, chars: string[]) => {
     const users = doc.users;
     const selection: Selection = users[userId];
 
+    const commands = actions(userId, doc);
+
     if (selection.range !== null) {
       if (sutils.isCollasped(selection)) {
-        actions.insertText(userId, doc, chars);
+        commands.insertText(chars);
       } else if (selection.range !== null && !sutils.isCollasped(selection)) {
-        actions.removeText(userId, doc);
-        actions.insertText(userId, doc, chars);
+        commands.removeText();
+        commands.insertText(chars);
       }
     } else if (selection.range === null) {
       if (selection.anchor !== null && selection.focus !== null && selection.anchor !== selection.focus) {
-        actions.replaceItem(userId, doc, chars);
+        commands.replaceItem(chars);
       }
     }
   },
+
   indent: () => {},
+
   outdent: () => {},
+
   remove: (userId: string, doc: Doc) => {
     const users = doc.users;
     const document = doc.document;
@@ -37,6 +68,7 @@ export const usecases = {
 
     const traverse = traversal(document);
     const transform = transformation(document);
+    const commands = actions(userId, doc);
 
     if (selection.range !== null) {
       if (sutils.isCollasped(selection)) {
@@ -63,16 +95,16 @@ export const usecases = {
             */
           }
         } else {
-          actions.removeChar(userId, doc);
+          commands.removeChar();
         }
       } else if (!sutils.isCollasped(selection)) {
-        actions.removeText(userId, doc);
-        actions.postprocessTextDeletion(userId, doc);
+        commands.removeText();
+        commands.postprocessTextDeletion();
       }
     } else if (selection.range === null) {
       if (selection.anchor !== null && selection.focus !== null) {
-        actions.removeItems(userId, doc);
-        actions.postprocessItemDeletion(userId, doc);
+        commands.removeItems();
+        commands.postprocessItemDeletion();
       }
     }
   },

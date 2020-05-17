@@ -8,11 +8,11 @@
   - node/inline/selectionのプリミティブな生成を行う。
   - Automerge/traversalへの参照が可能。
 - usecases
-  - contextとしてuserIdとCRDTDocumentを与える。
+  - contextとしてuserIdとDocを与える。
   - selection/documentを元にした条件分岐を管理する。
   - factory/transformation/traversalへの参照が可能。
 - actions
-  - contextとしてuserIdとCRDTDocumentを与える。
+  - contextとしてuserIdとDocを与える。
   - factory/transformationを扱う。
   - プリミティブな操作はfactory/transformationで行う。
   - factory/transformation/traversalへの参照が可能。
