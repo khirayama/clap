@@ -23,7 +23,7 @@ export function transformation(document: DocumentNode) {
         const prevNode = parentNode.nodes[parentNode.nodes.length - 1];
 
         if (node.document !== null) {
-          // TODO: もしnode.documentがある場合、まず取り除いてから行う
+          transform.node.remove(node);
         }
 
         node.document = parentNode.document;
@@ -120,13 +120,11 @@ export function transformation(document: DocumentNode) {
 
         if (upperNode === null) return;
 
-        transform.node.remove(node);
         transform.node.append(upperNode, node);
 
         if (node.nodes === null) return;
 
         for (const nd of node.nodes) {
-          transform.node.remove(nd);
           transform.node.append(upperNode, nd);
         }
       },
@@ -145,13 +143,11 @@ export function transformation(document: DocumentNode) {
             if (nd.id === node.id) {
               isDowner = true;
             } else if (isDowner) {
-              transform.node.remove(nd);
               transform.node.append(node, nd);
             }
           }
         }
 
-        transform.node.remove(node);
         transform.node.append(parentNode, node);
       },
     },
