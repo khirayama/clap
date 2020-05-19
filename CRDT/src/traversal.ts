@@ -63,6 +63,22 @@ export function traversal(document: DocumentNode) {
 
         return nodes;
       },
+
+      findUpperNode: (node: ItemNode): ItemNode | null => {
+        if (node.prev === null && node.parent !== null) {
+          const nd = traverse.node.find(node.parent);
+          return nd !== null && nd.object === 'item' ? nd : null;
+        } else if (node.prev !== null) {
+          let nd = traverse.node.find(node.prev);
+
+          while (nd !== null && nd.nodes && nd.nodes.length) {
+            nd = nd.nodes[nd.nodes.length - 1];
+          }
+
+          return nd !== null && nd.object === 'item' ? nd : null;
+        }
+        return null;
+      },
     },
 
     inline: {

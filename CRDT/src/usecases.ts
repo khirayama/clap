@@ -6,6 +6,7 @@ import { traversal } from './traversal';
 import { Doc } from './interfaces';
 import { actions } from './actions';
 import { Selection, utils as sutils } from './selection';
+import { getMemberIds, isAnchorUpper } from './actionsutils';
 /*
  * API設計時の注意: 引数を与える場合の優先順位
  * userId > Doc > 個別の引数
@@ -98,7 +99,42 @@ export function usecases(userId: string, doc: Doc) {
             } else if (node.parent !== node.document) {
               transform.node.outdent(node);
             } else if (node.parent === node.document) {
-              /* TODO: 段落項目の親項目がドキュメントの場合*/
+              const upperNode = traverse.node.findUpperNode(node);
+
+              if (upperNode === null) return;
+
+              if (upperNode.inline !== null) {
+                const lastInline = upperNode.inline[upperNode.inline.length - 1];
+                const userIds = Object.keys(users);
+                for (const uid of userIds) {
+                  const slctn = users[uid];
+                  // TODO: ここの共同編集者のはどうなるのか再考
+                  if (slctn.range !== null && slctn.anchor === node.id && slctn.focus === node.id) {
+                    slctn.anchor = upperNode.id;
+                    slctn.focus = upperNode.id;
+                    slctn.range = factory.selection.createRange(lastInline.id, lastInline.text.length);
+                  }
+                }
+
+                for (const inln of node.inline) {
+                  transform.node.appendInline(upperNode, inln);
+                }
+                commands.postprocessTextDeletion();
+              } else {
+                transform.node.remove(upperNode);
+                // TODO: selection.anchor/focusを変更した時にrangeも変わるはずでは
+                const memberIds = getMemberIds(userId, users);
+                for (const mid of memberIds) {
+                  const slctn = users[mid];
+                  if (slctn.anchor !== null && slctn.focus !== null && slctn.anchor === upperNode.id) {
+                    slctn.anchor = isAnchorUpper(document, slctn.anchor, slctn.focus) ? upperNode.next : upperNode.prev;
+                  }
+                  if (slctn.anchor !== null && slctn.focus !== null && slctn.focus === upperNode.id) {
+                    slctn.focus = !isAnchorUpper(document, slctn.anchor, slctn.focus) ? upperNode.next : upperNode.prev;
+                  }
+                }
+                commands.postprocessItemDeletion();
+              }
             }
           } else {
             commands.removeChar();
