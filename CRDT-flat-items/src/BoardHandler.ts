@@ -1,10 +1,10 @@
-// Automerge/actions
+// Automerge, usecase
 import * as Automerge from 'automerge';
 
 import { Board } from './structures';
 import { init } from './usecases';
 
-export class BoardManager {
+export class BoardHandler {
   public userId: string;
 
   public data: Automerge.Doc<Board>;
