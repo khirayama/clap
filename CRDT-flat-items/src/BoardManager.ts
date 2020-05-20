@@ -24,7 +24,7 @@ export class BoardManager {
     return Automerge.save(this.data);
   }
 
-  public merge(board: CRDTBoard): void {
-    this.data = Automerge.merge(this.data, board.data);
+  public merge(serializedData: string, userId?: string): void {
+    this.data = Automerge.merge(this.data, Automerge.load(serializedData, userId));
   }
 }
