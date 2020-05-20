@@ -1,0 +1,9 @@
+/* Mac */
+.DS_Store
+
+/* node */
+/node_modules
+/report.*.json
+
+/* Project */
+/dist
