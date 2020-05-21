@@ -1,16 +1,15 @@
 // Automerge, traversal
 import * as Automerge from 'automerge';
 
-import { DocumentNode, ParagraphNode, Heading1Node, HorizontalRuleNode } from './node';
-import { InlineText } from './inline';
-import { Selection, Range } from './selection';
+import { Document, ParagraphItem, Heading1Item, HorizontalRuleItem, InlineText, Selection, Range } from '../structures';
 
 export const factory = {
   uuid: () => {
     return Automerge.uuid();
   },
+
   selection: {
-    createSelection: (): Selection => {
+    create: (): Selection => {
       return {
         isComposing: false,
         compositionText: '',
@@ -19,7 +18,10 @@ export const factory = {
         range: null,
       };
     },
-    createRange: (anchorId: string, anchorOffset: number, focusId?: string, focusOffset?: number): Range => {
+  },
+
+  range: {
+    create: (anchorId: string, anchorOffset: number, focusId?: string, focusOffset?: number): Range => {
       return {
         anchor: {
           id: anchorId,
@@ -33,65 +35,49 @@ export const factory = {
     },
   },
 
-  node: {
-    createDocumentNode: (): DocumentNode => {
-      const doc: DocumentNode = {
+  document: {
+    create: (): Document => {
+      return {
         id: factory.uuid(),
-        object: 'document',
-        type: null,
-        inline: null,
-        nodes: [],
-        document: '',
-        parent: null,
-        prev: null,
-        next: null,
         meta: {
           title: [],
         },
+        item: null,
       };
-      doc.document = doc.id;
-      return doc;
     },
+  },
 
-    createParagraphNode: (): ParagraphNode => {
+  item: {
+    createParagraph: (): ParagraphItem => {
       return {
         id: factory.uuid(),
-        object: 'item',
         type: 'paragraph',
-        document: null,
-        parent: null,
+        indent: new Automerge.Counter(0),
         prev: null,
         next: null,
         inline: [],
-        nodes: [],
       };
     },
 
-    createHeading1Node: (): Heading1Node => {
+    createHeading1: (): Heading1Item => {
       return {
         id: factory.uuid(),
-        object: 'item',
         type: 'heading1',
-        document: null,
-        parent: null,
+        indent: new Automerge.Counter(0),
         prev: null,
         next: null,
         inline: [],
-        nodes: null,
       };
     },
 
-    createHorizontalRuleNode: (): HorizontalRuleNode => {
+    createHorizontalRule: (): HorizontalRuleItem => {
       return {
         id: factory.uuid(),
-        object: 'item',
         type: 'horizontal-rule',
-        document: null,
-        parent: null,
+        indent: new Automerge.Counter(0),
         prev: null,
         next: null,
         inline: null,
-        nodes: null,
       };
     },
   },
