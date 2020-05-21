@@ -1,105 +1,82 @@
 // nothing
-import { Selection, utils } from './selection';
-import { DocumentNode, ItemNode } from './node';
-import { Inline } from './inline';
+import { Selection, Document, Item, Inline, utils } from '../structures';
 
-export function traversal(document: DocumentNode) {
+export function traversal(document: Document) {
   const traverse = {
-    node: {
-      find: (id: string): DocumentNode | ItemNode | null => {
-        const queue: (DocumentNode | ItemNode)[] = [];
-        queue.push(document);
+    item: {
+      find: (id: string): Item | null => {
+        let item = document.item;
 
-        let tmp = queue.shift();
-        while (tmp) {
-          if (tmp.id === id) {
-            return tmp;
-          } else if (tmp.nodes) {
-            queue.push(...tmp.nodes);
+        while (item) {
+          if (item.id === id) {
+            return item;
           }
-          tmp = queue.pop();
+          item = item.next;
         }
         return null;
       },
 
-      findCurrentNode: (selection: Selection): DocumentNode | ItemNode | null => {
+      findCurrentItem: (selection: Selection): Item | null => {
         if (selection.anchor === null || selection.focus === null) {
           return null;
         }
-        return traverse.node.find(selection.anchor);
+        return traverse.item.find(selection.anchor);
       },
 
-      findCurrentNodes: (selection: Selection): (DocumentNode | ItemNode | null)[] => {
-        const nodes: (DocumentNode | ItemNode | null)[] = [];
+      findCurrentItems: (selection: Selection): Item[] => {
+        const items: Item[] = [];
 
-        if (selection.anchor === null || selection.focus === null) return nodes;
+        let item = document.item;
+        let flag = false;
 
-        const head = traverse.node.find(selection.anchor);
-
-        if (head === null || head.parent === null) return nodes;
-
-        const parentNode = traverse.node.find(head.parent);
-
-        if (parentNode === null || (parentNode !== null && parentNode.nodes === null)) return nodes;
-
-        if (selection.anchor === selection.focus) {
-          nodes.push(head);
-        } else {
-          let flag = false;
-          for (let i = 0; i < parentNode.nodes.length; i += 1) {
-            const node = parentNode.nodes[i];
-
-            if (flag === false && (node.id === selection.anchor || node.id === selection.focus)) {
-              flag = true;
-              nodes.push(node);
-            } else if (flag === true && (node.id === selection.anchor || node.id === selection.focus)) {
-              nodes.push(node);
-              break;
-            } else if (flag) {
-              nodes.push(node);
-            }
-          }
-        }
-
-        return nodes;
-      },
-
-      findUpperNode: (node: ItemNode): ItemNode | null => {
-        if (node.prev === null && node.parent !== null) {
-          const nd = traverse.node.find(node.parent);
-          return nd !== null && nd.object === 'item' ? nd : null;
-        } else if (node.prev !== null) {
-          let nd = traverse.node.find(node.prev);
-
-          while (nd !== null && nd.nodes && nd.nodes.length) {
-            nd = nd.nodes[nd.nodes.length - 1];
+        while (item) {
+          if (item.id === selection.anchor || item.id === selection.focus) {
+            flag = !flag;
+            items.push(item);
+          } else if (flag) {
+            items.push(item);
           }
 
-          return nd !== null && nd.object === 'item' ? nd : null;
+          item = item.next;
         }
-        return null;
+
+        return items;
       },
     },
 
     inline: {
-      find: (node: ItemNode, id: string): Inline | null => {
-        if (node.inline) {
-          for (const inline of node.inline) {
-            if (inline.id === id) {
-              return inline;
+      find: (id: string, itemId?: string): Inline | null => {
+        let item = document.item;
+
+        if (itemId) {
+          item = traverse.item.find(itemId);
+          if (item !== null && item.inline !== null) {
+            for (const inline of item.inline) {
+              if (inline.id === id) {
+                return inline;
+              }
             }
           }
+        } else {
+          while (item) {
+            if (item.inline !== null) {
+              for (const inline of item.inline) {
+                if (inline.id === id) {
+                  return inline;
+                }
+              }
+            }
+
+            item = item.next;
+          }
         }
+
         return null;
       },
 
       findCurrentInline: (selection: Selection): Inline | null => {
-        if (selection.range && utils.isCollasped(selection)) {
-          const node = traverse.node.findCurrentNode(selection);
-
-          if (node && node.object === 'item' && selection.range) {
-            return traverse.inline.find(node, selection.range.anchor.id);
-          }
+        if (selection.anchor !== null && selection.range !== null && utils.selection.isCollasped(selection)) {
+          return traverse.inline.find(selection.range.anchor.id, selection.anchor);
         }
         return null;
       },

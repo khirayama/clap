@@ -1,6 +1,6 @@
 import * as Automerge from 'automerge';
 
-import { Inline } from './inline';
+import { Inline } from './Inline';
 
 export type SuperItem = {
   id: string;
