@@ -6,8 +6,6 @@ export type SuperItem = {
   id: string;
   indent: Automerge.Counter;
   type: 'heading1' | 'paragraph' | 'horizontal-rule' | null;
-  prev: Item | null;
-  next: Item | null;
   inline: Inline[] | null;
 };
 

@@ -2,7 +2,7 @@ import { Item } from './Item';
 
 export type Document = {
   id: string;
-  item: Item | null;
+  items: Item[];
   meta: {
     title: string[];
   };

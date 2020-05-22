@@ -42,7 +42,7 @@ export const factory = {
         meta: {
           title: [],
         },
-        item: null,
+        items: [],
       };
     },
   },
@@ -53,8 +53,6 @@ export const factory = {
         id: factory.uuid(),
         type: 'paragraph',
         indent: new Automerge.Counter(0),
-        prev: null,
-        next: null,
         inline: [],
       };
     },
@@ -64,8 +62,6 @@ export const factory = {
         id: factory.uuid(),
         type: 'heading1',
         indent: new Automerge.Counter(0),
-        prev: null,
-        next: null,
         inline: [],
       };
     },
@@ -75,8 +71,6 @@ export const factory = {
         id: factory.uuid(),
         type: 'horizontal-rule',
         indent: new Automerge.Counter(0),
-        prev: null,
-        next: null,
         inline: null,
       };
     },
