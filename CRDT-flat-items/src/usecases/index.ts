@@ -7,10 +7,6 @@ import { Board } from './interfaces';
 import { actions } from './actions';
 import { Selection, utils as sutils } from './selection';
 import { getMemberIds, isAnchorUpper } from './actionsutils';
-/*
- * API設計時の注意: 引数を与える場合の優先順位
- * userId > Board > 個別の引数
- */
 
 export function init(userId: string): Board {
   const selection = factory.selection.createSelection();

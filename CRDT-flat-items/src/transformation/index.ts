@@ -1,9 +1,8 @@
 // factory, traversal
-import { factory } from './factory';
-import { traversal } from './traversal';
+import { factory } from '../factory';
+import { traversal } from '../traversal';
 
-import { DocumentNode, ItemNode, SuperNode, ParagraphNode, Heading1Node, HorizontalRuleNode } from './node';
-import { Inline } from './inline';
+import { Document, Item, ParagraphItem, Heading1Item, HorizontalRuleItem, Inline } from '../structures';
 
 /*
  * append: 親要素と追加したい要素を与え、親の子要素の最後に追加する。 https://developer.mozilla.org/ja/docs/Web/API/ParentNode/append
@@ -12,57 +11,36 @@ import { Inline } from './inline';
  * after: 兄要素と追加したい要素を与え、兄要素の後ろに追加する。 https://developer.mozilla.org/ja/docs/Web/API/ChildNode/after
  * remove: ドキュメントと削除したい要素を与え、自身を削除する。 https://developer.mozilla.org/ja/docs/Web/API/ChildNode/remove
  */
-export function transformation(document: DocumentNode) {
+export function transformation(document: Document) {
   const traverse = traversal(document);
 
   const transform = {
-    node: {
-      append: (parentNode: DocumentNode | ItemNode, node: ItemNode): void => {
-        if (parentNode.nodes === null) return;
+    item: {
+      append: (item: Item): void => {
+        let lastItem = document.item;
 
-        const prevNode = parentNode.nodes[parentNode.nodes.length - 1];
+        while (lastItem && lastItem.next) {
+          if (lastItem.id === item.id) {
+            transform.item.remove(item);
+          }
 
-        if (node.document !== null) {
-          transform.node.remove(node);
+          lastItem = lastItem.next;
         }
 
-        node.document = document.id;
-        node.parent = parentNode.id;
-        if (prevNode) {
-          prevNode.next = node.id;
-          node.prev = prevNode ? prevNode.id : null;
+        if (lastItem) {
+          lastItem.next = item;
+          item.prev = lastItem;
         }
-        parentNode.nodes.push(node);
       },
 
-      after: (upperNode: ItemNode, node: ItemNode): void => {
-        if (upperNode.parent === null) return;
+      after: (prevItem: Item, item: Item): void => {
+        const nextItem = prevItem.next || null;
+        prevItem.next = item;
+        item.prev = prevItem;
+        item.next = nextItem;
 
-        const parentNode = traverse.node.find(upperNode.parent);
-
-        if (node.document !== null) {
-          transform.node.remove(node);
-        }
-
-        if (parentNode === null || (parentNode !== null && parentNode.nodes === null)) return;
-
-        for (let i = 0; i < parentNode.nodes.length; i += 1) {
-          const nd = parentNode.nodes[i];
-          const nextNd = parentNode.nodes[i + 1] || null;
-
-          if (upperNode.id === nd.id) {
-            nd.next = node.id;
-            node.document = document.id;
-            node.parent = parentNode.id;
-            node.prev = nd.id;
-
-            if (nextNd !== null) {
-              node.next = nextNd.id;
-              nextNd.prev = node.id;
-            }
-            parentNode.nodes.splice(i + 1, 0, node);
-            break;
-          }
+        if (nextItem !== null) {
+          nextItem.prev = item;
         }
       },
 
