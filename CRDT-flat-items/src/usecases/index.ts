@@ -1,28 +1,27 @@
 // factory, transformation, traveral
-import { factory } from './factory';
-import { transformation } from './transformation';
-import { traversal } from './traversal';
+import { factory } from '../factory';
+import { transformation } from '../transformation';
+import { traversal } from '../traversal';
 
-import { Board } from './interfaces';
-import { actions } from './actions';
-import { Selection, utils as sutils } from './selection';
-import { getMemberIds, isAnchorUpper } from './actionsutils';
+import { actions } from '../actions';
+import { getMemberIds, isAnchorUpper } from '../actions/utils';
+import { Board, Selection, utils as sutils } from '../structures';
 
 export function init(userId: string): Board {
-  const selection = factory.selection.createSelection();
-  const document = factory.node.createDocumentNode();
-  const paragraph = factory.node.createParagraphNode();
+  const selection = factory.selection.create();
+  const document = factory.document.create();
+  const paragraph = factory.item.createParagraph();
   const inlineText = factory.inline.createInlineText();
 
   const transform = transformation(document);
 
   inlineText.parent = paragraph.id;
   paragraph.inline.push(inlineText);
-  transform.node.append(document, paragraph);
+  transform.item.append(paragraph);
 
   selection.anchor = paragraph.id;
   selection.focus = paragraph.id;
-  selection.range = factory.selection.createRange(inlineText.id, 0);
+  selection.range = factory.range.create(inlineText.id, 0);
 
   return {
     document,
