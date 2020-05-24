@@ -1,6 +1,7 @@
 // Automerge, traversal
 import * as Automerge from 'automerge';
 
+// import { traversal } from '../traversal';
 import { Document, ParagraphItem, Heading1Item, HorizontalRuleItem, InlineText, Selection, Range } from '../structures';
 
 export const factory = {
