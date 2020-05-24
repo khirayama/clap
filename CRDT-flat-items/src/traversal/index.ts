@@ -5,13 +5,10 @@ export function traversal(document: Document) {
   const traverse = {
     item: {
       find: (id: string): Item | null => {
-        let item = document.item;
-
-        while (item) {
+        for (const item of document.items) {
           if (item.id === id) {
             return item;
           }
-          item = item.next;
         }
         return null;
       },
@@ -26,18 +23,15 @@ export function traversal(document: Document) {
       findCurrentItems: (selection: Selection): Item[] => {
         const items: Item[] = [];
 
-        let item = document.item;
         let flag = false;
 
-        while (item) {
+        for (const item of document.items) {
           if (item.id === selection.anchor || item.id === selection.focus) {
             flag = !flag;
             items.push(item);
           } else if (flag) {
             items.push(item);
           }
-
-          item = item.next;
         }
 
         return items;
@@ -46,10 +40,8 @@ export function traversal(document: Document) {
 
     inline: {
       find: (id: string, itemId?: string): Inline | null => {
-        let item = document.item;
-
         if (itemId) {
-          item = traverse.item.find(itemId);
+          const item = traverse.item.find(itemId);
           if (item !== null && item.inline !== null) {
             for (const inline of item.inline) {
               if (inline.id === id) {
@@ -58,7 +50,7 @@ export function traversal(document: Document) {
             }
           }
         } else {
-          while (item) {
+          for (const item of document.items) {
             if (item.inline !== null) {
               for (const inline of item.inline) {
                 if (inline.id === id) {
@@ -66,8 +58,6 @@ export function traversal(document: Document) {
                 }
               }
             }
-
-            item = item.next;
           }
         }
 
