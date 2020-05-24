@@ -1,6 +1,6 @@
-export { Board } from './board';
-export { Document } from './document';
-export { Item, ParagraphItem, Heading1Item, HorizontalRuleItem } from './item';
-export { Inline, InlineText, Decoration } from './inline';
-export { Selection, Range } from './selection';
+export { Board } from './Board';
+export { Document } from './Document';
+export { SuperItem, Item, ParagraphItem, Heading1Item, HorizontalRuleItem } from './Item';
+export { Inline, InlineText, Decoration } from './Inline';
+export { Selection, Range } from './Selection';
 export { utils } from './utils';
