@@ -6,9 +6,9 @@ import { traversal } from '../traversal';
 import { Board, Selection, utils as sutils } from '../structures';
 import { getStartAndEnd, hasSameMarks, getMemberIds, isAnchorUpper } from './utils';
 
-export function actions(userId: string, doc: Board) {
-  const users = doc.users;
-  const document = doc.document;
+export function actions(userId: string, board: Board) {
+  const users = board.users;
+  const document = board.document;
   const selection: Selection = users[userId];
 
   const traverse = traversal(document);
@@ -325,9 +325,9 @@ export function actions(userId: string, doc: Board) {
             selection.focus = null;
           }
 
-          const mids = getMemberIds(userId, doc.users);
+          const mids = getMemberIds(userId, users);
           for (const mid of mids) {
-            const slctn = doc.users[mid];
+            const slctn = users[mid];
             if (
               slctn.anchor !== null &&
               slctn.focus !== null &&
@@ -484,7 +484,7 @@ export function actions(userId: string, doc: Board) {
       // TODO: 「Actions 項目を削除したときの後処理」を適用
       let todo = false;
       if (todo) {
-        console.log(userId, doc);
+        console.log(userId, board);
       }
     },
   };
