@@ -1,14 +1,11 @@
-import { Doc } from './interfaces';
-import { Selection } from './selection';
-import { DocumentNode, ItemNode } from './node';
-import { Decoration } from './inline';
-import { traversal } from './traversal';
+import { traversal } from '../traversal';
+import { Board, Selection, Document, Item, Decoration } from '../structures';
 
-export function getStartAndEnd(selection: Selection, node: ItemNode) {
+export function getStartAndEnd(selection: Selection, item: Item) {
   let start = null;
   let end = null;
 
-  if (selection.range === null || node.inline === null) {
+  if (selection.range === null || item.inline === null) {
     return { start, end };
   }
   const anchor = selection.range.anchor;
@@ -28,8 +25,8 @@ export function getStartAndEnd(selection: Selection, node: ItemNode) {
     }
   }
 
-  for (let i = 0; i < node.inline.length; i += 1) {
-    const inline = node.inline[i];
+  for (let i = 0; i < item.inline.length; i += 1) {
+    const inline = item.inline[i];
 
     if (start === null) {
       if (inline.id === anchor.id) {
@@ -64,35 +61,19 @@ export function hasSameMarks(marks1: Decoration[], marks2: Decoration[]): boolea
   return true;
 }
 
-export function getMemberIds(userId: string, users: Doc['users']): string[] {
+export function getMemberIds(userId: string, users: Board['users']): string[] {
   return Object.keys(users).filter((uid) => uid !== userId);
 }
 
-export function isAnchorUpper(document: DocumentNode, anchorId: string, focusId: string): boolean {
-  const traverse = traversal(document);
-
-  if (anchorId === focusId) return false;
-
-  const anchorNode = traverse.node.find(anchorId);
-  const focusNode = traverse.node.find(focusId);
-
-  if (anchorNode === null || anchorNode.parent === null || focusNode === null || focusNode.parent === null)
-    return false;
-
-  if (anchorNode.parent !== focusNode.parent) return false;
-
-  const parentNode = traverse.node.find(anchorNode.parent);
-
-  if (parentNode === null || parentNode.nodes === null) return false;
-
+export function isAnchorUpper(document: Document, anchorId: string, focusId: string): boolean {
   let isFocusIdAppeared = false;
-  for (let i = 0; i < parentNode.nodes.length; i += 1) {
-    const node = parentNode.nodes[i];
+  for (let i = 0; i < document.items.length; i += 1) {
+    const item = document.items[i];
 
-    if (node.id === focusId) {
+    if (item.id === focusId) {
       isFocusIdAppeared = true;
     }
-    if (isFocusIdAppeared === false && node.id === anchorId) {
+    if (isFocusIdAppeared === false && item.id === anchorId) {
       return true;
     }
   }

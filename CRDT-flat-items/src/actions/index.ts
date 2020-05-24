@@ -1,18 +1,12 @@
 // factory, transformation, traveral
-import { factory } from './factory';
-import { transformation } from './transformation';
-import { traversal } from './traversal';
+import { factory } from '../factory';
+import { transformation } from '../transformation';
+import { traversal } from '../traversal';
 
-import { Doc } from './interfaces';
-import { Selection, utils as sutils } from './selection';
-import { getStartAndEnd, hasSameMarks, getMemberIds, isAnchorUpper } from './actionsutils';
+import { Board, Selection, utils as sutils } from '../structures';
+import { getStartAndEnd, hasSameMarks, getMemberIds, isAnchorUpper } from './utils';
 
-/*
- * API設計時の注意: 引数を与える場合の優先順位
- * userId > Doc > 個別の引数
- */
-
-export function actions(userId: string, doc: Doc) {
+export function actions(userId: string, doc: Board) {
   const users = doc.users;
   const document = doc.document;
   const selection: Selection = users[userId];
@@ -24,12 +18,12 @@ export function actions(userId: string, doc: Doc) {
     insertText: (chars: string[]): void => {
       if (selection.range === null) return;
 
-      const node = traverse.node.findCurrentNode(selection);
+      const item = traverse.item.findCurrentItem(selection);
 
-      if (node === null || node.inline === null) return;
+      if (item === null || item.inline === null) return;
 
       const inlineId = selection.range.anchor.id;
-      const inline = traverse.inline.find(node, inlineId);
+      const inline = traverse.inline.find(inlineId, item.id);
 
       if (inline === null) return;
 
@@ -45,7 +39,7 @@ export function actions(userId: string, doc: Doc) {
       }
       for (const uid of userIds) {
         const slctn = users[uid];
-        if (slctn && slctn.range && slctn.anchor === node.id) {
+        if (slctn && slctn.range && slctn.anchor === item.id) {
           if (uid !== userId) {
             if (slctn.range.anchor.id === inlineId && slctn.range.anchor.offset.value > offset) {
               slctn.range.anchor.offset.increment(chars.length);
@@ -61,12 +55,12 @@ export function actions(userId: string, doc: Doc) {
     removeChar: (): void => {
       if (selection.range === null) return;
 
-      const node = traverse.node.findCurrentNode(selection);
+      const item = traverse.item.findCurrentItem(selection);
 
-      if (node === null || node.inline === null) return;
+      if (item === null || item.inline === null) return;
 
       const inlineId = selection.range.anchor.id;
-      const inline = traverse.inline.find(node, inlineId);
+      const inline = traverse.inline.find(inlineId, item.id);
 
       if (inline === null) return;
 
@@ -82,7 +76,7 @@ export function actions(userId: string, doc: Doc) {
       }
       for (const mid of memberIds) {
         const slctn = users[mid];
-        if (slctn && slctn.range && slctn.anchor === node.id) {
+        if (slctn && slctn.range && slctn.anchor === item.id) {
           if (slctn.range.anchor.id === inlineId && slctn.range.anchor.offset.value >= offset) {
             slctn.range.anchor.offset.decrement(1);
           }
@@ -94,21 +88,21 @@ export function actions(userId: string, doc: Doc) {
     },
 
     removeText: (): void => {
-      const node = traverse.node.findCurrentNode(selection);
+      const item = traverse.item.findCurrentItem(selection);
 
-      if (node === null || node.inline === null) return;
+      if (item === null || item.inline === null) return;
 
-      const { start, end } = getStartAndEnd(selection, node);
+      const { start, end } = getStartAndEnd(selection, item);
 
       if (start === null || end === null) return;
 
       if (start.id === end.id) {
-        const startInline = traverse.inline.find(node, start.id);
+        const startInline = traverse.inline.find(start.id, item.id);
 
         if (startInline === null) return;
 
-        for (let i = 0; i < node.inline.length; i += 1) {
-          const inline = node.inline[i];
+        for (let i = 0; i < item.inline.length; i += 1) {
+          const inline = item.inline[i];
 
           const startInlineId = start.id;
           const startOffset = start.offset.value;
@@ -125,8 +119,8 @@ export function actions(userId: string, doc: Doc) {
 
           for (const mid of memberIds) {
             const slctn = users[mid];
-            if (slctn && slctn.range && slctn.anchor === node.id) {
-              const member = getStartAndEnd(slctn, node);
+            if (slctn && slctn.range && slctn.anchor === item.id) {
+              const member = getStartAndEnd(slctn, item);
 
               if (member.start === null || member.end === null) break;
 
@@ -155,29 +149,29 @@ export function actions(userId: string, doc: Doc) {
         const endId = end.id;
         const endOffset = end.offset.value;
 
-        const tmpNode = {
-          ...node,
-          inline: [...node.inline],
+        const tmpItem = {
+          ...item,
+          inline: [...item.inline],
         };
 
-        for (let i = 0; i < node.inline.length; i += 1) {
-          const inline = node.inline[i];
+        for (let i = 0; i < item.inline.length; i += 1) {
+          const inline = item.inline[i];
 
           if (inline.id === startId) {
             isStarted = true;
-            const startInline = traverse.inline.find(node, startId);
+            const startInline = traverse.inline.find(startId, item.id);
             if (startInline) {
               transform.inline.removeText(inline, startOffset, startInline.text.length - startOffset);
             }
           } else if (inline.id === endId) {
             isStarted = false;
-            const endInline = traverse.inline.find(node, endId);
+            const endInline = traverse.inline.find(endId, item.id);
             if (endInline) {
               transform.inline.removeText(inline, 0, endOffset);
             }
           } else if (isStarted) {
             removedIds.push(inline.id);
-            transform.inline.remove(node, inline);
+            transform.inline.remove(item, inline);
             i -= 1;
           }
         }
@@ -189,8 +183,8 @@ export function actions(userId: string, doc: Doc) {
         for (const mid of memberIds) {
           const slctn = users[mid];
 
-          if (slctn && slctn.range && slctn.anchor === node.id) {
-            if (sutils.isCollasped(slctn)) {
+          if (slctn && slctn.range && slctn.anchor === item.id) {
+            if (sutils.selection.isCollasped(slctn)) {
               if (
                 (slctn.range.anchor.id === startId && slctn.range.anchor.offset.value > startOffset) ||
                 (slctn.range.anchor.id === endId && slctn.range.anchor.offset.value <= endOffset) ||
@@ -205,7 +199,7 @@ export function actions(userId: string, doc: Doc) {
                 slctn.range.focus.offset.decrement(endOffset);
               }
             } else {
-              const tmp = getStartAndEnd(slctn, tmpNode);
+              const tmp = getStartAndEnd(slctn, tmpItem);
               const collaboratorStart = tmp.start;
               const collaboratorEnd = tmp.end;
 
@@ -236,20 +230,20 @@ export function actions(userId: string, doc: Doc) {
     },
 
     postprocessTextDeletion: (): void => {
-      const node = traverse.node.findCurrentNode(selection);
+      const item = traverse.item.findCurrentItem(selection);
 
-      if (node === null || node.inline === null) return;
+      if (item === null || item.inline === null) return;
 
-      const tmpNode = { ...node, inline: [...node.inline] };
+      const tmpNode = { ...item, inline: [...item.inline] };
 
       // インラインが同様の装飾が並んだ場合
-      for (let i = 0; i < node.inline.length; i += 1) {
-        const inln = node.inline[i];
-        const nextInln = node.inline[i + 1] || null;
+      for (let i = 0; i < item.inline.length; i += 1) {
+        const inln = item.inline[i];
+        const nextInln = item.inline[i + 1] || null;
 
         if (nextInln && inln.type === nextInln.type && hasSameMarks(inln.marks, nextInln.marks)) {
           inln.text.splice(inln.text.length, 0, ...nextInln.text);
-          node.inline.splice(i + 1, 1);
+          item.inline.splice(i + 1, 1);
           i -= 1;
 
           const userIds = Object.keys(users);
@@ -271,10 +265,10 @@ export function actions(userId: string, doc: Doc) {
       }
 
       // インラインのテキストが空になった場合
-      for (let i = 0; i < node.inline.length; i += 1) {
-        const prevInln = node.inline[i - 1] || null;
-        const inln = node.inline[i];
-        const nextInln = node.inline[i + 1] || null;
+      for (let i = 0; i < item.inline.length; i += 1) {
+        const prevInln = item.inline[i - 1] || null;
+        const inln = item.inline[i];
+        const nextInln = item.inline[i + 1] || null;
 
         if (inln.text.length === 0) {
           const userIds = Object.keys(users);
@@ -303,7 +297,7 @@ export function actions(userId: string, doc: Doc) {
             }
           }
 
-          node.inline.splice(i, 1);
+          item.inline.splice(i, 1);
           i -= 1;
         }
       }
@@ -312,19 +306,20 @@ export function actions(userId: string, doc: Doc) {
     removeItems: (): void => {
       if (selection.range !== null) return;
 
-      const nodes = traverse.node.findCurrentNodes(selection);
+      const items = traverse.item.findCurrentItems(selection);
 
-      for (const node of nodes) {
-        if (node !== null && node.object === 'item') {
-          if (node.next) {
-            selection.anchor = node.next;
-            selection.focus = node.next;
-          } else if (node.prev) {
-            selection.anchor = node.prev;
-            selection.focus = node.prev;
-          } else if (node.parent && node.parent !== node.document) {
-            selection.anchor = node.parent;
-            selection.focus = node.parent;
+      for (const item of items) {
+        const index = sutils.item.getIndex(document, item.id);
+        const prevItem = document.items[index - 1] || null;
+        const nextItem = document.items[index + 1] || null;
+
+        if (item !== null) {
+          if (nextItem !== null) {
+            selection.anchor = nextItem.id;
+            selection.focus = nextItem.id;
+          } else if (document.items[index - 1]) {
+            selection.anchor = prevItem.id;
+            selection.focus = prevItem.id;
           } else {
             selection.anchor = null;
             selection.focus = null;
@@ -336,63 +331,48 @@ export function actions(userId: string, doc: Doc) {
             if (
               slctn.anchor !== null &&
               slctn.focus !== null &&
-              (slctn.anchor === node.id || slctn.focus === node.id)
+              (slctn.anchor === item.id || slctn.focus === item.id)
             ) {
               slctn.range = null;
 
               if (slctn.anchor === slctn.focus) {
-                if (node.next) {
-                  slctn.anchor = node.next;
-                  slctn.focus = node.next;
-                } else if (node.prev) {
-                  slctn.anchor = node.prev;
-                  slctn.focus = node.prev;
-                } else if (node.parent && node.parent !== node.document) {
-                  slctn.anchor = node.parent;
-                  slctn.focus = node.parent;
+                if (nextItem) {
+                  slctn.anchor = nextItem.id;
+                  slctn.focus = nextItem.id;
+                } else if (prevItem) {
+                  slctn.anchor = prevItem.id;
+                  slctn.focus = prevItem.id;
                 } else {
                   slctn.anchor = null;
                   slctn.focus = null;
                 }
-              } else if (slctn.anchor === node.id) {
+              } else if (slctn.anchor === item.id) {
                 if (isAnchorUpper(document, slctn.anchor, slctn.focus)) {
-                  if (node.next) {
-                    slctn.anchor = node.next;
-                  } else if (node.parent && node.parent !== node.document) {
-                    slctn.anchor = node.parent;
-                    slctn.focus = node.parent;
+                  if (nextItem) {
+                    slctn.anchor = nextItem.id;
                   } else {
                     slctn.anchor = null;
                     slctn.focus = null;
                   }
                 } else {
-                  if (node.prev) {
-                    slctn.anchor = node.prev;
-                  } else if (node.parent && node.parent !== node.document) {
-                    slctn.anchor = node.parent;
-                    slctn.focus = node.parent;
+                  if (prevItem) {
+                    slctn.anchor = prevItem.id;
                   } else {
                     slctn.anchor = null;
                     slctn.focus = null;
                   }
                 }
-              } else if (slctn.focus === node.id) {
+              } else if (slctn.focus === item.id) {
                 if (isAnchorUpper(document, slctn.anchor, slctn.focus)) {
-                  if (node.prev) {
-                    slctn.focus = node.prev;
-                  } else if (node.parent && node.parent !== node.document) {
-                    slctn.anchor = node.parent;
-                    slctn.focus = node.parent;
+                  if (prevItem) {
+                    slctn.focus = prevItem.id;
                   } else {
                     slctn.anchor = null;
                     slctn.focus = null;
                   }
                 } else {
-                  if (node.next) {
-                    slctn.focus = node.next;
-                  } else if (node.parent && node.parent !== node.document) {
-                    slctn.anchor = node.parent;
-                    slctn.focus = node.parent;
+                  if (nextItem) {
+                    slctn.focus = nextItem.id;
                   } else {
                     slctn.anchor = null;
                     slctn.focus = null;
@@ -402,7 +382,7 @@ export function actions(userId: string, doc: Doc) {
             }
           }
 
-          transform.node.remove(node);
+          transform.item.remove(item);
         }
       }
     },
@@ -410,75 +390,65 @@ export function actions(userId: string, doc: Doc) {
     replaceItem: (chars: string[]): void => {
       if (selection.range !== null) return;
 
-      const nodes = traverse.node.findCurrentNodes(selection);
+      const items = traverse.item.findCurrentItems(selection);
 
-      for (let i = 1; i < nodes.length; i += 1) {
-        const node = nodes[i];
-        if (node !== null && node.object === 'item') {
+      for (let i = 1; i < items.length; i += 1) {
+        const item = items[i];
+        if (item !== null) {
           const memberIds = getMemberIds(userId, users);
+
+          const index = sutils.item.getIndex(document, item.id);
+          const prevItem = document.items[index - 1] || null;
+          const nextItem = document.items[index + 1] || null;
+
           for (const mid of memberIds) {
             const slctn = users[mid];
 
             if (
               slctn.anchor !== null &&
               slctn.focus !== null &&
-              (slctn.anchor === node.id || slctn.focus === node.id)
+              (slctn.anchor === item.id || slctn.focus === item.id)
             ) {
               slctn.range = null;
 
               if (slctn.anchor === slctn.focus) {
-                if (node.prev) {
-                  slctn.anchor = node.prev;
-                  slctn.focus = node.prev;
-                } else if (node.next) {
-                  slctn.anchor = node.next;
-                  slctn.focus = node.next;
-                } else if (node.parent && node.parent !== node.document) {
-                  slctn.anchor = node.parent;
-                  slctn.focus = node.parent;
+                if (prevItem !== null) {
+                  slctn.anchor = prevItem.id;
+                  slctn.focus = prevItem.id;
+                } else if (nextItem !== null) {
+                  slctn.anchor = nextItem.id;
+                  slctn.focus = nextItem.id;
                 } else {
                   slctn.anchor = null;
                   slctn.focus = null;
                 }
-              } else if (slctn.anchor === node.id) {
+              } else if (slctn.anchor === item.id) {
                 if (isAnchorUpper(document, slctn.anchor, slctn.focus)) {
-                  if (node.prev) {
-                    slctn.anchor = node.prev;
-                  } else if (node.parent && node.parent !== node.document) {
-                    slctn.anchor = node.parent;
-                    slctn.focus = node.parent;
+                  if (prevItem !== null) {
+                    slctn.anchor = prevItem.id;
                   } else {
                     slctn.anchor = null;
                     slctn.focus = null;
                   }
                 } else {
-                  if (node.prev) {
-                    slctn.anchor = node.prev;
-                  } else if (node.parent && node.parent !== node.document) {
-                    slctn.anchor = node.parent;
-                    slctn.focus = node.parent;
+                  if (prevItem !== null) {
+                    slctn.anchor = prevItem.id;
                   } else {
                     slctn.anchor = null;
                     slctn.focus = null;
                   }
                 }
-              } else if (slctn.focus === node.id) {
+              } else if (slctn.focus === item.id) {
                 if (isAnchorUpper(document, slctn.anchor, slctn.focus)) {
-                  if (node.prev) {
-                    slctn.focus = node.prev;
-                  } else if (node.parent && node.parent !== node.document) {
-                    slctn.anchor = node.parent;
-                    slctn.focus = node.parent;
+                  if (prevItem !== null) {
+                    slctn.focus = prevItem.id;
                   } else {
                     slctn.anchor = null;
                     slctn.focus = null;
                   }
                 } else {
-                  if (node.prev) {
-                    slctn.focus = node.prev;
-                  } else if (node.parent && node.parent !== node.document) {
-                    slctn.anchor = node.parent;
-                    slctn.focus = node.parent;
+                  if (prevItem !== null) {
+                    slctn.focus = prevItem.id;
                   } else {
                     slctn.anchor = null;
                     slctn.focus = null;
@@ -488,24 +458,24 @@ export function actions(userId: string, doc: Doc) {
             }
           }
 
-          transform.node.remove(node);
+          transform.item.remove(item);
         }
       }
 
-      const node = nodes[0];
+      const item = items[0];
 
-      if (node === null || node.object !== 'item') return;
+      if (item === null) return;
 
-      transform.node.turnInto(node, 'paragraph');
+      transform.item.turnInto(item, 'paragraph');
 
-      if (node.type !== 'paragraph') return;
+      if (item.type !== 'paragraph') return;
 
-      node.inline.splice(0, node.inline.length);
-      transform.node.appendInline(node, factory.inline.createInlineText());
+      item.inline.splice(0, item.inline.length);
+      transform.item.appendInline(item, factory.inline.createInlineText());
 
-      selection.anchor = node.id;
-      selection.focus = node.id;
-      selection.range = factory.selection.createRange(node.inline[0].id, 0);
+      selection.anchor = item.id;
+      selection.focus = item.id;
+      selection.range = factory.range.create(item.inline[0].id, 0);
 
       commands.insertText(chars);
     },
