@@ -23,6 +23,10 @@ import {
 export function transformation(document: Document) {
   const transform = {
     item: {
+      append: (item: Item): void => {
+        document.items.push(item);
+      },
+
       after: (prevItem: Item, item: Item): void => {
         transform.item.remove(item);
 
