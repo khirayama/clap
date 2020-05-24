@@ -2,7 +2,15 @@
 import { factory } from '../factory';
 import { traversal } from '../traversal';
 
-import { Document, Item, ParagraphItem, Heading1Item, HorizontalRuleItem, Inline } from '../structures';
+import {
+  Document,
+  Item,
+  ParagraphItem,
+  Heading1Item,
+  HorizontalRuleItem,
+  Inline,
+  utils as sutils,
+} from '../structures';
 
 /*
  * append: 親要素と追加したい要素を与え、親の子要素の最後に追加する。 https://developer.mozilla.org/ja/docs/Web/API/ParentNode/append
@@ -16,63 +24,46 @@ export function transformation(document: Document) {
 
   const transform = {
     item: {
-      append: (item: Item): void => {
-        let lastItem = document.item;
-
-        while (lastItem && lastItem.next) {
-          if (lastItem.id === item.id) {
-            transform.item.remove(item);
+      append: (parentItem: Item, item: Item): void => {
+        for (let i = 0; i < document.items.length; i += 1) {
+          const itm = document.items[i];
+          if (itm.id === item.id) {
+            document.items.splice(i, 1);
           }
-
-          lastItem = lastItem.next;
         }
 
-        if (lastItem) {
-          lastItem.next = item;
-          item.prev = lastItem;
+        for (let i = 0; i < document.items.length; i += 1) {
+          const itm = document.items[i];
+          if (itm.id === parentItem.id) {
+            while (document.items[i + 1] && parentItem.indent < document.items[i + 1].indent) {
+              i += 1;
+            }
+            item.indent.increment(sutils.getOffset(item.indent.value, parentItem.indent.value + 1));
+            document.items.splice(i, 0, item);
+            break;
+          }
         }
       },
 
       after: (prevItem: Item, item: Item): void => {
-        const nextItem = prevItem.next || null;
-        prevItem.next = item;
-        item.prev = prevItem;
-        item.next = nextItem;
-
-        if (nextItem !== null) {
-          nextItem.prev = item;
+        for (let i = 0; i < document.items.length; i += 1) {
+          const itm = document.items[i];
+          if (itm.id === prevItem.id) {
+            item.indent.increment(sutils.getOffset(item.indent.value, itm.indent.value));
+            document.items.splice(i + 1, 0, item);
+            break;
+          }
         }
       },
 
-      remove: (node: ItemNode): void => {
-        if (node.parent === null) return;
-
-        const parentNode = traverse.node.find(node.parent);
-
-        if (parentNode === null || (parentNode !== null && parentNode.nodes === null)) return;
-
-        let index = 0;
-
-        for (let i = 0; i < parentNode.nodes.length; i += 1) {
-          const nd = parentNode.nodes[i];
-          if (nd.id === node.id) {
-            index = i;
-            const prevNode = parentNode.nodes[i - 1] || null;
-            const nextNode = parentNode.nodes[i + 1] || null;
-
-            if (prevNode !== null) {
-              prevNode.next = nextNode !== null ? nextNode.id : null;
-            }
-            if (nextNode !== null) {
-              nextNode.prev = prevNode !== null ? prevNode.id : null;
-            }
+      remove: (item: Item): void => {
+        for (let i = 0; i < document.items.length; i += 1) {
+          const itm = document.items[i];
+          if (itm.id === item.id) {
+            document.items.splice(i, 1);
+            break;
           }
         }
-        node.document = null;
-        node.parent = null;
-        node.next = null;
-        node.prev = null;
-        parentNode.nodes.splice(index, 1);
       },
 
       appendInline: (parentNode: ItemNode, inline: Inline): void => {
