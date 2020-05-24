@@ -80,10 +80,10 @@ export function createSampleData() {
     id: factory.uuid(),
   };
 
-  const userDoc = new BoardHandler(user.id);
-  const memberDoc = new BoardHandler(member.id, userDoc.save());
+  const userBoardHandler = new BoardHandler(user.id);
+  const memberBoardHandler = new BoardHandler(member.id, userBoardHandler.save());
 
-  userDoc.change((doc) => {
+  userBoardHandler.change((doc) => {
     const document = doc.document;
 
     const transform = transformation(document);
@@ -145,9 +145,9 @@ export function createSampleData() {
     transform.item.append(paragraph12);
     transform.item.append(paragraph13);
   });
-  memberDoc.merge(userDoc.save(), user.id);
+  memberBoardHandler.merge(userBoardHandler.save(), user.id);
 
-  userDoc.change((doc) => {
+  userBoardHandler.change((doc) => {
     const document = doc.document;
     const selection = doc.users[user.id];
     const firstNode = document.items[0] as ParagraphItem;
@@ -156,9 +156,9 @@ export function createSampleData() {
     selection.focus = firstNode.id;
     selection.range = factory.range.create(firstNode.inline[0].id, firstNode.inline[0].text.length);
   });
-  memberDoc.merge(userDoc.save(), user.id);
+  memberBoardHandler.merge(userBoardHandler.save(), user.id);
 
-  memberDoc.change((doc) => {
+  memberBoardHandler.change((doc) => {
     const document = doc.document;
     const selection = factory.selection.create();
     const firstNode = document.items[0] as ParagraphItem;
@@ -169,13 +169,13 @@ export function createSampleData() {
 
     doc.users[member.id] = selection;
   });
-  memberDoc.merge(userDoc.save(), user.id);
+  memberBoardHandler.merge(userBoardHandler.save(), user.id);
 
   return {
     user,
     member,
-    userDoc,
-    memberDoc,
+    userBoardHandler,
+    memberBoardHandler,
   };
 }
 
@@ -200,10 +200,10 @@ export function createSampleData2() {
     id: factory.uuid(),
   };
 
-  const userDoc = new BoardHandler(user.id);
-  const memberDoc = new BoardHandler(member.id, userDoc.save());
+  const userBoardHandler = new BoardHandler(user.id);
+  const memberBoardHandler = new BoardHandler(member.id, userBoardHandler.save());
 
-  userDoc.change((doc) => {
+  userBoardHandler.change((doc) => {
     const document = doc.document;
 
     const transform = transformation(document);
@@ -222,9 +222,9 @@ export function createSampleData2() {
     transform.item.append(paragraph1);
     transform.item.append(heading2);
   });
-  memberDoc.merge(userDoc.save(), user.id);
+  memberBoardHandler.merge(userBoardHandler.save(), user.id);
 
-  userDoc.change((doc) => {
+  userBoardHandler.change((doc) => {
     const document = doc.document;
     const selection = doc.users[user.id];
     const firstNode = document.items[0] as Heading1Item;
@@ -233,9 +233,9 @@ export function createSampleData2() {
     selection.focus = firstNode.id;
     selection.range = factory.range.create(firstNode.inline[0].id, firstNode.inline[0].text.length);
   });
-  memberDoc.merge(userDoc.save(), user.id);
+  memberBoardHandler.merge(userBoardHandler.save(), user.id);
 
-  memberDoc.change((doc) => {
+  memberBoardHandler.change((doc) => {
     const document = doc.document;
     const selection = factory.selection.create();
     const firstNode = document.items[0] as Heading1Item;
@@ -246,12 +246,12 @@ export function createSampleData2() {
 
     doc.users[member.id] = selection;
   });
-  memberDoc.merge(userDoc.save(), user.id);
+  memberBoardHandler.merge(userBoardHandler.save(), user.id);
 
   return {
     user,
     member,
-    userDoc,
-    memberDoc,
+    userBoardHandler,
+    memberBoardHandler,
   };
 }
