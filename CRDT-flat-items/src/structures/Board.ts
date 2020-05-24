@@ -1,5 +1,5 @@
-import { Document } from './document';
-import { Selection } from './selection';
+import { Document } from './Document';
+import { Selection } from './Selection';
 
 export type Board = {
   document: Document;
