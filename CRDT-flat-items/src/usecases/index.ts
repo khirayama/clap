@@ -31,23 +31,23 @@ export function init(userId: string): Board {
   };
 }
 
-export function usecases(userId: string, doc: Doc) {
-  const users = doc.users;
-  const document = doc.document;
+export function usecases(userId: string, board: Board) {
+  const users = board.users;
+  const document = board.document;
   const selection: Selection = users[userId];
 
   const traverse = traversal(document);
   const transform = transformation(document);
-  const commands = actions(userId, doc);
+  const commands = actions(userId, board);
 
   const scenarios = {
     enter: () => {},
 
     input: (chars: string[]) => {
       if (selection.range !== null) {
-        if (sutils.isCollasped(selection)) {
+        if (sutils.selection.isCollasped(selection)) {
           commands.insertText(chars);
-        } else if (selection.range !== null && !sutils.isCollasped(selection)) {
+        } else if (selection.range !== null && !sutils.selection.isCollasped(selection)) {
           commands.removeText();
           commands.insertText(chars);
         }
@@ -59,82 +59,88 @@ export function usecases(userId: string, doc: Doc) {
     },
 
     indent: () => {
-      const nodes = traverse.node.findCurrentNodes(selection);
+      const items = traverse.item.findCurrentItems(selection);
 
-      for (const node of nodes) {
-        if (node !== null && node.object === 'item') {
-          transform.node.indent(node);
+      for (const item of items) {
+        if (item !== null) {
+          transform.item.indent(item);
         }
       }
     },
 
     outdent: () => {
-      const nodes = traverse.node.findCurrentNodes(selection);
+      const items = traverse.item.findCurrentItems(selection);
 
-      for (const node of nodes) {
-        if (node !== null && node.object === 'item') {
-          transform.node.outdent(node);
+      for (const item of items) {
+        if (item !== null) {
+          transform.item.outdent(item);
         }
       }
     },
 
     remove: () => {
       if (selection.range !== null) {
-        if (sutils.isCollasped(selection)) {
-          const node = traverse.node.findCurrentNode(selection);
+        if (sutils.selection.isCollasped(selection)) {
+          const item = traverse.item.findCurrentItem(selection);
           if (
-            node !== null &&
-            node.inline !== null &&
-            node.object === 'item' &&
-            selection.range.anchor.id === node.inline[0].id &&
+            item !== null &&
+            item.inline !== null &&
+            selection.range.anchor.id === item.inline[0].id &&
             selection.range.anchor.offset.value === 0
           ) {
-            if (node.type !== 'paragraph') {
-              transform.node.turnInto(node, 'paragraph');
-            } else if (node.parent !== node.document) {
-              transform.node.outdent(node);
-            } else if (node.parent === node.document) {
-              const upperNode = traverse.node.findUpperNode(node);
+            if (item.type !== 'paragraph') {
+              transform.item.turnInto(item, 'paragraph');
+            } else if (item.indent.value > 0) {
+              transform.item.outdent(item);
+            } else if (item.indent.value === 0) {
+              const index = sutils.item.getIndex(document, item.id);
+              const prevItem = document.items[index - 1] || null;
 
-              if (upperNode === null) return;
+              if (prevItem === null) return;
 
-              if (upperNode.inline !== null) {
-                const lastInline = upperNode.inline[upperNode.inline.length - 1];
+              if (prevItem.inline !== null) {
+                const lastInline = prevItem.inline[prevItem.inline.length - 1];
                 const userIds = Object.keys(users);
                 for (const uid of userIds) {
                   const slctn = users[uid];
                   // TODO: ここの共同編集者のはどうなるのか再考
-                  if (slctn.range !== null && slctn.anchor === node.id && slctn.focus === node.id) {
-                    slctn.anchor = upperNode.id;
-                    slctn.focus = upperNode.id;
-                    slctn.range = factory.selection.createRange(lastInline.id, lastInline.text.length);
+                  if (slctn.range !== null && slctn.anchor === item.id && slctn.focus === item.id) {
+                    slctn.anchor = prevItem.id;
+                    slctn.focus = prevItem.id;
+                    slctn.range = factory.range.create(lastInline.id, lastInline.text.length);
                   }
                 }
 
-                for (const inln of node.inline) {
-                  transform.node.appendInline(upperNode, inln);
+                for (const inln of item.inline) {
+                  transform.item.appendInline(prevItem, inln);
                 }
                 commands.postprocessTextDeletion();
               } else {
-                transform.node.remove(upperNode);
+                const index = sutils.item.getIndex(document, item.id);
+                const prevItem = document.items[index - 1] || null;
+                const nextItem = document.items[index + 1] || null;
+
                 // TODO: selection.anchor/focusを変更した時にrangeも変わるはずでは
                 const memberIds = getMemberIds(userId, users);
                 for (const mid of memberIds) {
                   const slctn = users[mid];
-                  if (slctn.anchor !== null && slctn.focus !== null && slctn.anchor === upperNode.id) {
-                    slctn.anchor = isAnchorUpper(document, slctn.anchor, slctn.focus) ? upperNode.next : upperNode.prev;
+                  if (slctn.anchor !== null && slctn.focus !== null && slctn.anchor === prevItem.id) {
+                    // TODO: ここの修正怪しい
+                    slctn.anchor = isAnchorUpper(document, slctn.anchor, slctn.focus) ? nextItem.id : prevItem.id;
                   }
-                  if (slctn.anchor !== null && slctn.focus !== null && slctn.focus === upperNode.id) {
-                    slctn.focus = !isAnchorUpper(document, slctn.anchor, slctn.focus) ? upperNode.next : upperNode.prev;
+                  if (slctn.anchor !== null && slctn.focus !== null && slctn.focus === prevItem.id) {
+                    // TODO: ここの修正怪しい
+                    slctn.focus = !isAnchorUpper(document, slctn.anchor, slctn.focus) ? nextItem.id : prevItem.id;
                   }
                 }
+                transform.item.remove(prevItem);
                 commands.postprocessItemDeletion();
               }
             }
           } else {
             commands.removeChar();
           }
-        } else if (!sutils.isCollasped(selection)) {
+        } else if (!sutils.selection.isCollasped(selection)) {
           commands.removeText();
           commands.postprocessTextDeletion();
         }
