@@ -18,14 +18,14 @@ beforeEach(() => {
   memberBoardHandler = result.memberBoardHandler;
 });
 
-describe('確定操作', () => {
+describe('入力操作', () => {
   describe('インライン選択状態', () => {
     describe('選択範囲が閉じている状態', () => {
       describe('共同編集者選択範囲が編集者と同じ位置の状態', () => {
         it('任意の文字が挿入されること(末尾1文字)', () => {
           const expectedDoc = toLooseJSON(userBoardHandler);
-          const inlineText = expectedDoc.doc.document.items[0].inline[0];
-          const userSelection = expectedDoc.doc.users[user.id];
+          const inlineText = expectedDoc.data.document.items[0].inline[0];
+          const userSelection = expectedDoc.data.users[user.id];
           inlineText.text = 'ABCDEFGHIJ'.split('');
           userSelection.range.anchor.offset = 10;
           userSelection.range.focus.offset = 10;
@@ -40,8 +40,8 @@ describe('確定操作', () => {
 
         it('任意の文字が挿入されること(末尾3文字)', () => {
           const expectedDoc = toLooseJSON(userBoardHandler);
-          const inlineText = expectedDoc.doc.document.items[0].inline[0];
-          const userSelection = expectedDoc.doc.users[user.id];
+          const inlineText = expectedDoc.data.document.items[0].inline[0];
+          const userSelection = expectedDoc.data.users[user.id];
           inlineText.text = 'ABCDEFGHIJKL'.split('');
           userSelection.range.anchor.offset = 12;
           userSelection.range.focus.offset = 12;
@@ -77,9 +77,9 @@ describe('確定操作', () => {
           userBoardHandler.merge(memberBoardHandler.save(), member.id);
 
           const expectedDoc = toLooseJSON(userBoardHandler);
-          const inlineText = expectedDoc.doc.document.items[0].inline[0];
-          const userSelection = expectedDoc.doc.users[user.id];
-          const memberSelection = expectedDoc.doc.users[member.id];
+          const inlineText = expectedDoc.data.document.items[0].inline[0];
+          const userSelection = expectedDoc.data.users[user.id];
+          const memberSelection = expectedDoc.data.users[member.id];
           inlineText.text = 'JKLABCDEFGHI'.split('');
           userSelection.range.anchor.offset = 3;
           userSelection.range.focus.offset = 3;
@@ -117,9 +117,9 @@ describe('確定操作', () => {
           userBoardHandler.merge(memberBoardHandler.save(), member.id);
 
           const expectedDoc = toLooseJSON(userBoardHandler);
-          const inlineText = expectedDoc.doc.document.items[0].inline[0];
-          const userSelection = expectedDoc.doc.users[user.id];
-          const memberSelection = expectedDoc.doc.users[member.id];
+          const inlineText = expectedDoc.data.document.items[0].inline[0];
+          const userSelection = expectedDoc.data.users[user.id];
+          const memberSelection = expectedDoc.data.users[member.id];
           inlineText.text = 'ABCJKLDEFGHI'.split('');
           userSelection.range.anchor.offset = 6;
           userSelection.range.focus.offset = 6;
@@ -159,9 +159,9 @@ describe('確定操作', () => {
           userBoardHandler.merge(memberBoardHandler.save(), member.id);
 
           const expectedDoc = toLooseJSON(userBoardHandler);
-          const inlineText = expectedDoc.doc.document.items[0].inline[0];
-          const userSelection = expectedDoc.doc.users[user.id];
-          const memberSelection = expectedDoc.doc.users[member.id];
+          const inlineText = expectedDoc.data.document.items[0].inline[0];
+          const userSelection = expectedDoc.data.users[user.id];
+          const memberSelection = expectedDoc.data.users[member.id];
           inlineText.text = 'ABCJKLDEFGHI'.split('');
           userSelection.range.anchor.offset = 6;
           userSelection.range.focus.offset = 6;
@@ -200,9 +200,9 @@ describe('確定操作', () => {
           userBoardHandler.merge(memberBoardHandler.save(), member.id);
 
           const expectedDoc = toLooseJSON(userBoardHandler);
-          const inlineText = expectedDoc.doc.document.items[0].inline[0];
-          const userSelection = expectedDoc.doc.users[user.id];
-          const memberSelection = expectedDoc.doc.users[member.id];
+          const inlineText = expectedDoc.data.document.items[0].inline[0];
+          const userSelection = expectedDoc.data.users[user.id];
+          const memberSelection = expectedDoc.data.users[member.id];
           inlineText.text = 'ABCJKLDEFGHI'.split('');
           userSelection.range.anchor.offset = 6;
           userSelection.range.focus.offset = 6;
@@ -241,9 +241,9 @@ describe('確定操作', () => {
           userBoardHandler.merge(memberBoardHandler.save(), member.id);
 
           const expectedDoc = toLooseJSON(userBoardHandler);
-          const inlineText = expectedDoc.doc.document.items[0].inline[0];
-          const userSelection = expectedDoc.doc.users[user.id];
-          const memberSelection = expectedDoc.doc.users[member.id];
+          const inlineText = expectedDoc.data.document.items[0].inline[0];
+          const userSelection = expectedDoc.data.users[user.id];
+          const memberSelection = expectedDoc.data.users[member.id];
           inlineText.text = 'ABCJKLDEFGHI'.split('');
           userSelection.range.anchor.offset = 6;
           userSelection.range.focus.offset = 6;
@@ -282,9 +282,9 @@ describe('確定操作', () => {
           userBoardHandler.merge(memberBoardHandler.save(), member.id);
 
           const expectedDoc = toLooseJSON(userBoardHandler);
-          const inlineText = expectedDoc.doc.document.items[0].inline[0];
-          const userSelection = expectedDoc.doc.users[user.id];
-          const memberSelection = expectedDoc.doc.users[member.id];
+          const inlineText = expectedDoc.data.document.items[0].inline[0];
+          const userSelection = expectedDoc.data.users[user.id];
+          const memberSelection = expectedDoc.data.users[member.id];
           inlineText.text = 'ABCJKLDEFGHI'.split('');
           userSelection.range.anchor.offset = 6;
           userSelection.range.focus.offset = 6;
@@ -323,9 +323,9 @@ describe('確定操作', () => {
           userBoardHandler.merge(memberBoardHandler.save(), member.id);
 
           const expectedDoc = toLooseJSON(userBoardHandler);
-          const inlineText = expectedDoc.doc.document.items[0].inline[0];
-          const userSelection = expectedDoc.doc.users[user.id];
-          const memberSelection = expectedDoc.doc.users[member.id];
+          const inlineText = expectedDoc.data.document.items[0].inline[0];
+          const userSelection = expectedDoc.data.users[user.id];
+          const memberSelection = expectedDoc.data.users[member.id];
           inlineText.text = 'ABCJKLDEFGHI'.split('');
           userSelection.range.anchor.offset = 6;
           userSelection.range.focus.offset = 6;
@@ -364,9 +364,9 @@ describe('確定操作', () => {
           userBoardHandler.merge(memberBoardHandler.save(), member.id);
 
           const expectedDoc = toLooseJSON(userBoardHandler);
-          const inlineText = expectedDoc.doc.document.items[0].inline[0];
-          const userSelection = expectedDoc.doc.users[user.id];
-          const memberSelection = expectedDoc.doc.users[member.id];
+          const inlineText = expectedDoc.data.document.items[0].inline[0];
+          const userSelection = expectedDoc.data.users[user.id];
+          const memberSelection = expectedDoc.data.users[member.id];
           inlineText.text = 'ABCJKLDEFGHI'.split('');
           userSelection.range.anchor.offset = 6;
           userSelection.range.focus.offset = 6;
@@ -405,9 +405,9 @@ describe('確定操作', () => {
           userBoardHandler.merge(memberBoardHandler.save(), member.id);
 
           const expectedDoc = toLooseJSON(userBoardHandler);
-          const inlineText = expectedDoc.doc.document.items[0].inline[0];
-          const userSelection = expectedDoc.doc.users[user.id];
-          const memberSelection = expectedDoc.doc.users[member.id];
+          const inlineText = expectedDoc.data.document.items[0].inline[0];
+          const userSelection = expectedDoc.data.users[user.id];
+          const memberSelection = expectedDoc.data.users[member.id];
           inlineText.text = 'ABCJKLDEFGHI'.split('');
           userSelection.range.anchor.offset = 6;
           userSelection.range.focus.offset = 6;
@@ -448,9 +448,9 @@ describe('確定操作', () => {
         userBoardHandler.merge(memberBoardHandler.save(), member.id);
 
         const expectedDoc = toLooseJSON(userBoardHandler);
-        const inlineText = expectedDoc.doc.document.items[0].inline[0];
-        const userSelection = expectedDoc.doc.users[user.id];
-        const memberSelection = expectedDoc.doc.users[member.id];
+        const inlineText = expectedDoc.data.document.items[0].inline[0];
+        const userSelection = expectedDoc.data.users[user.id];
+        const memberSelection = expectedDoc.data.users[member.id];
         inlineText.text = 'ABCJKLHI'.split('');
         userSelection.range.anchor.offset = 6;
         userSelection.range.focus.offset = 6;
@@ -502,13 +502,11 @@ describe('確定操作', () => {
         )
           return;
 
-        const items = expectedDoc.doc.document.items;
-        const userSelection = expectedDoc.doc.users[user.id];
-        const memberSelection = expectedDoc.doc.users[member.id];
+        const items = expectedDoc.data.document.items;
+        const userSelection = expectedDoc.data.users[user.id];
+        const memberSelection = expectedDoc.data.users[member.id];
         items[0].inline[0].id = userBoardHandler.data.document.items[0].inline[0].id;
         items[0].inline[0].text = 'JKL'.split('');
-        items[0].next = items[3].id;
-        items[3].prev = items[0].id;
         userSelection.anchor = items[0].id;
         userSelection.focus = items[0].id;
         userSelection.range = {
@@ -518,7 +516,7 @@ describe('確定操作', () => {
         memberSelection.anchor = items[0].id;
         memberSelection.focus = items[0].id;
         memberSelection.range = null;
-        expectedDoc.doc.document.items.splice(1, 2);
+        expectedDoc.data.document.items.splice(1, 2);
 
         assert.deepEqual(toLooseJSON(userBoardHandler), expectedDoc);
       });
@@ -557,13 +555,12 @@ describe('確定操作', () => {
         )
           return;
 
-        const items = expectedDoc.doc.document.items;
-        const userSelection = expectedDoc.doc.users[user.id];
-        const memberSelection = expectedDoc.doc.users[member.id];
+        const items = expectedDoc.data.document.items;
+        const userSelection = expectedDoc.data.users[user.id];
+        const memberSelection = expectedDoc.data.users[member.id];
         items[1].inline[0].id = userBoardHandler.data.document.items[1].inline[0].id;
         items[1].inline[0].text = 'JKL'.split('');
-        items[1].next = items[4].id;
-        items[4].prev = items[1].id;
+        items[1].inline.splice(1, 2);
         userSelection.anchor = items[1].id;
         userSelection.focus = items[1].id;
         userSelection.range = {
@@ -573,7 +570,7 @@ describe('確定操作', () => {
         memberSelection.anchor = items[0].id;
         memberSelection.focus = items[1].id;
         memberSelection.range = null;
-        expectedDoc.doc.document.items.splice(2, 2);
+        expectedDoc.data.document.items.splice(2, 2);
 
         assert.deepEqual(toLooseJSON(userBoardHandler), expectedDoc);
       });
@@ -612,13 +609,12 @@ describe('確定操作', () => {
         )
           return;
 
-        const items = expectedDoc.doc.document.items;
-        const userSelection = expectedDoc.doc.users[user.id];
-        const memberSelection = expectedDoc.doc.users[member.id];
+        const items = expectedDoc.data.document.items;
+        const userSelection = expectedDoc.data.users[user.id];
+        const memberSelection = expectedDoc.data.users[member.id];
         items[1].inline[0].id = userBoardHandler.data.document.items[1].inline[0].id;
         items[1].inline[0].text = 'JKL'.split('');
-        items[1].next = items[4].id;
-        items[4].prev = items[1].id;
+        items[1].inline.splice(1, 2);
         userSelection.anchor = items[1].id;
         userSelection.focus = items[1].id;
         userSelection.range = {
@@ -628,7 +624,7 @@ describe('確定操作', () => {
         memberSelection.anchor = items[0].id;
         memberSelection.focus = items[4].id;
         memberSelection.range = null;
-        expectedDoc.doc.document.items.splice(2, 2);
+        expectedDoc.data.document.items.splice(2, 2);
 
         assert.deepEqual(toLooseJSON(userBoardHandler), expectedDoc);
       });
@@ -667,13 +663,12 @@ describe('確定操作', () => {
         )
           return;
 
-        const items = expectedDoc.doc.document.items;
-        const userSelection = expectedDoc.doc.users[user.id];
-        const memberSelection = expectedDoc.doc.users[member.id];
+        const items = expectedDoc.data.document.items;
+        const userSelection = expectedDoc.data.users[user.id];
+        const memberSelection = expectedDoc.data.users[member.id];
         items[1].inline[0].id = userBoardHandler.data.document.items[1].inline[0].id;
         items[1].inline[0].text = 'JKL'.split('');
-        items[1].next = items[4].id;
-        items[4].prev = items[1].id;
+        items[1].inline.splice(1, 2);
         userSelection.anchor = items[1].id;
         userSelection.focus = items[1].id;
         userSelection.range = {
@@ -683,7 +678,7 @@ describe('確定操作', () => {
         memberSelection.anchor = items[1].id;
         memberSelection.focus = items[4].id;
         memberSelection.range = null;
-        expectedDoc.doc.document.items.splice(2, 2);
+        expectedDoc.data.document.items.splice(2, 2);
 
         assert.deepEqual(toLooseJSON(userBoardHandler), expectedDoc);
       });
@@ -722,13 +717,12 @@ describe('確定操作', () => {
         )
           return;
 
-        const items = expectedDoc.doc.document.items;
-        const userSelection = expectedDoc.doc.users[user.id];
-        const memberSelection = expectedDoc.doc.users[member.id];
+        const items = expectedDoc.data.document.items;
+        const userSelection = expectedDoc.data.users[user.id];
+        const memberSelection = expectedDoc.data.users[member.id];
         items[1].inline[0].id = userBoardHandler.data.document.items[1].inline[0].id;
         items[1].inline[0].text = 'JKL'.split('');
-        items[1].next = items[4].id;
-        items[4].prev = items[1].id;
+        items[1].inline.splice(1, 2);
         userSelection.anchor = items[1].id;
         userSelection.focus = items[1].id;
         userSelection.range = {
@@ -738,7 +732,7 @@ describe('確定操作', () => {
         memberSelection.anchor = items[1].id;
         memberSelection.focus = items[1].id;
         memberSelection.range = null;
-        expectedDoc.doc.document.items.splice(2, 2);
+        expectedDoc.data.document.items.splice(2, 2);
 
         assert.deepEqual(toLooseJSON(userBoardHandler), expectedDoc);
       });
