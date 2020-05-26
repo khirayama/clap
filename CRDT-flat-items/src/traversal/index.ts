@@ -26,7 +26,10 @@ export function traversal(document: Document) {
         let flag = false;
 
         for (const item of document.items) {
-          if (item.id === selection.anchor || item.id === selection.focus) {
+          if (item.id === selection.anchor && item.id === selection.focus) {
+            items.push(item);
+            return items;
+          } else if (item.id === selection.anchor || item.id === selection.focus) {
             flag = !flag;
             items.push(item);
           } else if (flag) {
