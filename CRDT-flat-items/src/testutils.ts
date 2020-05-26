@@ -169,7 +169,7 @@ export function createSampleData() {
 
     doc.users[member.id] = selection;
   });
-  memberBoardHandler.merge(userBoardHandler.save(), user.id);
+  userBoardHandler.merge(memberBoardHandler.save(), member.id);
 
   return {
     user,
@@ -246,7 +246,7 @@ export function createSampleData2() {
 
     doc.users[member.id] = selection;
   });
-  memberBoardHandler.merge(userBoardHandler.save(), user.id);
+  userBoardHandler.merge(memberBoardHandler.save(), member.id);
 
   return {
     user,
