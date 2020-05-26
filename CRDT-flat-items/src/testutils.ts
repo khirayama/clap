@@ -1,3 +1,5 @@
+import * as Automerge from 'automerge';
+
 import { factory } from './factory';
 import { BoardHandler } from './BoardHandler';
 import { transformation } from './transformation';
@@ -90,60 +92,58 @@ export function createSampleData() {
 
     transform.item.remove(document.items[0]);
 
-    const paragraph1 = factory.item.createParagraph();
+    let paragraph1 = factory.item.createParagraph();
     transform.item.appendInline(paragraph1, createInlineText1());
-    const paragraph2 = factory.item.createParagraph();
+    let paragraph2 = factory.item.createParagraph();
+    paragraph2 = transform.item.append(paragraph2) as ParagraphItem;
     paragraph2.indent.increment(1);
     transform.item.appendInline(paragraph2, createInlineText1());
-    const paragraph3 = factory.item.createParagraph();
+    let paragraph3 = factory.item.createParagraph();
+    paragraph3 = transform.item.append(paragraph3) as ParagraphItem;
     paragraph3.indent.increment(2);
     transform.item.appendInline(paragraph3, createInlineText2());
     transform.item.appendInline(paragraph3, createInlineText3());
     transform.item.appendInline(paragraph3, createInlineText4());
-    const paragraph4 = factory.item.createParagraph();
+    let paragraph4 = factory.item.createParagraph();
+    paragraph4 = transform.item.append(paragraph4) as ParagraphItem;
     paragraph4.indent.increment(2);
     transform.item.appendInline(paragraph4, createInlineText1());
-    const paragraph5 = factory.item.createParagraph();
+    let paragraph5 = factory.item.createParagraph();
+    paragraph5 = transform.item.append(paragraph5) as ParagraphItem;
     transform.item.appendInline(paragraph5, createInlineText1());
-    const paragraph6 = factory.item.createParagraph();
+    let paragraph6 = factory.item.createParagraph();
+    paragraph6 = transform.item.append(paragraph6) as ParagraphItem;
     transform.item.appendInline(paragraph6, createInlineText1());
-    const paragraph7 = factory.item.createParagraph();
+    let paragraph7 = factory.item.createParagraph();
+    paragraph7 = transform.item.append(paragraph7) as ParagraphItem;
     paragraph7.indent.increment(1);
     transform.item.appendInline(paragraph7, createInlineText1());
-    const paragraph8 = factory.item.createParagraph();
+    let paragraph8 = factory.item.createParagraph();
+    paragraph8 = transform.item.append(paragraph8) as ParagraphItem;
     paragraph8.indent.increment(2);
     transform.item.appendInline(paragraph8, createInlineText2());
     transform.item.appendInline(paragraph8, createInlineText3());
     transform.item.appendInline(paragraph8, createInlineText4());
-    const paragraph9 = factory.item.createParagraph();
+    let paragraph9 = factory.item.createParagraph();
+    paragraph9 = transform.item.append(paragraph9) as ParagraphItem;
     transform.item.appendInline(paragraph9, createInlineText1());
-    const paragraph10 = factory.item.createParagraph();
+    let paragraph10 = factory.item.createParagraph();
+    paragraph10 = transform.item.append(paragraph10) as ParagraphItem;
     transform.item.appendInline(paragraph10, createInlineText1());
-    const paragraph11 = factory.item.createParagraph();
+    let paragraph11 = factory.item.createParagraph();
+    paragraph11 = transform.item.append(paragraph11) as ParagraphItem;
     paragraph11.indent.increment(1);
     transform.item.appendInline(paragraph11, createInlineText1());
-    const paragraph12 = factory.item.createParagraph();
+    let paragraph12 = factory.item.createParagraph();
+    paragraph12 = transform.item.append(paragraph12) as ParagraphItem;
     paragraph12.indent.increment(2);
     transform.item.appendInline(paragraph12, createInlineText2());
     transform.item.appendInline(paragraph12, createInlineText3());
     transform.item.appendInline(paragraph12, createInlineText4());
-    const paragraph13 = factory.item.createParagraph();
+    let paragraph13 = factory.item.createParagraph();
+    paragraph13 = transform.item.append(paragraph13) as ParagraphItem;
     paragraph13.indent.increment(1);
     transform.item.appendInline(paragraph13, createInlineText1());
-
-    transform.item.append(paragraph1);
-    transform.item.append(paragraph2);
-    transform.item.append(paragraph3);
-    transform.item.append(paragraph4);
-    transform.item.append(paragraph5);
-    transform.item.append(paragraph6);
-    transform.item.append(paragraph7);
-    transform.item.append(paragraph8);
-    transform.item.append(paragraph9);
-    transform.item.append(paragraph10);
-    transform.item.append(paragraph11);
-    transform.item.append(paragraph12);
-    transform.item.append(paragraph13);
   });
   memberBoardHandler.merge(userBoardHandler.save(), user.id);
 
@@ -210,11 +210,11 @@ export function createSampleData2() {
 
     transform.item.remove(document.items[0]);
 
-    const heading1 = factory.item.createHeading1();
+    let heading1 = factory.item.createHeading1();
     transform.item.appendInline(heading1, createInlineText1());
-    const paragraph1 = factory.item.createParagraph();
+    let paragraph1 = factory.item.createParagraph();
     transform.item.appendInline(paragraph1, createInlineText1());
-    const heading2 = factory.item.createHeading1();
+    let heading2 = factory.item.createHeading1();
     heading2.indent.increment(1);
     transform.item.appendInline(heading2, createInlineText1());
 
