@@ -1,6 +1,5 @@
 // factory, traversal
 import { factory } from '../factory';
-// import { traversal } from '../traversal';
 
 import {
   Document,
@@ -12,6 +11,7 @@ import {
   Inline,
   utils as sutils,
 } from '../structures';
+import { traversal } from '../traversal';
 
 /*
  * append: 親要素と追加したい要素を与え、親の子要素の最後に追加する。 https://developer.mozilla.org/ja/docs/Web/API/ParentNode/append
@@ -21,10 +21,13 @@ import {
  * remove: ドキュメントと削除したい要素を与え、自身を削除する。 https://developer.mozilla.org/ja/docs/Web/API/ChildNode/remove
  */
 export function transformation(document: Document) {
+  const traverse = traversal(document);
+
   const transform = {
     item: {
-      append: (item: Item): void => {
+      append: (item: Item): Item | null => {
         document.items.push(item);
+        return traverse.item.find(item.id);
       },
 
       after: (prevItem: Item, item: Item): void => {
@@ -50,11 +53,12 @@ export function transformation(document: Document) {
         }
       },
 
-      appendInline: (item: Item, inline: Inline): void => {
-        if (item.inline === null) return;
+      appendInline: (item: Item, inline: Inline): Inline | null => {
+        if (item.inline === null) return null;
 
         inline.parent = item.id;
         item.inline.push(inline);
+        return traverse.inline.find(inline.id, item.id);
       },
 
       turnInto: (item: Item, itemType: SuperItem['type']): void => {
