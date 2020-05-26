@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "rm -rf dist && tsc && concurrently 'tsc -w' 'mocha dist/**/*.spec.js -w --watch-files dist/**/*.js'",
+    "dev": "rm -rf dist && tsc && concurrently 'tsc -w' 'mocha -w dist/**/*.js'",
     "now": "rm -rf dist && tsc && concurrently 'tsc -w' 'mocha dist/usecases.input.spec.js -w --watch-files dist/**/*.js'",
+    "tmp": "rm -rf dist && tsc && mocha dist/**/*.spec.js",
     "test": "rm -rf dist && tsc && mocha dist/**/*.spec.js",
     "check": "npx npm-check-updates"
   },
