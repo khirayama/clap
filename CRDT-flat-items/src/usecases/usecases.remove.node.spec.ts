@@ -199,526 +199,510 @@ describe('削除操作', () => {
     describe(`編集者選択範囲が${nodePatterns.b}`, () => {
       describe(`共同編集者選択範囲が${nodePatterns.a}`, () => {
         it('複数項目が削除され、編集者と共同編集者の選択範囲が次項目へ移動していること', () => {
-          userDoc.change((doc) => {
-            doc.users[user.id].anchor = doc.document.nodes[1].id;
-            doc.users[user.id].focus = doc.document.nodes[3].id;
+          userBoardHandler.change((doc) => {
+            doc.users[user.id].anchor = doc.document.items[1].id;
+            doc.users[user.id].focus = doc.document.items[3].id;
             doc.users[user.id].range = null;
           });
-          memberDoc.merge(userDoc);
-          memberDoc.change((doc) => {
-            doc.users[member.id].anchor = doc.document.nodes[1].id;
-            doc.users[member.id].focus = doc.document.nodes[1].id;
+          memberBoardHandler.merge(userBoardHandler.save(), user.id);
+          memberBoardHandler.change((doc) => {
+            doc.users[member.id].anchor = doc.document.items[1].id;
+            doc.users[member.id].focus = doc.document.items[1].id;
             doc.users[member.id].range = null;
           });
-          userDoc.merge(memberDoc);
+          userBoardHandler.merge(memberBoardHandler.save(), member.id);
 
-          const expectedDoc = toLooseJSON(userDoc);
-          const nodes = expectedDoc.doc.document.nodes;
-          nodes[0].next = nodes[4].id;
-          nodes[4].prev = nodes[0].id;
-          expectedDoc.doc.users[user.id].anchor = nodes[4].id;
-          expectedDoc.doc.users[user.id].focus = nodes[4].id;
-          expectedDoc.doc.users[member.id].anchor = nodes[4].id;
-          expectedDoc.doc.users[member.id].focus = nodes[4].id;
-          nodes.splice(1, 3);
+          const expectedDoc = toLooseJSON(userBoardHandler);
+          const items = expectedDoc.data.document.items;
+          expectedDoc.data.users[user.id].anchor = items[4].id;
+          expectedDoc.data.users[user.id].focus = items[4].id;
+          expectedDoc.data.users[member.id].anchor = items[4].id;
+          expectedDoc.data.users[member.id].focus = items[4].id;
+          items.splice(1, 3);
 
-          userDoc.change((doc) => {
+          userBoardHandler.change((doc) => {
             usecases(user.id, doc).remove();
           });
 
-          assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
+          assert.deepEqual(toLooseJSON(userBoardHandler), expectedDoc);
         });
 
-        it('複数項目が削除され、編集者と共同編集者の選択範囲が前項目へ移動していること', () => {
-          userDoc.change((doc) => {
-            doc.users[user.id].anchor = doc.document.nodes[2].id;
-            doc.users[user.id].focus = doc.document.nodes[4].id;
+        it('複数項目が削除され、編集者と共同編集者の選択範囲が次項目へ移動していること', () => {
+          userBoardHandler.change((doc) => {
+            doc.users[user.id].anchor = doc.document.items[2].id;
+            doc.users[user.id].focus = doc.document.items[4].id;
             doc.users[user.id].range = null;
           });
-          memberDoc.merge(userDoc);
-          memberDoc.change((doc) => {
-            doc.users[member.id].anchor = doc.document.nodes[2].id;
-            doc.users[member.id].focus = doc.document.nodes[2].id;
+          memberBoardHandler.merge(userBoardHandler.save(), user.id);
+          memberBoardHandler.change((doc) => {
+            doc.users[member.id].anchor = doc.document.items[2].id;
+            doc.users[member.id].focus = doc.document.items[2].id;
             doc.users[member.id].range = null;
           });
-          userDoc.merge(memberDoc);
+          userBoardHandler.merge(memberBoardHandler.save(), member.id);
 
-          const expectedDoc = toLooseJSON(userDoc);
-          const nodes = expectedDoc.doc.document.nodes;
-          nodes[1].next = null;
-          expectedDoc.doc.users[user.id].anchor = nodes[1].id;
-          expectedDoc.doc.users[user.id].focus = nodes[1].id;
-          expectedDoc.doc.users[member.id].anchor = nodes[1].id;
-          expectedDoc.doc.users[member.id].focus = nodes[1].id;
-          nodes.splice(2, 3);
+          const expectedDoc = toLooseJSON(userBoardHandler);
+          const items = expectedDoc.data.document.items;
+          expectedDoc.data.users[user.id].anchor = items[5].id;
+          expectedDoc.data.users[user.id].focus = items[5].id;
+          expectedDoc.data.users[member.id].anchor = items[5].id;
+          expectedDoc.data.users[member.id].focus = items[5].id;
+          items.splice(2, 3);
 
-          userDoc.change((doc) => {
+          userBoardHandler.change((doc) => {
             usecases(user.id, doc).remove();
           });
 
-          assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
+          assert.deepEqual(toLooseJSON(userBoardHandler), expectedDoc);
         });
 
-        it('複数項目が削除され、編集者と共同編集者の選択範囲が親項目へ移動していること', () => {
-          userDoc.change((doc) => {
-            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+        it('複数項目が削除され、編集者と共同編集者の選択範囲が上項目へ移動していること', () => {
+          userBoardHandler.change((doc) => {
+            if (!doc.document.items) return;
 
-            doc.users[user.id].anchor = doc.document.nodes[0].nodes[0].nodes[0].id;
-            doc.users[user.id].focus = doc.document.nodes[0].nodes[0].nodes[1].id;
+            doc.users[user.id].anchor = doc.document.items[2].id;
+            doc.users[user.id].focus = doc.document.items[3].id;
             doc.users[user.id].range = null;
           });
-          memberDoc.merge(userDoc);
-          memberDoc.change((doc) => {
-            if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+          memberBoardHandler.merge(userBoardHandler.save(), user.id);
+          memberBoardHandler.change((doc) => {
+            if (!doc.document.items) return;
 
-            doc.users[member.id].anchor = doc.document.nodes[0].nodes[0].nodes[0].id;
-            doc.users[member.id].focus = doc.document.nodes[0].nodes[0].nodes[0].id;
+            doc.users[member.id].anchor = doc.document.items[2].id;
+            doc.users[member.id].focus = doc.document.items[2].id;
             doc.users[member.id].range = null;
           });
-          userDoc.merge(memberDoc);
+          userBoardHandler.merge(memberBoardHandler.save(), member.id);
 
-          const expectedDoc = toLooseJSON(userDoc);
-          const node = expectedDoc.doc.document.nodes[0].nodes[0];
-          node.nodes = [];
-          expectedDoc.doc.users[user.id].anchor = node.id;
-          expectedDoc.doc.users[user.id].focus = node.id;
-          expectedDoc.doc.users[member.id].anchor = node.id;
-          expectedDoc.doc.users[member.id].focus = node.id;
+          const expectedDoc = toLooseJSON(userBoardHandler);
+          const node = expectedDoc.data.document.items[4];
+          expectedDoc.data.users[user.id].anchor = node.id;
+          expectedDoc.data.users[user.id].focus = node.id;
+          expectedDoc.data.users[member.id].anchor = node.id;
+          expectedDoc.data.users[member.id].focus = node.id;
+          expectedDoc.data.document.items.splice(2, 2);
 
-          userDoc.change((doc) => {
+          userBoardHandler.change((doc) => {
             usecases(user.id, doc).remove();
           });
 
-          assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
+          assert.deepEqual(toLooseJSON(userBoardHandler), expectedDoc);
         });
 
         it('複数項目が削除され、編集者と共同編集者の選択範囲がなくなっていること', () => {
-          userDoc.change((doc) => {
-            doc.users[user.id].anchor = doc.document.nodes[0].id;
-            doc.users[user.id].focus = doc.document.nodes[4].id;
+          userBoardHandler.change((doc) => {
+            doc.users[user.id].anchor = doc.document.items[0].id;
+            doc.users[user.id].focus = doc.document.items[11].id;
             doc.users[user.id].range = null;
           });
-          memberDoc.merge(userDoc);
-          memberDoc.change((doc) => {
-            doc.users[member.id].anchor = doc.document.nodes[0].id;
-            doc.users[member.id].focus = doc.document.nodes[0].id;
+          memberBoardHandler.merge(userBoardHandler.save(), user.id);
+          memberBoardHandler.change((doc) => {
+            doc.users[member.id].anchor = doc.document.items[0].id;
+            doc.users[member.id].focus = doc.document.items[0].id;
             doc.users[member.id].range = null;
           });
-          userDoc.merge(memberDoc);
+          userBoardHandler.merge(memberBoardHandler.save(), member.id);
 
-          const expectedDoc = toLooseJSON(userDoc);
-          expectedDoc.doc.document.nodes = [];
-          expectedDoc.doc.users[user.id].anchor = null;
-          expectedDoc.doc.users[user.id].focus = null;
-          expectedDoc.doc.users[member.id].anchor = null;
-          expectedDoc.doc.users[member.id].focus = null;
+          const expectedDoc = toLooseJSON(userBoardHandler);
+          expectedDoc.data.document.items = [];
+          expectedDoc.data.users[user.id].anchor = null;
+          expectedDoc.data.users[user.id].focus = null;
+          expectedDoc.data.users[member.id].anchor = null;
+          expectedDoc.data.users[member.id].focus = null;
 
-          userDoc.change((doc) => {
+          userBoardHandler.change((doc) => {
             usecases(user.id, doc).remove();
           });
 
-          assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
+          assert.deepEqual(toLooseJSON(userBoardHandler), expectedDoc);
         });
       });
 
       describe(`共同編集者選択範囲が${nodePatterns.b}`, () => {
         describe('編集者と共同編集者が同じ選択範囲の場合', () => {
           it('複数項目が削除され、編集者と共同編集者の選択範囲が次項目に移動していること', () => {
-            userDoc.change((doc) => {
-              doc.users[user.id].anchor = doc.document.nodes[1].id;
-              doc.users[user.id].focus = doc.document.nodes[3].id;
+            userBoardHandler.change((doc) => {
+              doc.users[user.id].anchor = doc.document.items[1].id;
+              doc.users[user.id].focus = doc.document.items[3].id;
               doc.users[user.id].range = null;
             });
-            memberDoc.merge(userDoc);
-            memberDoc.change((doc) => {
-              doc.users[member.id].anchor = doc.document.nodes[1].id;
-              doc.users[member.id].focus = doc.document.nodes[3].id;
+            memberBoardHandler.merge(userBoardHandler.save(), user.id);
+            memberBoardHandler.change((doc) => {
+              doc.users[member.id].anchor = doc.document.items[1].id;
+              doc.users[member.id].focus = doc.document.items[3].id;
               doc.users[member.id].range = null;
             });
-            userDoc.merge(memberDoc);
+            userBoardHandler.merge(memberBoardHandler.save(), member.id);
 
-            const expectedDoc = toLooseJSON(userDoc);
-            const nodes = expectedDoc.doc.document.nodes;
-            nodes[0].next = nodes[4].id;
-            nodes[4].prev = nodes[0].id;
-            expectedDoc.doc.users[user.id].anchor = nodes[4].id;
-            expectedDoc.doc.users[user.id].focus = nodes[4].id;
-            expectedDoc.doc.users[member.id].anchor = nodes[4].id;
-            expectedDoc.doc.users[member.id].focus = nodes[4].id;
-            nodes.splice(1, 3);
+            const expectedDoc = toLooseJSON(userBoardHandler);
+            const items = expectedDoc.data.document.items;
+            expectedDoc.data.users[user.id].anchor = items[4].id;
+            expectedDoc.data.users[user.id].focus = items[4].id;
+            expectedDoc.data.users[member.id].anchor = items[4].id;
+            expectedDoc.data.users[member.id].focus = items[4].id;
+            items.splice(1, 3);
 
-            userDoc.change((doc) => {
+            userBoardHandler.change((doc) => {
               usecases(user.id, doc).remove();
             });
 
-            assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
+            assert.deepEqual(toLooseJSON(userBoardHandler), expectedDoc);
           });
 
-          it('複数項目が削除され、編集者と共同編集者の選択範囲が前項目に移動していること', () => {
-            userDoc.change((doc) => {
-              doc.users[user.id].anchor = doc.document.nodes[2].id;
-              doc.users[user.id].focus = doc.document.nodes[4].id;
+          it('複数項目が削除され、編集者と共同編集者の選択範囲が次項目に移動していること', () => {
+            userBoardHandler.change((doc) => {
+              doc.users[user.id].anchor = doc.document.items[2].id;
+              doc.users[user.id].focus = doc.document.items[4].id;
               doc.users[user.id].range = null;
             });
-            memberDoc.merge(userDoc);
-            memberDoc.change((doc) => {
-              doc.users[member.id].anchor = doc.document.nodes[2].id;
-              doc.users[member.id].focus = doc.document.nodes[4].id;
+            memberBoardHandler.merge(userBoardHandler.save(), user.id);
+            memberBoardHandler.change((doc) => {
+              doc.users[member.id].anchor = doc.document.items[2].id;
+              doc.users[member.id].focus = doc.document.items[4].id;
               doc.users[member.id].range = null;
             });
-            userDoc.merge(memberDoc);
+            userBoardHandler.merge(memberBoardHandler.save(), member.id);
 
-            const expectedDoc = toLooseJSON(userDoc);
-            const nodes = expectedDoc.doc.document.nodes;
-            nodes[1].next = null;
-            expectedDoc.doc.users[user.id].anchor = nodes[1].id;
-            expectedDoc.doc.users[user.id].focus = nodes[1].id;
-            expectedDoc.doc.users[member.id].anchor = nodes[1].id;
-            expectedDoc.doc.users[member.id].focus = nodes[1].id;
-            nodes.splice(2, 3);
+            const expectedDoc = toLooseJSON(userBoardHandler);
+            const items = expectedDoc.data.document.items;
+            expectedDoc.data.users[user.id].anchor = items[5].id;
+            expectedDoc.data.users[user.id].focus = items[5].id;
+            expectedDoc.data.users[member.id].anchor = items[5].id;
+            expectedDoc.data.users[member.id].focus = items[5].id;
+            items.splice(2, 3);
 
-            userDoc.change((doc) => {
+            userBoardHandler.change((doc) => {
               usecases(user.id, doc).remove();
             });
 
-            assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
+            assert.deepEqual(toLooseJSON(userBoardHandler), expectedDoc);
           });
 
           it('複数項目が削除され、編集者と共同編集者の選択範囲が親項目に移動していること', () => {
-            userDoc.change((doc) => {
-              if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+            userBoardHandler.change((doc) => {
+              if (!doc.document.items) return;
 
-              doc.users[user.id].anchor = doc.document.nodes[0].nodes[0].nodes[0].id;
-              doc.users[user.id].focus = doc.document.nodes[0].nodes[0].nodes[1].id;
+              doc.users[user.id].anchor = doc.document.items[2].id;
+              doc.users[user.id].focus = doc.document.items[3].id;
               doc.users[user.id].range = null;
             });
-            memberDoc.merge(userDoc);
-            memberDoc.change((doc) => {
-              if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+            memberBoardHandler.merge(userBoardHandler.save(), user.id);
+            memberBoardHandler.change((doc) => {
+              if (!doc.document.items) return;
 
-              doc.users[member.id].anchor = doc.document.nodes[0].nodes[0].nodes[0].id;
-              doc.users[member.id].focus = doc.document.nodes[0].nodes[0].nodes[1].id;
+              doc.users[member.id].anchor = doc.document.items[2].id;
+              doc.users[member.id].focus = doc.document.items[3].id;
               doc.users[member.id].range = null;
             });
-            userDoc.merge(memberDoc);
+            userBoardHandler.merge(memberBoardHandler.save(), member.id);
 
-            const expectedDoc = toLooseJSON(userDoc);
-            const node = expectedDoc.doc.document.nodes[0].nodes[0];
-            expectedDoc.doc.users[user.id].anchor = node.id;
-            expectedDoc.doc.users[user.id].focus = node.id;
-            expectedDoc.doc.users[member.id].anchor = node.id;
-            expectedDoc.doc.users[member.id].focus = node.id;
-            node.nodes = [];
+            const expectedDoc = toLooseJSON(userBoardHandler);
+            const node = expectedDoc.data.document.items[4];
+            expectedDoc.data.users[user.id].anchor = node.id;
+            expectedDoc.data.users[user.id].focus = node.id;
+            expectedDoc.data.users[member.id].anchor = node.id;
+            expectedDoc.data.users[member.id].focus = node.id;
+            expectedDoc.data.document.items.splice(2, 2);
 
-            userDoc.change((doc) => {
+            userBoardHandler.change((doc) => {
               usecases(user.id, doc).remove();
             });
 
-            assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
+            assert.deepEqual(toLooseJSON(userBoardHandler), expectedDoc);
           });
 
           it('複数項目が削除され、編集者と共同編集者の選択項目がなくなっていること', () => {
-            userDoc.change((doc) => {
-              doc.users[user.id].anchor = doc.document.nodes[0].id;
-              doc.users[user.id].anchor = doc.document.nodes[4].id;
+            userBoardHandler.change((doc) => {
+              doc.users[user.id].anchor = doc.document.items[0].id;
+              doc.users[user.id].anchor = doc.document.items[4].id;
               doc.users[user.id].range = null;
             });
-            memberDoc.merge(userDoc);
-            memberDoc.change((doc) => {
-              doc.users[member.id].anchor = doc.document.nodes[0].id;
-              doc.users[member.id].anchor = doc.document.nodes[4].id;
+            memberBoardHandler.merge(userBoardHandler.save(), user.id);
+            memberBoardHandler.change((doc) => {
+              doc.users[member.id].anchor = doc.document.items[0].id;
+              doc.users[member.id].anchor = doc.document.items[4].id;
               doc.users[member.id].range = null;
             });
-            userDoc.merge(memberDoc);
+            userBoardHandler.merge(memberBoardHandler.save(), member.id);
 
-            const expectedDoc = toLooseJSON(userDoc);
-            expectedDoc.doc.document.nodes = [];
-            expectedDoc.doc.users[user.id].anchor = null;
-            expectedDoc.doc.users[user.id].focus = null;
-            expectedDoc.doc.users[member.id].anchor = null;
-            expectedDoc.doc.users[member.id].focus = null;
+            const expectedDoc = toLooseJSON(userBoardHandler);
+            expectedDoc.data.document.items = [];
+            expectedDoc.data.users[user.id].anchor = null;
+            expectedDoc.data.users[user.id].focus = null;
+            expectedDoc.data.users[member.id].anchor = null;
+            expectedDoc.data.users[member.id].focus = null;
 
-            userDoc.change((doc) => {
+            userBoardHandler.change((doc) => {
               usecases(user.id, doc).remove();
             });
 
-            assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
+            assert.deepEqual(toLooseJSON(userBoardHandler), expectedDoc);
           });
         });
 
         describe('編集者選択範囲前に共同編集者選択範囲がある場合', () => {
           it('複数項目が削除され、編集者の選択範囲が次項目に移動し、共同編集者選択項目に影響がないこと', () => {
-            userDoc.change((doc) => {
-              doc.users[user.id].anchor = doc.document.nodes[2].id;
-              doc.users[user.id].focus = doc.document.nodes[3].id;
+            userBoardHandler.change((doc) => {
+              doc.users[user.id].anchor = doc.document.items[2].id;
+              doc.users[user.id].focus = doc.document.items[3].id;
               doc.users[user.id].range = null;
             });
-            memberDoc.merge(userDoc);
-            memberDoc.change((doc) => {
-              doc.users[member.id].anchor = doc.document.nodes[0].id;
-              doc.users[member.id].anchor = doc.document.nodes[1].id;
+            memberBoardHandler.merge(userBoardHandler.save(), user.id);
+            memberBoardHandler.change((doc) => {
+              doc.users[member.id].anchor = doc.document.items[0].id;
+              doc.users[member.id].anchor = doc.document.items[1].id;
               doc.users[member.id].range = null;
             });
-            userDoc.merge(memberDoc);
+            userBoardHandler.merge(memberBoardHandler.save(), member.id);
 
-            const expectedDoc = toLooseJSON(userDoc);
-            const nodes = expectedDoc.doc.document.nodes;
-            nodes[1].next = nodes[4].id;
-            nodes[4].prev = nodes[1].id;
-            expectedDoc.doc.users[user.id].anchor = nodes[4].id;
-            expectedDoc.doc.users[user.id].focus = nodes[4].id;
-            nodes.splice(2, 2);
+            const expectedDoc = toLooseJSON(userBoardHandler);
+            const items = expectedDoc.data.document.items;
+            expectedDoc.data.users[user.id].anchor = items[4].id;
+            expectedDoc.data.users[user.id].focus = items[4].id;
+            items.splice(2, 2);
 
-            userDoc.change((doc) => {
+            userBoardHandler.change((doc) => {
               usecases(user.id, doc).remove();
             });
 
-            assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
+            assert.deepEqual(toLooseJSON(userBoardHandler), expectedDoc);
           });
 
           it('複数項目が削除され、編集者の選択範囲が前項目に移動し、共同編集者選択項目に影響がないこと', () => {
-            userDoc.change((doc) => {
-              doc.users[user.id].anchor = doc.document.nodes[2].id;
-              doc.users[user.id].focus = doc.document.nodes[4].id;
+            userBoardHandler.change((doc) => {
+              doc.users[user.id].anchor = doc.document.items[2].id;
+              doc.users[user.id].focus = doc.document.items[4].id;
               doc.users[user.id].range = null;
             });
-            memberDoc.merge(userDoc);
-            memberDoc.change((doc) => {
-              doc.users[member.id].anchor = doc.document.nodes[0].id;
-              doc.users[member.id].anchor = doc.document.nodes[1].id;
+            memberBoardHandler.merge(userBoardHandler.save(), user.id);
+            memberBoardHandler.change((doc) => {
+              doc.users[member.id].anchor = doc.document.items[0].id;
+              doc.users[member.id].anchor = doc.document.items[1].id;
               doc.users[member.id].range = null;
             });
-            userDoc.merge(memberDoc);
+            userBoardHandler.merge(memberBoardHandler.save(), member.id);
 
-            const expectedDoc = toLooseJSON(userDoc);
-            const nodes = expectedDoc.doc.document.nodes;
-            nodes[1].next = null;
-            expectedDoc.doc.users[user.id].anchor = nodes[1].id;
-            expectedDoc.doc.users[user.id].focus = nodes[1].id;
-            nodes.splice(2, 3);
+            const expectedDoc = toLooseJSON(userBoardHandler);
+            const items = expectedDoc.data.document.items;
+            expectedDoc.data.users[user.id].anchor = items[1].id;
+            expectedDoc.data.users[user.id].focus = items[1].id;
+            items.splice(2, 3);
 
-            userDoc.change((doc) => {
+            userBoardHandler.change((doc) => {
               usecases(user.id, doc).remove();
             });
 
-            assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
+            assert.deepEqual(toLooseJSON(userBoardHandler), expectedDoc);
           });
         });
 
         describe('編集者選択範囲内に共同編集者選択範囲がある場合', () => {
           it('複数項目が削除され、編集者と共同編集者の選択範囲が次項目に移動していること', () => {
-            userDoc.change((doc) => {
-              doc.users[user.id].anchor = doc.document.nodes[1].id;
-              doc.users[user.id].focus = doc.document.nodes[3].id;
+            userBoardHandler.change((doc) => {
+              doc.users[user.id].anchor = doc.document.items[1].id;
+              doc.users[user.id].focus = doc.document.items[3].id;
               doc.users[user.id].range = null;
             });
-            memberDoc.merge(userDoc);
-            memberDoc.change((doc) => {
-              doc.users[member.id].anchor = doc.document.nodes[2].id;
-              doc.users[member.id].focus = doc.document.nodes[3].id;
+            memberBoardHandler.merge(userBoardHandler.save(), user.id);
+            memberBoardHandler.change((doc) => {
+              doc.users[member.id].anchor = doc.document.items[2].id;
+              doc.users[member.id].focus = doc.document.items[3].id;
               doc.users[member.id].range = null;
             });
-            userDoc.merge(memberDoc);
+            userBoardHandler.merge(memberBoardHandler.save(), member.id);
 
-            const expectedDoc = toLooseJSON(userDoc);
-            const nodes = expectedDoc.doc.document.nodes;
-            nodes[0].next = nodes[4].id;
-            nodes[4].prev = nodes[0].id;
-            expectedDoc.doc.users[user.id].anchor = nodes[4].id;
-            expectedDoc.doc.users[user.id].focus = nodes[4].id;
-            expectedDoc.doc.users[member.id].anchor = nodes[4].id;
-            expectedDoc.doc.users[member.id].focus = nodes[4].id;
-            nodes.splice(1, 3);
+            const expectedDoc = toLooseJSON(userBoardHandler);
+            const items = expectedDoc.data.document.items;
+            expectedDoc.data.users[user.id].anchor = items[4].id;
+            expectedDoc.data.users[user.id].focus = items[4].id;
+            expectedDoc.data.users[member.id].anchor = items[4].id;
+            expectedDoc.data.users[member.id].focus = items[4].id;
+            items.splice(1, 3);
 
-            userDoc.change((doc) => {
+            userBoardHandler.change((doc) => {
               usecases(user.id, doc).remove();
             });
 
-            assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
+            assert.deepEqual(toLooseJSON(userBoardHandler), expectedDoc);
           });
 
           it('複数項目が削除され、編集者と共同編集者の選択範囲が前項目に移動していること', () => {
-            userDoc.change((doc) => {
-              doc.users[user.id].anchor = doc.document.nodes[2].id;
-              doc.users[user.id].focus = doc.document.nodes[4].id;
+            userBoardHandler.change((doc) => {
+              doc.users[user.id].anchor = doc.document.items[2].id;
+              doc.users[user.id].focus = doc.document.items[4].id;
               doc.users[user.id].range = null;
             });
-            memberDoc.merge(userDoc);
-            memberDoc.change((doc) => {
-              doc.users[member.id].anchor = doc.document.nodes[3].id;
-              doc.users[member.id].focus = doc.document.nodes[4].id;
+            memberBoardHandler.merge(userBoardHandler.save(), user.id);
+            memberBoardHandler.change((doc) => {
+              doc.users[member.id].anchor = doc.document.items[3].id;
+              doc.users[member.id].focus = doc.document.items[4].id;
               doc.users[member.id].range = null;
             });
-            userDoc.merge(memberDoc);
+            userBoardHandler.merge(memberBoardHandler.save(), member.id);
 
-            const expectedDoc = toLooseJSON(userDoc);
-            const nodes = expectedDoc.doc.document.nodes;
-            nodes[1].next = null;
-            expectedDoc.doc.users[user.id].anchor = nodes[1].id;
-            expectedDoc.doc.users[user.id].focus = nodes[1].id;
-            expectedDoc.doc.users[member.id].anchor = nodes[1].id;
-            expectedDoc.doc.users[member.id].focus = nodes[1].id;
-            nodes.splice(2, 3);
+            const expectedDoc = toLooseJSON(userBoardHandler);
+            const items = expectedDoc.data.document.items;
+            expectedDoc.data.users[user.id].anchor = items[1].id;
+            expectedDoc.data.users[user.id].focus = items[1].id;
+            expectedDoc.data.users[member.id].anchor = items[1].id;
+            expectedDoc.data.users[member.id].focus = items[1].id;
+            items.splice(2, 3);
 
-            userDoc.change((doc) => {
+            userBoardHandler.change((doc) => {
               usecases(user.id, doc).remove();
             });
 
-            assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
+            assert.deepEqual(toLooseJSON(userBoardHandler), expectedDoc);
           });
 
           it('複数項目が削除され、編集者と共同編集者の選択範囲が親項目に移動していること', () => {
-            userDoc.change((doc) => {
-              if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+            userBoardHandler.change((doc) => {
+              if (!doc.document.items) return;
 
-              doc.users[user.id].anchor = doc.document.nodes[0].nodes[0].nodes[0].id;
-              doc.users[user.id].focus = doc.document.nodes[0].nodes[0].nodes[1].id;
+              doc.users[user.id].anchor = doc.document.items[2].id;
+              doc.users[user.id].focus = doc.document.items[3].id;
               doc.users[user.id].range = null;
             });
-            memberDoc.merge(userDoc);
-            memberDoc.change((doc) => {
-              if (!(doc.document.nodes && doc.document.nodes[0].nodes && doc.document.nodes[0].nodes[0].nodes)) return;
+            memberBoardHandler.merge(userBoardHandler.save(), user.id);
+            memberBoardHandler.change((doc) => {
+              if (!doc.document.items) return;
 
-              doc.users[member.id].anchor = doc.document.nodes[0].nodes[0].nodes[1].id;
-              doc.users[member.id].focus = doc.document.nodes[0].nodes[0].nodes[1].id;
+              doc.users[member.id].anchor = doc.document.items[3].id;
+              doc.users[member.id].focus = doc.document.items[3].id;
               doc.users[member.id].range = null;
             });
-            userDoc.merge(memberDoc);
+            userBoardHandler.merge(memberBoardHandler.save(), member.id);
 
-            const expectedDoc = toLooseJSON(userDoc);
-            const node = expectedDoc.doc.document.nodes[0].nodes[0];
-            node.nodes = [];
-            expectedDoc.doc.users[user.id].anchor = node.id;
-            expectedDoc.doc.users[user.id].focus = node.id;
-            expectedDoc.doc.users[member.id].anchor = node.id;
-            expectedDoc.doc.users[member.id].focus = node.id;
+            const expectedDoc = toLooseJSON(userBoardHandler);
+            const node = expectedDoc.data.document.items[0].items[0];
+            node.items = [];
+            expectedDoc.data.users[user.id].anchor = node.id;
+            expectedDoc.data.users[user.id].focus = node.id;
+            expectedDoc.data.users[member.id].anchor = node.id;
+            expectedDoc.data.users[member.id].focus = node.id;
 
-            userDoc.change((doc) => {
+            userBoardHandler.change((doc) => {
               usecases(user.id, doc).remove();
             });
 
-            assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
+            assert.deepEqual(toLooseJSON(userBoardHandler), expectedDoc);
           });
 
           it('複数項目が削除され、編集者と共同編集者の選択項目がなくなっていること', () => {
-            userDoc.change((doc) => {
-              doc.users[user.id].anchor = doc.document.nodes[0].id;
-              doc.users[user.id].focus = doc.document.nodes[4].id;
+            userBoardHandler.change((doc) => {
+              doc.users[user.id].anchor = doc.document.items[0].id;
+              doc.users[user.id].focus = doc.document.items[4].id;
               doc.users[user.id].range = null;
             });
-            memberDoc.merge(userDoc);
-            memberDoc.change((doc) => {
-              doc.users[member.id].anchor = doc.document.nodes[1].id;
-              doc.users[member.id].focus = doc.document.nodes[3].id;
+            memberBoardHandler.merge(userBoardHandler.save(), user.id);
+            memberBoardHandler.change((doc) => {
+              doc.users[member.id].anchor = doc.document.items[1].id;
+              doc.users[member.id].focus = doc.document.items[3].id;
               doc.users[member.id].range = null;
             });
-            userDoc.merge(memberDoc);
+            userBoardHandler.merge(memberBoardHandler.save(), member.id);
 
-            const expectedDoc = toLooseJSON(userDoc);
-            expectedDoc.doc.document.nodes = [];
-            expectedDoc.doc.users[user.id].anchor = null;
-            expectedDoc.doc.users[user.id].focus = null;
-            expectedDoc.doc.users[member.id].anchor = null;
-            expectedDoc.doc.users[member.id].focus = null;
+            const expectedDoc = toLooseJSON(userBoardHandler);
+            expectedDoc.data.document.items = [];
+            expectedDoc.data.users[user.id].anchor = null;
+            expectedDoc.data.users[user.id].focus = null;
+            expectedDoc.data.users[member.id].anchor = null;
+            expectedDoc.data.users[member.id].focus = null;
 
-            userDoc.change((doc) => {
+            userBoardHandler.change((doc) => {
               usecases(user.id, doc).remove();
             });
 
-            assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
+            assert.deepEqual(toLooseJSON(userBoardHandler), expectedDoc);
           });
         });
 
         describe('編集者選択範囲と共同編集者選択範囲に一部重複がある場合', () => {
           it('複数項目が削除され、編集者の選択範囲が次項目に移動し、共同編集者選択項目の重複項目が削除されていること', () => {
-            userDoc.change((doc) => {
-              doc.users[user.id].anchor = doc.document.nodes[1].id;
-              doc.users[user.id].focus = doc.document.nodes[3].id;
+            userBoardHandler.change((doc) => {
+              doc.users[user.id].anchor = doc.document.items[1].id;
+              doc.users[user.id].focus = doc.document.items[3].id;
               doc.users[user.id].range = null;
             });
-            memberDoc.merge(userDoc);
-            memberDoc.change((doc) => {
-              doc.users[member.id].anchor = doc.document.nodes[0].id;
-              doc.users[member.id].focus = doc.document.nodes[1].id;
+            memberBoardHandler.merge(userBoardHandler.save(), user.id);
+            memberBoardHandler.change((doc) => {
+              doc.users[member.id].anchor = doc.document.items[0].id;
+              doc.users[member.id].focus = doc.document.items[1].id;
               doc.users[member.id].range = null;
             });
-            userDoc.merge(memberDoc);
+            userBoardHandler.merge(memberBoardHandler.save(), member.id);
 
-            const expectedDoc = toLooseJSON(userDoc);
-            const nodes = expectedDoc.doc.document.nodes;
-            nodes[0].next = nodes[4].id;
-            nodes[4].prev = nodes[0].id;
-            expectedDoc.doc.users[user.id].anchor = nodes[4].id;
-            expectedDoc.doc.users[user.id].focus = nodes[4].id;
-            expectedDoc.doc.users[member.id].anchor = nodes[0].id;
-            expectedDoc.doc.users[member.id].focus = nodes[0].id;
-            nodes.splice(1, 3);
+            const expectedDoc = toLooseJSON(userBoardHandler);
+            const items = expectedDoc.data.document.items;
+            expectedDoc.data.users[user.id].anchor = items[4].id;
+            expectedDoc.data.users[user.id].focus = items[4].id;
+            expectedDoc.data.users[member.id].anchor = items[0].id;
+            expectedDoc.data.users[member.id].focus = items[0].id;
+            items.splice(1, 3);
 
-            userDoc.change((doc) => {
+            userBoardHandler.change((doc) => {
               usecases(user.id, doc).remove();
             });
 
-            assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
+            assert.deepEqual(toLooseJSON(userBoardHandler), expectedDoc);
           });
 
           it('複数項目が削除され、編集者の選択範囲が前項目に移動し、共同編集者選択項目の重複項目が削除されていること', () => {
-            userDoc.change((doc) => {
-              doc.users[user.id].anchor = doc.document.nodes[2].id;
-              doc.users[user.id].focus = doc.document.nodes[4].id;
+            userBoardHandler.change((doc) => {
+              doc.users[user.id].anchor = doc.document.items[2].id;
+              doc.users[user.id].focus = doc.document.items[4].id;
               doc.users[user.id].range = null;
             });
-            memberDoc.merge(userDoc);
-            memberDoc.change((doc) => {
-              doc.users[member.id].anchor = doc.document.nodes[1].id;
-              doc.users[member.id].focus = doc.document.nodes[2].id;
+            memberBoardHandler.merge(userBoardHandler.save(), user.id);
+            memberBoardHandler.change((doc) => {
+              doc.users[member.id].anchor = doc.document.items[1].id;
+              doc.users[member.id].focus = doc.document.items[2].id;
               doc.users[member.id].range = null;
             });
-            userDoc.merge(memberDoc);
+            userBoardHandler.merge(memberBoardHandler.save(), member.id);
 
-            const expectedDoc = toLooseJSON(userDoc);
-            const nodes = expectedDoc.doc.document.nodes;
-            nodes[1].next = null;
-            expectedDoc.doc.users[user.id].anchor = nodes[1].id;
-            expectedDoc.doc.users[user.id].focus = nodes[1].id;
-            expectedDoc.doc.users[member.id].anchor = nodes[1].id;
-            expectedDoc.doc.users[member.id].focus = nodes[1].id;
-            nodes.splice(2, 3);
+            const expectedDoc = toLooseJSON(userBoardHandler);
+            const items = expectedDoc.data.document.items;
+            expectedDoc.data.users[user.id].anchor = items[1].id;
+            expectedDoc.data.users[user.id].focus = items[1].id;
+            expectedDoc.data.users[member.id].anchor = items[1].id;
+            expectedDoc.data.users[member.id].focus = items[1].id;
+            items.splice(2, 3);
 
-            userDoc.change((doc) => {
+            userBoardHandler.change((doc) => {
               usecases(user.id, doc).remove();
             });
 
-            assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
+            assert.deepEqual(toLooseJSON(userBoardHandler), expectedDoc);
           });
         });
 
         describe('編集者選択範囲後に共同編集者選択範囲がある場合', () => {
           it('複数項目が削除され、編集者の選択範囲が次項目に移動し、共同編集者選択項目に影響がないこと', () => {
-            userDoc.change((doc) => {
-              doc.users[user.id].anchor = doc.document.nodes[0].id;
-              doc.users[user.id].focus = doc.document.nodes[2].id;
+            userBoardHandler.change((doc) => {
+              doc.users[user.id].anchor = doc.document.items[0].id;
+              doc.users[user.id].focus = doc.document.items[2].id;
               doc.users[user.id].range = null;
             });
-            memberDoc.merge(userDoc);
-            memberDoc.change((doc) => {
-              doc.users[member.id].anchor = doc.document.nodes[3].id;
-              doc.users[member.id].focus = doc.document.nodes[4].id;
+            memberBoardHandler.merge(userBoardHandler.save(), user.id);
+            memberBoardHandler.change((doc) => {
+              doc.users[member.id].anchor = doc.document.items[3].id;
+              doc.users[member.id].focus = doc.document.items[4].id;
               doc.users[member.id].range = null;
             });
-            userDoc.merge(memberDoc);
+            userBoardHandler.merge(memberBoardHandler.save(), member.id);
 
-            const expectedDoc = toLooseJSON(userDoc);
-            const nodes = expectedDoc.doc.document.nodes;
-            nodes[3].prev = null;
-            expectedDoc.doc.users[user.id].anchor = nodes[3].id;
-            expectedDoc.doc.users[user.id].focus = nodes[3].id;
-            nodes.splice(0, 3);
+            const expectedDoc = toLooseJSON(userBoardHandler);
+            const items = expectedDoc.data.document.items;
+            expectedDoc.data.users[user.id].anchor = items[3].id;
+            expectedDoc.data.users[user.id].focus = items[3].id;
+            items.splice(0, 3);
 
-            userDoc.change((doc) => {
+            userBoardHandler.change((doc) => {
               usecases(user.id, doc).remove();
             });
 
-            assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
+            assert.deepEqual(toLooseJSON(userBoardHandler), expectedDoc);
           });
         });
       });
