@@ -1,20 +1,20 @@
 import * as assert from 'power-assert';
 
-import { usecases } from './usecases';
-import { CRDTDocument } from './CRDTDocument';
-import { createSampleData, toLooseJSON } from './testutils';
+import { usecases } from '../usecases';
+import { BoardHandler } from '../BoardHandler';
+import { createSampleData, toLooseJSON } from '../testutils';
 
 let user: { id: string };
 let member: { id: string };
-let userDoc: CRDTDocument;
-let memberDoc: CRDTDocument;
+let userBoardHandler: BoardHandler;
+let memberBoardHandler: BoardHandler;
 
 beforeEach(() => {
   const result = createSampleData();
   user = result.user;
   member = result.member;
-  userDoc = result.userDoc;
-  memberDoc = result.memberDoc;
+  userBoardHandler = result.userBoardHandler;
+  memberBoardHandler = result.memberBoardHandler;
 });
 
 const nodePatterns = {
