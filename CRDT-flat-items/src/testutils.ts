@@ -93,20 +93,18 @@ export function createSampleData() {
     transform.item.remove(document.items[0]);
 
     let paragraph1 = factory.item.createParagraph();
+    paragraph1 = transform.item.append(paragraph1) as ParagraphItem;
     transform.item.appendInline(paragraph1, createInlineText1());
     let paragraph2 = factory.item.createParagraph();
     paragraph2 = transform.item.append(paragraph2) as ParagraphItem;
-    paragraph2.indent.increment(1);
     transform.item.appendInline(paragraph2, createInlineText1());
     let paragraph3 = factory.item.createParagraph();
     paragraph3 = transform.item.append(paragraph3) as ParagraphItem;
-    paragraph3.indent.increment(2);
     transform.item.appendInline(paragraph3, createInlineText2());
     transform.item.appendInline(paragraph3, createInlineText3());
     transform.item.appendInline(paragraph3, createInlineText4());
     let paragraph4 = factory.item.createParagraph();
     paragraph4 = transform.item.append(paragraph4) as ParagraphItem;
-    paragraph4.indent.increment(2);
     transform.item.appendInline(paragraph4, createInlineText1());
     let paragraph5 = factory.item.createParagraph();
     paragraph5 = transform.item.append(paragraph5) as ParagraphItem;
@@ -116,11 +114,9 @@ export function createSampleData() {
     transform.item.appendInline(paragraph6, createInlineText1());
     let paragraph7 = factory.item.createParagraph();
     paragraph7 = transform.item.append(paragraph7) as ParagraphItem;
-    paragraph7.indent.increment(1);
     transform.item.appendInline(paragraph7, createInlineText1());
     let paragraph8 = factory.item.createParagraph();
     paragraph8 = transform.item.append(paragraph8) as ParagraphItem;
-    paragraph8.indent.increment(2);
     transform.item.appendInline(paragraph8, createInlineText2());
     transform.item.appendInline(paragraph8, createInlineText3());
     transform.item.appendInline(paragraph8, createInlineText4());
@@ -132,17 +128,14 @@ export function createSampleData() {
     transform.item.appendInline(paragraph10, createInlineText1());
     let paragraph11 = factory.item.createParagraph();
     paragraph11 = transform.item.append(paragraph11) as ParagraphItem;
-    paragraph11.indent.increment(1);
     transform.item.appendInline(paragraph11, createInlineText1());
     let paragraph12 = factory.item.createParagraph();
     paragraph12 = transform.item.append(paragraph12) as ParagraphItem;
-    paragraph12.indent.increment(2);
     transform.item.appendInline(paragraph12, createInlineText2());
     transform.item.appendInline(paragraph12, createInlineText3());
     transform.item.appendInline(paragraph12, createInlineText4());
     let paragraph13 = factory.item.createParagraph();
     paragraph13 = transform.item.append(paragraph13) as ParagraphItem;
-    paragraph13.indent.increment(1);
     transform.item.appendInline(paragraph13, createInlineText1());
   });
   memberBoardHandler.merge(userBoardHandler.save(), user.id);
@@ -151,6 +144,20 @@ export function createSampleData() {
     const document = doc.document;
     const selection = doc.users[user.id];
     const firstNode = document.items[0] as ParagraphItem;
+
+    // document.items[0].indent.increment();
+    document.items[1].indent.increment(1);
+    document.items[2].indent.increment(2);
+    document.items[3].indent.increment(2);
+    // document.items[4].indent.increment();
+    // document.items[5].indent.increment();
+    document.items[6].indent.increment(1);
+    document.items[7].indent.increment(2);
+    // document.items[8].indent.increment();
+    // document.items[9].indent.increment();
+    document.items[10].indent.increment(1);
+    document.items[11].indent.increment(2);
+    document.items[12].indent.increment(1);
 
     selection.anchor = firstNode.id;
     selection.focus = firstNode.id;
@@ -215,7 +222,6 @@ export function createSampleData2() {
     let paragraph1 = factory.item.createParagraph();
     transform.item.appendInline(paragraph1, createInlineText1());
     let heading2 = factory.item.createHeading1();
-    heading2.indent.increment(1);
     transform.item.appendInline(heading2, createInlineText1());
 
     transform.item.append(heading1);
@@ -228,6 +234,8 @@ export function createSampleData2() {
     const document = doc.document;
     const selection = doc.users[user.id];
     const firstNode = document.items[0] as Heading1Item;
+
+    document.items[2].indent.increment(1);
 
     selection.anchor = firstNode.id;
     selection.focus = firstNode.id;
