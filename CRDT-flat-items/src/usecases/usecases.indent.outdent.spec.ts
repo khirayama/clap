@@ -1,101 +1,78 @@
 import * as assert from 'power-assert';
 
-import { usecases } from './usecases';
-import { CRDTDocument } from './CRDTDocument';
-import { createSampleData, toLooseJSON } from './testutils';
+import { usecases } from '../usecases';
+import { BoardHandler } from '../BoardHandler';
+import { createSampleData, toLooseJSON } from '../testutils';
 
 let user: { id: string };
-let userDoc: CRDTDocument;
+let userBoardHandler: BoardHandler;
 
 beforeEach(() => {
   const result = createSampleData();
   user = result.user;
-  userDoc = result.userDoc;
+  userBoardHandler = result.userBoardHandler;
 });
 
+// TODO: itの文章がデータ構造を変更したことで整合性がなくなっている。書き直す
 describe('インデント操作', () => {
   describe('前項目がない場合', () => {
     it('何も変更されないこと', () => {
-      const expectedDoc = toLooseJSON(userDoc);
+      const expectedDoc = toLooseJSON(userBoardHandler);
 
-      userDoc.change((doc) => {
-        usecases(user.id, doc).indent();
+      userBoardHandler.change((board) => {
+        usecases(user.id, board).indent();
       });
 
-      assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
+      assert.deepEqual(toLooseJSON(userBoardHandler), expectedDoc);
     });
   });
 
   describe('前項目がある場合', () => {
     describe('選択項目子項目がないもしくは空の場合', () => {
       it('選択項目が前項目の子項目最後尾に追加されていること', () => {
-        userDoc.change((doc) => {
-          if (
-            !(
-              doc.document.nodes[0] &&
-              doc.document.nodes[0].nodes &&
-              doc.document.nodes[0].nodes[0] &&
-              doc.document.nodes[0].nodes[0].nodes &&
-              doc.document.nodes[0].nodes[0].nodes[1] !== null
-            )
-          )
-            return;
+        userBoardHandler.change((board) => {
+          if (!board.document.items) return;
 
-          const node = doc.document.nodes[0].nodes[0].nodes[1]; // Paragraph4
+          const node = board.document.items[3];
 
-          doc.users[user.id].anchor = node.id;
-          doc.users[user.id].focus = node.id;
-          doc.users[user.id].range = null;
+          board.users[user.id].anchor = node.id;
+          board.users[user.id].focus = node.id;
+          board.users[user.id].range = null;
         });
 
-        const expectedDoc = toLooseJSON(userDoc);
-        const nodes = expectedDoc.doc.document.nodes[0].nodes[0].nodes;
-        const tmp = nodes.splice(1, 1)[0];
-        nodes[0].nodes.push(tmp);
-        tmp.prev = null;
-        tmp.parent = nodes[0].id;
-        nodes[0].next = null;
+        const expectedDoc = toLooseJSON(userBoardHandler);
+        const item = expectedDoc.data.document.items[3];
+        item.indent += 1;
 
-        userDoc.change((doc) => {
-          usecases(user.id, doc).indent();
+        userBoardHandler.change((board) => {
+          usecases(user.id, board).indent();
         });
 
-        assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
+        assert.deepEqual(toLooseJSON(userBoardHandler), expectedDoc);
       });
     });
 
     describe('選択項目子項目がある場合', () => {
       it('選択項目が前項目の子項目最後尾に追加され、選択項目子項目全ても前項目の子項目に追加されていること', () => {
-        userDoc.change((doc) => {
-          if (doc.document.nodes[2] === null) return;
+        userBoardHandler.change((doc) => {
+          if (doc.document.items[2] === null) return;
 
-          const node = doc.document.nodes[2]; // Paragraph6
+          const node = doc.document.items[5]; // Paragraph6
 
           doc.users[user.id].anchor = node.id;
           doc.users[user.id].focus = node.id;
           doc.users[user.id].range = null;
         });
 
-        const expectedDoc = toLooseJSON(userDoc);
-        const nodes = expectedDoc.doc.document.nodes;
-        const tmp = nodes.splice(2, 1)[0];
-        nodes[1].nodes.push(tmp);
-        nodes[1].nodes.push(tmp.nodes[0]);
-        tmp.nodes = [];
-        nodes[1].next = nodes[2].id;
-        nodes[2].prev = nodes[1].id;
-        nodes[1].nodes[0].parent = nodes[1].id;
-        nodes[1].nodes[0].prev = null;
-        nodes[1].nodes[0].next = nodes[1].nodes[1].id;
-        nodes[1].nodes[1].parent = nodes[1].id;
-        nodes[1].nodes[1].prev = nodes[1].nodes[0].id;
-        nodes[1].nodes[1].next = null;
+        const expectedDoc = toLooseJSON(userBoardHandler);
+        const items = expectedDoc.data.document.items;
+        items[5].indent += 1;
 
-        userDoc.change((doc) => {
+        userBoardHandler.change((doc) => {
           usecases(user.id, doc).indent();
         });
 
-        assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
+        assert.deepEqual(toLooseJSON(userBoardHandler), expectedDoc);
       });
     });
   });
@@ -104,95 +81,62 @@ describe('インデント操作', () => {
 describe('アウトデント操作', () => {
   describe('親項目がない場合', () => {
     it('何も変更されないこと', () => {
-      const expectedDoc = toLooseJSON(userDoc);
+      const expectedDoc = toLooseJSON(userBoardHandler);
 
-      userDoc.change((doc) => {
+      userBoardHandler.change((doc) => {
         usecases(user.id, doc).outdent();
       });
 
-      assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
+      assert.deepEqual(toLooseJSON(userBoardHandler), expectedDoc);
     });
   });
 
   describe('親項目がある場合', () => {
     describe('選択項目次項目がない場合', () => {
       it('選択項目が前項目の子項目最後尾に追加されていること', () => {
-        userDoc.change((doc) => {
-          if (
-            !(
-              doc.document.nodes[0] &&
-              doc.document.nodes[0].nodes &&
-              doc.document.nodes[0].nodes[0] &&
-              doc.document.nodes[0].nodes[0].nodes &&
-              doc.document.nodes[0].nodes[0].nodes[1] !== null
-            )
-          )
-            return;
+        userBoardHandler.change((doc) => {
+          if (!doc.document.items) return;
 
-          const node = doc.document.nodes[0].nodes[0].nodes[1]; // Paragraph4
+          const node = doc.document.items[3];
 
           doc.users[user.id].anchor = node.id;
           doc.users[user.id].focus = node.id;
           doc.users[user.id].range = null;
         });
 
-        const expectedDoc = toLooseJSON(userDoc);
-        const node = expectedDoc.doc.document.nodes[0]; // Paragraph1
-        const tmp = node.nodes[0].nodes.splice(1, 1)[0]; // Paragraph4
-        node.nodes[0].nodes[0].next = null; // Paragraph3
-        node.nodes.push(tmp);
-        node.nodes[0].next = tmp.id;
-        tmp.prev = node.nodes[0].id;
-        tmp.parent = node.id;
+        const expectedDoc = toLooseJSON(userBoardHandler);
+        const node = expectedDoc.data.document.items[3];
+        node.indent -= 1;
 
-        userDoc.change((doc) => {
+        userBoardHandler.change((doc) => {
           usecases(user.id, doc).outdent();
         });
 
-        assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
+        assert.deepEqual(toLooseJSON(userBoardHandler), expectedDoc);
       });
     });
 
     describe('選択項目次項目がある場合', () => {
       it('選択項目が前項目の子項目最後尾に追加され、選択項目子項目全ても前項目の子項目に追加されていること', () => {
-        userDoc.change((doc) => {
-          if (
-            !(
-              doc.document.nodes[0] &&
-              doc.document.nodes[0].nodes &&
-              doc.document.nodes[0].nodes[0] &&
-              doc.document.nodes[0].nodes[0].nodes &&
-              doc.document.nodes[0].nodes[0].nodes[0] !== null
-            )
-          )
-            return;
+        userBoardHandler.change((doc) => {
+          if (!doc.document.items) return;
 
-          const node = doc.document.nodes[0].nodes[0].nodes[0]; // Paragraph3
+          const node = doc.document.items[2];
 
           doc.users[user.id].anchor = node.id;
           doc.users[user.id].focus = node.id;
           doc.users[user.id].range = null;
         });
 
-        const expectedDoc = toLooseJSON(userDoc);
-        const node = expectedDoc.doc.document.nodes[0]; // Paragraph1
-        const tmp = node.nodes[0].nodes.splice(0, 1)[0]; // Paragraph3
-        node.nodes[0].nodes[0].prev = null; // Paragraph4
-        node.nodes[0].nodes[0].parent = tmp.id;
-        node.nodes.push(tmp);
-        node.nodes[0].next = tmp.id;
+        const expectedDoc = toLooseJSON(userBoardHandler);
+        const node = expectedDoc.data.document.items[2];
+        node.indent -= 1;
 
-        tmp.nodes = node.nodes[0].nodes.concat();
-        node.nodes[0].nodes = [];
-        tmp.prev = node.nodes[0].id;
-        tmp.next = null;
-        tmp.parent = node.id;
-
-        userDoc.change((doc) => {
+        userBoardHandler.change((doc) => {
           usecases(user.id, doc).outdent();
         });
 
-        assert.deepEqual(toLooseJSON(userDoc), expectedDoc);
+        assert.deepEqual(toLooseJSON(userBoardHandler), expectedDoc);
       });
     });
   });
