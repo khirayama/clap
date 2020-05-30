@@ -17,15 +17,15 @@ beforeEach(() => {
   memberBoardHandler = result.memberBoardHandler;
 });
 
-const nodePatterns = {
+const itemPatterns = {
   a: '単一項目を選択している状態',
   b: '複数項目を選択している状態',
 };
 
 describe('削除操作', () => {
   describe('項目選択状態の場合', () => {
-    describe(`編集者選択範囲が${nodePatterns.a}`, () => {
-      describe(`共同編集者選択範囲が${nodePatterns.a}`, () => {
+    describe(`編集者選択範囲が${itemPatterns.a}`, () => {
+      describe(`共同編集者選択範囲が${itemPatterns.a}`, () => {
         it('項目が削除され、編集者と共同編集者の選択範囲が次項目へ移動していること', () => {
           userBoardHandler.change((doc) => {
             doc.users[user.id].range = null;
@@ -95,11 +95,11 @@ describe('削除操作', () => {
           userBoardHandler.merge(memberBoardHandler.save(), member.id);
 
           const expectedDoc = toLooseJSON(userBoardHandler);
-          const node = expectedDoc.data.document.items[10];
-          expectedDoc.data.users[user.id].anchor = node.id;
-          expectedDoc.data.users[user.id].focus = node.id;
-          expectedDoc.data.users[member.id].anchor = node.id;
-          expectedDoc.data.users[member.id].focus = node.id;
+          const item = expectedDoc.data.document.items[10];
+          expectedDoc.data.users[user.id].anchor = item.id;
+          expectedDoc.data.users[user.id].focus = item.id;
+          expectedDoc.data.users[member.id].anchor = item.id;
+          expectedDoc.data.users[member.id].focus = item.id;
           expectedDoc.data.document.items.splice(11, 1);
 
           userBoardHandler.change((doc) => {
@@ -136,7 +136,7 @@ describe('削除操作', () => {
         });
       });
 
-      describe(`共同編集者選択範囲が${nodePatterns.b}`, () => {
+      describe(`共同編集者選択範囲が${itemPatterns.b}`, () => {
         it('項目が削除され、編集者選択範囲が次項目へ移動し、共同編集者選択項目から項目が取り除かれていること', () => {
           userBoardHandler.change((doc) => {
             doc.users[user.id].range = null;
@@ -196,8 +196,8 @@ describe('削除操作', () => {
       });
     });
 
-    describe(`編集者選択範囲が${nodePatterns.b}`, () => {
-      describe(`共同編集者選択範囲が${nodePatterns.a}`, () => {
+    describe(`編集者選択範囲が${itemPatterns.b}`, () => {
+      describe(`共同編集者選択範囲が${itemPatterns.a}`, () => {
         it('複数項目が削除され、編集者と共同編集者の選択範囲が次項目へ移動していること', () => {
           userBoardHandler.change((doc) => {
             doc.users[user.id].anchor = doc.document.items[1].id;
@@ -275,11 +275,11 @@ describe('削除操作', () => {
           userBoardHandler.merge(memberBoardHandler.save(), member.id);
 
           const expectedDoc = toLooseJSON(userBoardHandler);
-          const node = expectedDoc.data.document.items[4];
-          expectedDoc.data.users[user.id].anchor = node.id;
-          expectedDoc.data.users[user.id].focus = node.id;
-          expectedDoc.data.users[member.id].anchor = node.id;
-          expectedDoc.data.users[member.id].focus = node.id;
+          const item = expectedDoc.data.document.items[4];
+          expectedDoc.data.users[user.id].anchor = item.id;
+          expectedDoc.data.users[user.id].focus = item.id;
+          expectedDoc.data.users[member.id].anchor = item.id;
+          expectedDoc.data.users[member.id].focus = item.id;
           expectedDoc.data.document.items.splice(2, 2);
 
           userBoardHandler.change((doc) => {
@@ -318,7 +318,7 @@ describe('削除操作', () => {
         });
       });
 
-      describe(`共同編集者選択範囲が${nodePatterns.b}`, () => {
+      describe(`共同編集者選択範囲が${itemPatterns.b}`, () => {
         describe('編集者と共同編集者が同じ選択範囲の場合', () => {
           it('複数項目が削除され、編集者と共同編集者の選択範囲が次項目に移動していること', () => {
             userBoardHandler.change((doc) => {
@@ -397,11 +397,11 @@ describe('削除操作', () => {
             userBoardHandler.merge(memberBoardHandler.save(), member.id);
 
             const expectedDoc = toLooseJSON(userBoardHandler);
-            const node = expectedDoc.data.document.items[4];
-            expectedDoc.data.users[user.id].anchor = node.id;
-            expectedDoc.data.users[user.id].focus = node.id;
-            expectedDoc.data.users[member.id].anchor = node.id;
-            expectedDoc.data.users[member.id].focus = node.id;
+            const item = expectedDoc.data.document.items[4];
+            expectedDoc.data.users[user.id].anchor = item.id;
+            expectedDoc.data.users[user.id].focus = item.id;
+            expectedDoc.data.users[member.id].anchor = item.id;
+            expectedDoc.data.users[member.id].focus = item.id;
             expectedDoc.data.document.items.splice(2, 2);
 
             userBoardHandler.change((doc) => {
@@ -574,11 +574,11 @@ describe('削除操作', () => {
             userBoardHandler.merge(memberBoardHandler.save(), member.id);
 
             const expectedDoc = toLooseJSON(userBoardHandler);
-            const node = expectedDoc.data.document.items[4];
-            expectedDoc.data.users[user.id].anchor = node.id;
-            expectedDoc.data.users[user.id].focus = node.id;
-            expectedDoc.data.users[member.id].anchor = node.id;
-            expectedDoc.data.users[member.id].focus = node.id;
+            const item = expectedDoc.data.document.items[4];
+            expectedDoc.data.users[user.id].anchor = item.id;
+            expectedDoc.data.users[user.id].focus = item.id;
+            expectedDoc.data.users[member.id].anchor = item.id;
+            expectedDoc.data.users[member.id].focus = item.id;
             expectedDoc.data.document.items.splice(2, 2);
 
             userBoardHandler.change((doc) => {
