@@ -59,11 +59,26 @@ export function usecases(userId: string, board: Board) {
     },
 
     indent: () => {
-      const items = traverse.item.findCurrentItems(selection);
+      let flag = false;
 
-      for (const item of items) {
-        if (item !== null) {
-          transform.item.indent(item);
+      for (let i = 0; i < document.items.length; i += 1) {
+        const item = document.items[i];
+        const prevItem = document.items[i - 1] || null;
+
+        if (item.id === selection.anchor && item.id === selection.focus) {
+          if (prevItem !== null && prevItem.indent.value === item.indent.value) {
+            transform.item.indent(item);
+          }
+          break;
+        } else if (item.id === selection.anchor || item.id === selection.focus) {
+          flag = !flag;
+          if (prevItem !== null && prevItem.indent.value === item.indent.value) {
+            transform.item.indent(item);
+          }
+        } else if (flag) {
+          if (prevItem !== null && prevItem.indent.value === item.indent.value) {
+            transform.item.indent(item);
+          }
         }
       }
     },
@@ -72,7 +87,7 @@ export function usecases(userId: string, board: Board) {
       const items = traverse.item.findCurrentItems(selection);
 
       for (const item of items) {
-        if (item !== null) {
+        if (item !== null && item.indent.value > 0) {
           transform.item.outdent(item);
         }
       }
