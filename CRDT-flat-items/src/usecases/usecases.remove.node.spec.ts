@@ -80,27 +80,27 @@ describe('削除操作', () => {
           userBoardHandler.change((doc) => {
             if (!doc.document.items) return;
 
-            doc.users[user.id].anchor = doc.document.items[11].id;
-            doc.users[user.id].focus = doc.document.items[11].id;
+            doc.users[user.id].anchor = doc.document.items[12].id;
+            doc.users[user.id].focus = doc.document.items[12].id;
             doc.users[user.id].range = null;
           });
           memberBoardHandler.merge(userBoardHandler.save(), user.id);
           memberBoardHandler.change((doc) => {
             if (!doc.document.items) return;
 
-            doc.users[member.id].anchor = doc.document.items[11].id;
-            doc.users[member.id].focus = doc.document.items[11].id;
+            doc.users[member.id].anchor = doc.document.items[12].id;
+            doc.users[member.id].focus = doc.document.items[12].id;
             doc.users[member.id].range = null;
           });
           userBoardHandler.merge(memberBoardHandler.save(), member.id);
 
           const expectedDoc = toLooseJSON(userBoardHandler);
-          const item = expectedDoc.data.document.items[10];
+          const item = expectedDoc.data.document.items[11];
           expectedDoc.data.users[user.id].anchor = item.id;
           expectedDoc.data.users[user.id].focus = item.id;
           expectedDoc.data.users[member.id].anchor = item.id;
           expectedDoc.data.users[member.id].focus = item.id;
-          expectedDoc.data.document.items.splice(11, 1);
+          expectedDoc.data.document.items.splice(12, 1);
 
           userBoardHandler.change((doc) => {
             usecases(user.id, doc).remove();
@@ -292,7 +292,7 @@ describe('削除操作', () => {
         it('複数項目が削除され、編集者と共同編集者の選択範囲がなくなっていること', () => {
           userBoardHandler.change((doc) => {
             doc.users[user.id].anchor = doc.document.items[0].id;
-            doc.users[user.id].focus = doc.document.items[11].id;
+            doc.users[user.id].focus = doc.document.items[12].id;
             doc.users[user.id].range = null;
           });
           memberBoardHandler.merge(userBoardHandler.save(), user.id);
@@ -414,13 +414,13 @@ describe('削除操作', () => {
           it('複数項目が削除され、編集者と共同編集者の選択項目がなくなっていること', () => {
             userBoardHandler.change((doc) => {
               doc.users[user.id].anchor = doc.document.items[0].id;
-              doc.users[user.id].anchor = doc.document.items[11].id;
+              doc.users[user.id].anchor = doc.document.items[12].id;
               doc.users[user.id].range = null;
             });
             memberBoardHandler.merge(userBoardHandler.save(), user.id);
             memberBoardHandler.change((doc) => {
               doc.users[member.id].anchor = doc.document.items[0].id;
-              doc.users[member.id].anchor = doc.document.items[11].id;
+              doc.users[member.id].anchor = doc.document.items[12].id;
               doc.users[member.id].range = null;
             });
             userBoardHandler.merge(memberBoardHandler.save(), member.id);
@@ -591,7 +591,7 @@ describe('削除操作', () => {
           it('複数項目が削除され、編集者と共同編集者の選択項目がなくなっていること', () => {
             userBoardHandler.change((doc) => {
               doc.users[user.id].anchor = doc.document.items[0].id;
-              doc.users[user.id].focus = doc.document.items[11].id;
+              doc.users[user.id].focus = doc.document.items[12].id;
               doc.users[user.id].range = null;
             });
             memberBoardHandler.merge(userBoardHandler.save(), user.id);
