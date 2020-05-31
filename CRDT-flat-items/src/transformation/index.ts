@@ -26,21 +26,26 @@ export function transformation(document: Document) {
   const transform = {
     item: {
       append: (item: Item): Item | null => {
+        transform.item.remove(item);
         document.items.push(item);
         return traverse.item.find(item.id);
       },
 
-      after: (prevItem: Item, item: Item): void => {
+      after: (prevItem: Item, item: Item): Item | null => {
         transform.item.remove(item);
 
+        let tmp: Item | null = null;
         for (let i = 0; i < document.items.length; i += 1) {
           const itm = document.items[i];
           if (itm.id === prevItem.id) {
-            item.indent.increment(sutils.getOffset(item.indent.value, itm.indent.value));
             document.items.splice(i + 1, 0, item);
+            tmp = document.items[i + 1];
+            tmp.indent.increment(sutils.getOffset(item.indent.value, itm.indent.value));
             break;
           }
         }
+
+        return tmp;
       },
 
       remove: (item: Item): void => {
