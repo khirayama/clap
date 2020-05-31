@@ -3,7 +3,7 @@ import { factory } from '../factory';
 import { transformation } from '../transformation';
 import { traversal } from '../traversal';
 
-import { Board, ParagraphItem, Selection, utils as sutils } from '../structures';
+import { Board, ParagraphItem, InlineText, Selection, utils as sutils } from '../structures';
 import { getStartAndEnd, hasSameMarks, getMemberIds, isAnchorUpper } from './utils';
 
 export function actions(userId: string, board: Board) {
@@ -226,6 +226,31 @@ export function actions(userId: string, board: Board) {
             }
           }
         }
+      }
+    },
+
+    splitInline: (): void => {
+      const range = selection.range;
+      const item = traverse.item.findCurrentItem(selection);
+      const inline = traverse.inline.findCurrentInline(selection);
+
+      if (range === null || item === null || inline === null) return;
+
+      const text = inline.text.splice(range.anchor.offset.value, inline.text.length - range.anchor.offset.value);
+
+      let paragraph = factory.item.createParagraph();
+      let inlineText = factory.inline.createInlineText();
+      paragraph = transform.item.after(item, paragraph) as ParagraphItem;
+      inlineText = transform.item.appendInline(paragraph, inlineText) as InlineText;
+      inlineText.text.splice(0, 0, ...text);
+
+      selection.anchor = paragraph.id;
+      selection.focus = paragraph.id;
+      if (selection.range) {
+        selection.range.anchor.id = paragraph.inline[0].id;
+        selection.range.anchor.offset.increment(sutils.getOffset(selection.range.anchor.offset.value, 0));
+        selection.range.focus.id = paragraph.inline[0].id;
+        selection.range.focus.offset.increment(sutils.getOffset(selection.range.focus.offset.value, 0));
       }
     },
 
