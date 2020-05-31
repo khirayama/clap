@@ -9,6 +9,8 @@ export class BoardHandler {
 
   public data: Automerge.Doc<Board>;
 
+  private listeners: Function[] = [];
+
   constructor(userId: string, serializedData?: string) {
     this.userId = userId;
     this.data = serializedData
@@ -18,6 +20,9 @@ export class BoardHandler {
 
   public change(func: Automerge.ChangeFn<Board>): void {
     this.data = Automerge.change(this.data, func);
+    for (const listener of this.listeners) {
+      listener(this);
+    }
   }
 
   public save(): string {
@@ -26,5 +31,9 @@ export class BoardHandler {
 
   public merge(serializedData: string, userId?: string): void {
     this.data = Automerge.merge(this.data, Automerge.load(serializedData, userId));
+  }
+
+  public on(listener: Function): void {
+    this.listeners.push(listener);
   }
 }

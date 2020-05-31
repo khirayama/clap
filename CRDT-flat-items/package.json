@@ -2,8 +2,9 @@
   "name": "olot",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
+    "build": "tsc -d",
     "dev": "rm -rf dist && tsc && concurrently 'tsc -w' 'mocha -w dist/**/*.js'",
     "now": "rm -rf dist && tsc && concurrently 'tsc -w' 'mocha dist/usecases.input.spec.js -w --watch-files dist/**/*.js'",
     "tmp": "rm -rf dist && tsc && mocha dist/**/*.spec.js",
