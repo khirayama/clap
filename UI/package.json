@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "webpack-dev-server --cache --liveReload=false",
+    "link": "(cd ../CRDT-flat-items && npm run build && npm link) && npm link olot",
+    "dev": "npm run link && webpack-dev-server --cache --liveReload=false",
     "test": "jest",
     "lint": "eslint '{src/**/,cli/**/,}*.{ts,tsx,js,jsx,json}'",
     "lint:fix": "eslint --fix '{src/**/,cli/**/,}*.{ts,tsx,js,jsx,json}'",
@@ -47,6 +48,7 @@
     "webpack-dev-server": "3.11.0"
   },
   "dependencies": {
+    "olot": "1.0.0",
     "fast-deep-equal": "3.1.1",
     "react": "16.13.1",
     "react-dom": "16.13.1",
