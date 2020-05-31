@@ -3,7 +3,7 @@ import { factory } from '../factory';
 import { transformation } from '../transformation';
 import { traversal } from '../traversal';
 
-import { Board, Selection, utils as sutils } from '../structures';
+import { Board, ParagraphItem, Selection, utils as sutils } from '../structures';
 import { getStartAndEnd, hasSameMarks, getMemberIds, isAnchorUpper } from './utils';
 
 export function actions(userId: string, board: Board) {
@@ -481,10 +481,24 @@ export function actions(userId: string, board: Board) {
     },
 
     postprocessItemDeletion: (): void => {
-      // TODO: 「Actions 項目を削除したときの後処理」を適用
-      let todo = false;
-      if (todo) {
-        console.log(userId, board);
+      if (document.items.length === 0) {
+        let paragraph = factory.item.createParagraph();
+        paragraph = transform.item.append(paragraph) as ParagraphItem;
+        let inline = factory.inline.createInlineText();
+        transform.item.appendInline(paragraph, inline);
+
+        const userIds = Object.keys(users);
+        for (const uid of userIds) {
+          const slctn = users[uid];
+          slctn.anchor = paragraph.id;
+          slctn.focus = paragraph.id;
+          if (slctn.range !== null) {
+            slctn.range.anchor.id = inline.id;
+            slctn.range.anchor.offset.increment(sutils.getOffset(slctn.range.anchor.offset.value, 0));
+            slctn.range.focus.id = inline.id;
+            slctn.range.focus.offset.increment(sutils.getOffset(slctn.range.focus.offset.value, 0));
+          }
+        }
       }
     },
   };
