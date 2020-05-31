@@ -41,13 +41,27 @@ export function usecases(userId: string, board: Board) {
   const commands = actions(userId, board);
 
   const scenarios = {
-    enter: () => {},
+    enter: () => {
+      if (selection.range !== null) {
+        if (sutils.selection.isCollasped(selection)) {
+          commands.splitInline();
+        } else if (!sutils.selection.isCollasped(selection)) {
+          commands.removeText();
+          commands.postprocessTextDeletion();
+          commands.splitInline();
+        }
+      } else if (selection.range === null) {
+        if (selection.anchor !== null && selection.focus !== null && selection.anchor !== selection.focus) {
+          // TODO
+        }
+      }
+    },
 
     input: (chars: string[]) => {
       if (selection.range !== null) {
         if (sutils.selection.isCollasped(selection)) {
           commands.insertText(chars);
-        } else if (selection.range !== null && !sutils.selection.isCollasped(selection)) {
+        } else if (!sutils.selection.isCollasped(selection)) {
           commands.removeText();
           commands.insertText(chars);
         }
