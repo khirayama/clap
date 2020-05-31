@@ -176,6 +176,7 @@ describe('入力操作', () => {
           assert.deepEqual(toLooseJSON(userBoardHandler), expectedDoc);
         });
       });
+
       describe('共同編集者選択範囲が開いており、始点が編集者選択範囲前点前、終点が編集者選択範囲始点と同じ位置にある状態', () => {
         it('任意の文字が挿入されること(中間3文字)', () => {
           userBoardHandler.change((doc) => {
@@ -217,6 +218,7 @@ describe('入力操作', () => {
           assert.deepEqual(toLooseJSON(userBoardHandler), expectedDoc);
         });
       });
+
       describe('共同編集者選択範囲が開いており、終点が編集者選択範囲前点前、始点が編集者選択範囲始点と同じ位置にある状態', () => {
         it('任意の文字が挿入されること(中間3文字)', () => {
           userBoardHandler.change((doc) => {
@@ -258,6 +260,7 @@ describe('入力操作', () => {
           assert.deepEqual(toLooseJSON(userBoardHandler), expectedDoc);
         });
       });
+
       describe('共同編集者選択範囲が開いており、始点が編集者選択範囲前点前、終点が編集者選択範囲始点後にある状態', () => {
         it('任意の文字が挿入されること(中間3文字)', () => {
           userBoardHandler.change((doc) => {
@@ -299,6 +302,7 @@ describe('入力操作', () => {
           assert.deepEqual(toLooseJSON(userBoardHandler), expectedDoc);
         });
       });
+
       describe('共同編集者選択範囲が開いており、終点が編集者選択範囲前点前、始点が編集者選択範囲始点後にある状態', () => {
         it('任意の文字が挿入されること(中間3文字)', () => {
           userBoardHandler.change((doc) => {
@@ -340,6 +344,7 @@ describe('入力操作', () => {
           assert.deepEqual(toLooseJSON(userBoardHandler), expectedDoc);
         });
       });
+
       describe('共同編集者選択範囲が開いており、始点が編集者選択範囲前点と同じ位置、終点が編集者選択範囲始点後にある状態', () => {
         it('任意の文字が挿入されること(中間3文字)', () => {
           userBoardHandler.change((doc) => {
@@ -381,6 +386,7 @@ describe('入力操作', () => {
           assert.deepEqual(toLooseJSON(userBoardHandler), expectedDoc);
         });
       });
+
       describe('共同編集者選択範囲が開いており、終点が編集者選択範囲前点と同じ位置、始点が編集者選択範囲始点後にある状態', () => {
         it('任意の文字が挿入されること(中間3文字)', () => {
           userBoardHandler.change((doc) => {

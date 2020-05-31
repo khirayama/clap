@@ -31,8 +31,6 @@ describe('インデント操作', () => {
     describe('選択項目子項目がないもしくは空の場合', () => {
       it('選択項目が前項目の子項目最後尾に追加されていること', () => {
         userBoardHandler.change((board) => {
-          if (!board.document.items) return;
-
           const node = board.document.items[3];
 
           board.users[user.id].anchor = node.id;
