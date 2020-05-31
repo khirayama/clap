@@ -140,11 +140,9 @@ export function usecases(userId: string, board: Board) {
                 for (const mid of memberIds) {
                   const slctn = users[mid];
                   if (slctn.anchor !== null && slctn.focus !== null && slctn.anchor === prevItem.id) {
-                    // TODO: ここの修正怪しい
                     slctn.anchor = isAnchorUpper(document, slctn.anchor, slctn.focus) ? nextItem.id : prevItem.id;
                   }
                   if (slctn.anchor !== null && slctn.focus !== null && slctn.focus === prevItem.id) {
-                    // TODO: ここの修正怪しい
                     slctn.focus = !isAnchorUpper(document, slctn.anchor, slctn.focus) ? nextItem.id : prevItem.id;
                   }
                 }
