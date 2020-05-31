@@ -52,7 +52,11 @@ export function usecases(userId: string, board: Board) {
         }
       } else if (selection.range === null) {
         if (selection.anchor !== null && selection.focus !== null && selection.anchor !== selection.focus) {
-          // TODO
+          const item = traverse.item.findCurrentItem(selection);
+          if (item !== null && item.inline !== null) {
+            const lastInline = item.inline[item.inline.length - 1];
+            selection.range = factory.range.create(lastInline.id, lastInline.text.length);
+          }
         }
       }
     },
