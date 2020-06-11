@@ -1,0 +1,8 @@
+/* Mac */
+.DS_Store
+
+/* node */
+/node_modules
+
+/* Project */
+/dist

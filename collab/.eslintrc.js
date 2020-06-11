@@ -1,0 +1,43 @@
+const extentions = ['.ts', '.tsx', '.js', '.jsx', '.vue', '.json', '.node'];
+
+module.exports = {
+  env: {
+    node: true,
+    browser: true,
+    commonjs: true,
+    serviceworker: true,
+    'jest/globals': true,
+  },
+  extends: ['eslint:recommended', 'plugin:node/recommended', 'plugin:react/recommended', 'plugin:prettier/recommended'],
+  plugins: ['@typescript-eslint', 'eslint-plugin-jest'],
+  parser: '@typescript-eslint/parser',
+  parserOptions: {
+    sourceType: 'module',
+    project: './tsconfig.json',
+    ecmaFeatures: {
+      jsx: true,
+    },
+    useJSXTextNode: true,
+    extraFileExtensions: extentions,
+  },
+  settings: {
+    node: {
+      tryExtensions: extentions,
+    },
+  },
+  rules: {
+    'no-unused-vars': 'off',
+    '@typescript-eslint/no-unused-vars': 'error',
+
+    '@typescript-eslint/adjacent-overload-signatures': 'error',
+    'node/no-missing-import': [
+      'error',
+      {
+        allowModules: [],
+        resolvePaths: ['./src'],
+        tryExtensions: extentions,
+      },
+    ],
+    'node/no-unsupported-features/es-syntax': 'off',
+  },
+};
