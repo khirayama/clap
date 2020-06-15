@@ -1,6 +1,14 @@
+import * as Y from 'yjs';
 import * as uuid from 'uuid';
 
-export type Decoration = 'bold' | 'italic' | 'code' | 'strike';
+export type Marks = {
+  bold: boolean;
+  italic: boolean;
+  code: boolean;
+  strike: boolean;
+  color: string;
+  background: string;
+};
 
 // Inlines
 export class TextInline {
@@ -8,9 +16,9 @@ export class TextInline {
 
   public type: string;
 
-  public text: string[];
+  public text: Y.Array<string> = new Y.Array();
 
-  public marks: Decoration[];
+  public marks: Marks;
 
   public toJSON() {
     return {
