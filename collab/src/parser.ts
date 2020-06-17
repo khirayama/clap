@@ -1,5 +1,7 @@
 export type TextData = string[];
 
+import { Item } from './model';
+
 export const charCodes = {
   NEWLINE: 10,
 };
