@@ -5,14 +5,24 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
 import { Item } from './model';
+import { textToTextData, textDataToDoc } from './parser';
 import { Editor } from './components/Editor';
 
-const tmpDoc = new Y.Doc();
-const items = tmpDoc.getArray('items');
-items.observe((event: any) => {
-  console.log(event);
-});
-items.insert(0, [1]);
+const text = `LINE1
+LINE2
+  LINE3 indent1
+  LINE4 indent1
+## LINE5 Heading
+- LINE6
+- LINE7\`{date: '2020-06-14'}\`
+- [ ] LINE8\`{comments: }\`
+`;
+
+const textData = textToTextData(text);
+const doc = textDataToDoc(textData);
+
+console.log(textData);
+// const tmpDoc = new Y.Doc();
 
 type EditorBindingProps = {
   items: Item[];
@@ -47,6 +57,5 @@ class EditorBinding extends React.Component<EditorBindingProps, EditorBindingSta
 }
 
 window.addEventListener('DOMContentLoaded', () => {
-  const items = [new Item()];
-  ReactDOM.render(<EditorBinding items={items} />, window.document.querySelector('#root'));
+  ReactDOM.render(<EditorBinding items={[]} />, window.document.querySelector('#root'));
 });
