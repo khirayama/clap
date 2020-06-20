@@ -40,11 +40,11 @@ type EditorState = {};
 class Editor extends React.Component<EditorProps, EditorState> {
   public render(): JSX.Element {
     const item = factory.createItem();
-    const inline: Y.Text = doc.getText('inline');
-    inline.insert(0, 'AAA', { bold: true });
-    inline.insert(1, 'BBB', { bold: false });
+    const text: Y.Text = item.get('text');
+    text.insert(0, 'AAA', { bold: true });
+    text.insert(1, 'BBB', { bold: false });
 
-    return <div>{inline.toString()}</div>;
+    return <div>{text.toString()}</div>;
   }
 }
 
