@@ -43,9 +43,6 @@ class Editor extends React.Component<EditorProps, EditorState> {
     const inline: Y.Text = doc.getText('inline');
     inline.insert(0, 'AAA', { bold: true });
     inline.insert(1, 'BBB', { bold: false });
-    console.log(inline);
-    console.log(inline.toString());
-    console.log(inline.toDelta());
 
     return <div>{inline.toString()}</div>;
   }
