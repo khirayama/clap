@@ -12,16 +12,11 @@ wsProvider.on('status', (event: any) => {
   console.log(event.status);
 });
 
-type Item = Y.Map<{
-  id: string;
-  indent: number;
-  type: string;
-  text: Y.Text | null;
-}>;
+type Item = ReturnType<typeof factory['createItem']>;
 
 const factory = {
-  createItem: (): Item => {
-    const item: Item = new Y.Map(
+  createItem: () => {
+    return new Y.Map(
       Object.entries({
         id: uuid.v4(),
         indent: 0,
@@ -29,7 +24,6 @@ const factory = {
         text: new Y.Text(),
       }),
     );
-    return item;
   },
 };
 
@@ -39,8 +33,8 @@ type EditorState = {};
 
 class Editor extends React.Component<EditorProps, EditorState> {
   public render(): JSX.Element {
-    const item = factory.createItem();
-    const text: Y.Text = item.get('text');
+    const item: Item = factory.createItem();
+    const text = item.get('text') as Y.Text;
     text.insert(0, 'AAA', { bold: true });
     text.insert(1, 'BBB', { bold: false });
 
