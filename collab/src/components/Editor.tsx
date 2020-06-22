@@ -1,11 +1,5 @@
 import * as React from 'react';
 
-import { Item } from '../model';
-
-type EditorProps = {
-  items: ReturnType<Item['toJSON']>[];
-};
-
 type EditorState = {};
 
 export class Editor extends React.Component<EditorProps, EditorState> {
