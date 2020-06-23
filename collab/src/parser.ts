@@ -1,7 +1,5 @@
 export type TextData = string[];
 
-import { Item } from './model';
-
 export const charCodes = {
   NEWLINE: 10,
 };
@@ -14,7 +12,7 @@ export function textDataToDoc(textData: TextData) {
   for (let i = 0; i < textData.length; i += 1) {
     const chara = textData[i];
 
-    if (chara.charCodeAt() === charCodes.NEWLINE) {
+    if (chara.charCodeAt(0) === charCodes.NEWLINE) {
       console.log('new Item');
     }
   }
