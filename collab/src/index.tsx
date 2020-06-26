@@ -43,9 +43,7 @@ class Editor extends React.Component<EditorProps, EditorState> {
   public render(): JSX.Element {
     const data = doc.getMap('data');
     const items = data.get('items') as Y.Array<any>;
-    const item: Item = factory.createItem();
-    items.push(item);
-
+    const item = items.get(0) as Y.Map<any>;
     const text = item.get('text') as Y.Text;
     text.insert(0, 'AAA', { bold: true });
     text.insert(1, 'BBB', { bold: false });
