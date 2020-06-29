@@ -43,11 +43,16 @@ class Editor extends React.Component<EditorProps, EditorState> {
   public render(): JSX.Element {
     const data = doc.getMap('data');
     const items = data.get('items') as Y.Array<any>;
-    const item = items.get(0) as Y.Map<any>;
+    let item = items.get(0) || null;
+    if (item === null) {
+      item = factory.createItem();
+      items.insert(0, item);
+    }
     const text = item.get('text') as Y.Text;
     text.insert(0, 'AAA', { bold: true });
     text.insert(1, 'BBB', { bold: false });
 
+    console.log(text);
     return <div>{text.toString()}</div>;
   }
 }
