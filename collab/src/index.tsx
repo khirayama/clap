@@ -48,7 +48,7 @@ class Editor extends React.Component<EditorProps, EditorState> {
       item = factory.createItem();
       items.insert(0, [item]);
     }
-    const text: Y.Text = item.get('text');
+    const text: Y.Text = item.get('text') as Y.Text;
     text.insert(0, 'AAA', { bold: true });
     text.insert(1, 'BBB', { bold: false });
 
