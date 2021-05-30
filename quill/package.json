@@ -64,7 +64,7 @@
     "socket.io": "2.3.0",
     "styled-components": "5.1.1",
     "uuid": "8.1.0",
-    "ws": "7.3.0",
+    "ws": "7.4.6",
     "xregexp": "4.3.0",
     "y-array": "10.1.4",
     "y-map": "10.1.3",
